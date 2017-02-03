@@ -33,7 +33,7 @@ before_install:
  - ls -l ..
  - cmake -Dtest=ON -Dtravis=ON ..
 
-script: "make && make test && ./ripe-unit-tests"
+script: "make && ./ripe-unit-tests"
 branches:
   only:
     - master
