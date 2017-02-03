@@ -1,6 +1,11 @@
+
+                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+
 # Ripe
 
 Ripe is a 256-bit security tool.
+    
+[![Build Status](https://travis-ci.org/muflihun/ripe.png?branch=master)](https://travis-ci.org/muflihun/ripe)
 
 ### Options
 
