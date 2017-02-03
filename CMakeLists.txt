@@ -102,7 +102,7 @@ target_compile_definitions(ripe PRIVATE
     ELPP_DEFAULT_LOGGING_FLAGS=4096
 )
 install (TARGETS ripe DESTINATION lib)
-install (FILES include/Ripe.h include/RipeHelpers.h DESTINATION "../include")
+install (FILES include/Ripe.h include/RipeHelpers.h DESTINATION "include")
 
 ################################################ RIPE ##############################################
 
