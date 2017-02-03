@@ -1,7 +1,7 @@
 
-                                       ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+                                               ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
 
-![banner]
+![Ripe](https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png)
 
 Ripe is a 256-bit security tool.
     
@@ -66,6 +66,7 @@ If the default path (`/usr/local`) is not where you want things installed, then 
 
 ```
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
+```
 
 ## Examples
 
@@ -151,6 +152,12 @@ In order to decode you may use `-d` option instead
 echo 'cGxhaW4gdGV4dAo=' | ripe -d --base64
 ```
 
+## Support
+
+Please consider donating to support this project.
+
+ [![paypal]](http://muflihun.com/support/)
+ 
 ## Licence
 ```
 The MIT License (MIT)
@@ -178,10 +185,3 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
- 
-# Donate
-Please consider donating to support this project.
-
- [![paypal]](http://muflihun.com/support/)
- 
-  [banner]: https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png
