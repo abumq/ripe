@@ -7,12 +7,11 @@ Ripe is a 256-bit security tool.
     
 [![Build Status](https://travis-ci.org/muflihun/ripe.png?branch=master)](https://travis-ci.org/muflihun/ripe)
 
-### Options
+## Options
 
 | Option Name | Description |
 |-------------|--------|
 | `--version` | Display version information
-| `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `-g`        | Generate key |
 | `-e`        | Encrypt the data |
 | `-d`        | Decrypt the data |
@@ -20,15 +19,61 @@ Ripe is a 256-bit security tool.
 | `--in-key`     | Symmetric key for encryption / decryption file path |
 | `--iv`      | Initializaion vector for decription       |
 | `--rsa`      | Use RSA encryption/decryption (Must use `--in-key` with it)      |
-| `--client-id`| Client ID when encrypting the data       |
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
+| `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
+
+## Installation
+
+### Dependencies
+  * C++11 (or higher)
+  * Easylogging++ v9.91 (or higher)
+  * OpenSSL v1.0.2 (or higher)
+  * [CMake Toolchains](https://cmake.org/) 2.8.12 (or higher)
+ 
+### Get Code
+You can either [download code from master branch](https://github.com/muflihun/ripe/archive/master.zip) or clone it using `git`:
+
+```
+git clone git@github.com:muflihun/ripe.git
+```
+
+### Build
+Residue uses the CMake toolchains to create makefiles.
+Steps to build Ripe:
+
+```
+mkdir build
+cd build
+cmake ..
+cmake -Dtest=ON ..
+make
+```
+
+Please consider running unit test before you move on
+
+```
+make test
+```
+
+The compilation process creates executable `ripe` in build directory. You can install it in system-wide directory using:
+
+```
+make install
+```
+
+If the default path (`/usr/local`) is not where you want things installed, then set the `CMAKE_INSTALL_PREFIX` option when running cmake. e.g,
+
+```
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
+
+## Examples
 
 ### Encryption (AES)
 
 Following command will encrypt `sample.json` file to be ready to send to the server.
 
-`echo "plain text" | ripe -e --key my_key --client-id 123`
+`echo "plain text" | ripe -e --key my_key`
 
 You can specify binary file as destination that will save only encrypted data, e.g,
 
@@ -36,7 +81,7 @@ You can specify binary file as destination that will save only encrypted data, e
 
 Above command will provide you with IV that you can use to decrypt
 
-Please note: If you do not provide `--out`, the output will base64 and it will have three parts. `{IV}:{Client_ID}:{Encrypted_Data (Base64)}`.
+Please note: If you do not provide `--out`, the output will base64 and it will have three parts. `{IV}:{Client_ID}:{Base64_Encoded_Encrypted_Data}`.
 
 ### Decryption (AES)
 

@@ -16,12 +16,12 @@ using namespace ripe::tools;
 
 void displayUsage()
 {
-    std::cout << "ripe [-d/-e/-g] [--in <file_path>] [--key <key>] [--in-key <file_path>] [--out-public <file_path>] [--out-private <file_path>] [--iv <init vector>] [--client-id <client_id>] [--base64] [--rsa] [--out <file_path>]" << std::endl;
+    std::cout << "ripe [-d/-e/-g] [--in <file_path>] [--key <key>] [--in-key <file_path>] [--out-public <file_path>] [--out-private <file_path>] [--iv <init vector>] [--base64] [--rsa] [--out <file_path>]" << std::endl;
 }
 
 void displayVersion()
 {
-    std::cout << "Ripe v" << RIPE_VERSION << std::endl << std::endl << "Ripe is 256-bit security tool (https://github.com/muflihun/ripe)" << std::endl;
+    std::cout << "Ripe v" << RIPE_VERSION << std::endl << std::endl << "Ripe is 256-bit security tool (http://muflihun.com)" << std::endl;
 }
 
 void encrypt(std::string& data, const std::string& key, const std::string& clientId, const std::string& outputFile)

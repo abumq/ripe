@@ -9,6 +9,7 @@ set (RIPE_VERSION "1.0")
 set (RIPE_SOVERSION "1.0")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
+add_definitions (-DELPP_NO_LOG_TO_FILE)
 
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
@@ -97,7 +98,7 @@ target_link_libraries(ripe
 )
 
 target_compile_definitions(ripe PRIVATE
-    ELPP_DEFAULT_LOG_FILE="/tmp/logs/ripe.log"
+    ELPP_NO_DEFAULT_LOG_FILE
     ELPP_DEFAULT_LOGGING_FLAGS=4096
 )
 install (TARGETS ripe DESTINATION lib)
@@ -137,7 +138,7 @@ if (test)
 
     target_compile_definitions(ripe-unit-tests PUBLIC
         ELPP_FEATURE_ALL
-        ELPP_DEFAULT_LOG_FILE="/tmp/logs/ripe_unit_tests.log"
+        ELPP_DEFAULT_LOG_FILE="logs/ripe-unit-test.log"
         ELPP_DEFAULT_LOGGING_FLAGS=4096
     )
 
