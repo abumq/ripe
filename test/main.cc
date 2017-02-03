@@ -1,6 +1,4 @@
 #include "test.h"
-#include "ConfigurationTest.h"
-#include "UtilsTest.h"
 #include "RipeTest.h"
 
 INITIALIZE_EASYLOGGINGPP

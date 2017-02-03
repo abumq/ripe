@@ -8,8 +8,8 @@
 #include "test.h"
 #include "include/Ripe.h"
 
-using namespace residue;
-using namespace residue::crypto;
+using namespace ripe;
+using namespace ripe::crypto;
 
 static const TestData base64Data = {
     {"cGxhaW4gdGV4dA==", "plain text"},
