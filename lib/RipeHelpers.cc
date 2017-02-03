@@ -17,6 +17,10 @@ std::string RipeHelpers::encryptRSA(std::string& data, const std::string& key, c
     std::stringstream ss;
     Ripe::RipeByte newData(new byte[length]);
     int newLength = Ripe::encryptStringRSA(data, key.c_str(), newData.get());
+    unsigned int maxBlockSize = Ripe::maxRSABlockSize(length);
+    if (data.size() > maxBlockSize) {
+        RLOG(WARNING) << "Data size should not exceed " << maxBlockSize << " bytes. You have " << data.size() << " bytes";
+    }
     if (newLength == -1) {
         Ripe::printLastError("Failed to encrypt");
     } else {
@@ -39,10 +43,16 @@ std::string RipeHelpers::decryptRSA(std::string& data, const std::string& key, b
     if (isBase64) {
         data = Ripe::base64Decode(data);
     }
+    int dataLength = static_cast<int>(data.size());
+
+    unsigned int maxBlockSize = Ripe::maxRSABlockSize(length);
+    if (data.size() > maxBlockSize) {
+        RLOG(WARNING) << "Data size should not exceed " << maxBlockSize << " bytes. You have " << data.size() << " bytes";
+    }
 
     std::stringstream ss;
     Ripe::RipeByte newData(new byte[length]);
-    int dataLength = static_cast<int>(data.size());
+
     int newLength = Ripe::decryptRSA(reinterpret_cast<byte*>(const_cast<char*>(data.c_str())), dataLength, key.c_str(), newData.get());
     if (newLength == -1) {
         Ripe::printLastError("Failed to decrypt");
@@ -54,10 +64,13 @@ std::string RipeHelpers::decryptRSA(std::string& data, const std::string& key, b
 
 void RipeHelpers::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length) noexcept
 {
+    RLOG(INFO) << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes";
     if (!Ripe::writeRSAKeyPair(publicFile.c_str(), privateFile.c_str(), length)) {
         RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
         Ripe::printLastError("Failed to decrypt");
+        return;
     }
+    RLOG(INFO) << "Successfully saved!";
 }
 
 std::string RipeHelpers::generateRSAKeyPair(int length) noexcept

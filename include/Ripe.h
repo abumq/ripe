@@ -57,6 +57,11 @@ public:
 
     static std::string prepareData(const char* data, std::size_t length, const char* key, int keySize, const char* clientId = "") noexcept;
 
+    static inline unsigned int maxRSABlockSize(std::size_t keySize)
+    {
+        return ((keySize - 384) / 8) + 7;
+    }
+
     //
     // Base64
     //
