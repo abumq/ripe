@@ -8,9 +8,6 @@
 #include "test.h"
 #include "include/Ripe.h"
 
-using namespace ripe;
-using namespace ripe::crypto;
-
 static const TestData base64Data = {
     {"cGxhaW4gdGV4dA==", "plain text"},
     {"cXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nIFFVSUNLIEJST1dOIEZPWCBKVU1QUyBPVkVSIFRIRSBMQVpZIERPRw==", "quick brown fox jumps over the lazy dog QUICK BROWN FOX JUMPS OVER THE LAZY DOG"}
