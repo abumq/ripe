@@ -17,11 +17,11 @@ std::string RipeHelpers::encryptRSA(std::string& data, const std::string& key, c
     std::stringstream ss;
     Ripe::RipeByte newData(new byte[length]);
     int newLength = Ripe::encryptStringRSA(data, key.c_str(), newData.get());
-    unsigned int maxBlockSize = Ripe::maxRSABlockSize(length);
-    if (data.size() > maxBlockSize) {
-        RLOG(WARNING) << "Data size should not exceed " << maxBlockSize << " bytes. You have " << data.size() << " bytes";
-    }
     if (newLength == -1) {
+        unsigned int maxBlockSize = Ripe::maxRSABlockSize(length);
+        if (data.size() > maxBlockSize) {
+            RLOG(FATAL) << "Data size should not exceed " << maxBlockSize << " bytes. You have " << data.size() << " bytes";
+        }
         Ripe::printLastError("Failed to encrypt");
     } else {
         std::string encrypted = Ripe::base64Encode(newData.get(), newLength);
@@ -45,16 +45,17 @@ std::string RipeHelpers::decryptRSA(std::string& data, const std::string& key, b
     }
     int dataLength = static_cast<int>(data.size());
 
-    unsigned int maxBlockSize = Ripe::maxRSABlockSize(length);
-    if (data.size() > maxBlockSize) {
-        RLOG(WARNING) << "Data size should not exceed " << maxBlockSize << " bytes. You have " << data.size() << " bytes";
-    }
-
     std::stringstream ss;
     Ripe::RipeByte newData(new byte[length]);
 
     int newLength = Ripe::decryptRSA(reinterpret_cast<byte*>(const_cast<char*>(data.c_str())), dataLength, key.c_str(), newData.get());
     if (newLength == -1) {
+
+        unsigned int maxBlockSize = Ripe::maxRSABlockSize(length);
+        if (data.size() > maxBlockSize) {
+            RLOG(FATAL) << "Data size should not exceed " << maxBlockSize << " bytes. You have " << data.size() << " bytes";
+        }
+
         Ripe::printLastError("Failed to decrypt");
     } else {
         ss << newData.get();
