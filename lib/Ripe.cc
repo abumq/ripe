@@ -17,8 +17,6 @@
 
 INITIALIZE_EASYLOGGINGPP
 
-using namespace ripe::crypto;
-
 const std::string Ripe::BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const int Ripe::RSA_PADDING = RSA_PKCS1_PADDING;
 const int Ripe::BITS_PER_BYTE = 8;
@@ -319,13 +317,14 @@ std::string Ripe::encryptAES(const char* buffer, std::size_t length, const char*
     AES_KEY encryptKey;
     AES_set_encrypt_key(reinterpret_cast<const byte*>(normalizedKey.data()), 256, &encryptKey);
 
-    byte encryptedBuffer[2048] = {0};
-    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), encryptedBuffer, length, &encryptKey, ivArr, AES_ENCRYPT);
+    RipeByte encryptedBuffer(new byte[length]);
+    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), encryptedBuffer.get(), length, &encryptKey, ivArr, AES_ENCRYPT);
     if (length % Ripe::AES_BSIZE != 0) {
         // Round up the length of encrypted buffer to AES_BLOCK_SIZE multiple
         length = ((length / Ripe::AES_BSIZE) + 1) * Ripe::AES_BSIZE;
     }
-    return std::string(reinterpret_cast<const char *>(encryptedBuffer), length);
+    std::string result = std::string(reinterpret_cast<const char *>(encryptedBuffer.get()), length);
+    return result;
 }
 
 std::string Ripe::decryptAES(const char* buffer, size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv) noexcept
@@ -337,9 +336,10 @@ std::string Ripe::decryptAES(const char* buffer, size_t length, const char* key,
     AES_KEY decryptKey;
     AES_set_decrypt_key(reinterpret_cast<const byte*>(normalizedKey.data()), 256, &decryptKey);
 
-    byte decryptedBuffer[2048] = {0};
-    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), decryptedBuffer, length, &decryptKey, ivArr, AES_DECRYPT);
-    return std::string(reinterpret_cast<const char *>(decryptedBuffer));
+    RipeByte decryptedBuffer(new byte[length]);
+    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), decryptedBuffer.get(), length, &decryptKey, ivArr, AES_DECRYPT);
+    std::string result = std::string(reinterpret_cast<const char *>(decryptedBuffer.get()));
+    return result;
 }
 
 std::string Ripe::prepareData(const char* data, std::size_t length, const char* key, int keySize, const char* clientId) noexcept

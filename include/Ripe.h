@@ -15,8 +15,6 @@
 
 using byte = unsigned char;
 
-namespace ripe {
-namespace crypto {
 class Ripe {
 public:
 
@@ -25,6 +23,7 @@ public:
     using RipeEVPKey = std::unique_ptr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
     using RipeBio = std::unique_ptr<BIO, decltype(&::BIO_free)>;
     using KeyPair = std::pair<std::string, std::string>;
+    using RipeByte = std::unique_ptr<byte, std::default_delete<byte[]>>;
 
     static const std::string BASE64_CHARS;
     static const int BITS_PER_BYTE;
@@ -100,6 +99,4 @@ private:
         return (isalnum(c) || (c == '+') || (c == '/'));
     }
 };
-}
-}
 #endif /* Ripe_h */

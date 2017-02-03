@@ -12,56 +12,56 @@
 #include <vector>
 #include "include/RipeHelpers.h"
 
-using namespace ripe::tools;
+static int LENGTH = 2048;
 
 void displayUsage()
 {
-    std::cout << "ripe [-d/-e/-g] [--in <file_path>] [--key <key>] [--in-key <file_path>] [--out-public <file_path>] [--out-private <file_path>] [--iv <init vector>] [--base64] [--rsa] [--out <file_path>]" << std::endl;
+    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length] [--out <output_file_path>]" << std::endl;
 }
 
 void displayVersion()
 {
-    std::cout << "Ripe v" << RIPE_VERSION << std::endl << std::endl << "Ripe is 256-bit security tool (http://muflihun.com)" << std::endl;
+    std::cout << "Ripe - 256-bit security tool" << std::endl << "Version: " << RIPE_VERSION << std::endl << "http://muflihun.com" << std::endl;
 }
 
-void encrypt(std::string& data, const std::string& key, const std::string& clientId, const std::string& outputFile)
+void encryptAES(std::string& data, const std::string& key, const std::string& clientId, const std::string& outputFile)
 {
-    std::cout << Ripe::encrypt(data, key, clientId, outputFile);
+    std::cout << RipeHelpers::encryptAES(data, key, clientId, outputFile);
 }
 
-void decrypt(std::string& data, const std::string& key, std::string& iv, bool isBase64)
+void decryptAES(std::string& data, const std::string& key, std::string& iv, bool isBase64)
 {
-    std::cout << Ripe::decrypt(data, key, iv, isBase64);
+    std::cout << RipeHelpers::decryptAES(data, key, iv, isBase64);
 }
 
 void encodeBase64(std::string& data)
 {
-    std::cout << Ripe::encodeBase64(data);
+    std::cout << RipeHelpers::encodeBase64(data);
 }
 
 void decodeBase64(std::string& data)
 {
-    std::cout << Ripe::decodeBase64(data);
+    std::cout << RipeHelpers::decodeBase64(data);
 }
 
 void encryptRSA(std::string& data, const std::string& key, const std::string& outputFile)
 {
-    std::cout << Ripe::encryptRSA(data, key, outputFile);
+    std::cout << RipeHelpers::encryptRSA(data, key, outputFile, LENGTH);
 }
 
 void decryptRSA(std::string& data, const std::string& key, bool isBase64)
 {
-    std::cout << Ripe::decryptRSA(data, key, isBase64);
+    std::cout << RipeHelpers::decryptRSA(data, key, isBase64, LENGTH);
 }
 
 void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile)
 {
-    Ripe::writeRSAKeyPair(publicFile, privateFile);
+    RipeHelpers::writeRSAKeyPair(publicFile, privateFile, LENGTH);
 }
 
 void generateRSAKeyPair()
 {
-    std::cout << Ripe::generateRSAKeyPair();
+    std::cout << RipeHelpers::generateRSAKeyPair(LENGTH);
 }
 
 int main(int argc, char* argv[])
@@ -104,6 +104,8 @@ int main(int argc, char* argv[])
             isRSA = true;
         } else if (arg == "--key" && i < argc) {
             key = argv[++i];
+        } else if (arg == "--length" && i < argc) {
+            LENGTH = atoi(argv[++i]);
         } else if (arg == "--out-public" && i < argc) {
             publicKeyFile = argv[++i];
         } else if (arg == "--out-private" && i < argc) {
@@ -152,7 +154,7 @@ int main(int argc, char* argv[])
             decryptRSA(data, key, isBase64);
         } else {
             // AES decrypt (base64-flexible)
-            decrypt(data, key, iv, isBase64);
+            decryptAES(data, key, iv, isBase64);
         }
     } else if (type == 2) { // Encrypt / Encode
         if (isBase64 && key.empty() && iv.empty()) {
@@ -160,7 +162,7 @@ int main(int argc, char* argv[])
         } else if (isRSA) {
             encryptRSA(data, key, outputFile);
         } else {
-            encrypt(data, key, clientId, outputFile);
+            encryptAES(data, key, clientId, outputFile);
         }
     } else if (type == 3) { // Generate
         if (isRSA) {
