@@ -1,5 +1,5 @@
 
-                 ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+                                               ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
 
 ![Ripe](https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png)
 
