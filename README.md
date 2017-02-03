@@ -1,7 +1,7 @@
 
                                        ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
 
-# Ripe
+![banner]
 
 Ripe is a 256-bit security tool.
     
@@ -178,3 +178,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
+ 
+# Donate
+Please consider donating to support this project.
+
+ [![paypal]](http://muflihun.com/support/)
+ 
+  [banner]: https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png
