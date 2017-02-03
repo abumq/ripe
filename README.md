@@ -1,6 +1,6 @@
 # Ripe
 
-Ripe is a 256-bit security tool to translate data for the server (or from the server). It is used to encrypt request before sending or decrypt the response from it.
+Ripe is a 256-bit security tool.
 
 ### Options
 
@@ -87,7 +87,7 @@ cat /tmp/output.enc | openssl rsautl -decrypt -inkey private.pem --base64
 
 ### Base64 Encoding
 
-Most requests to residue are base64 encoded, you can use following commands to encode raw data to base64 encoding
+You can use following commands to encode raw data to base64 encoding
 
 ```
 echo 'plain text' | ripe -e --base64
@@ -100,10 +100,6 @@ In order to decode you may use `-d` option instead
 ```
 echo 'cGxhaW4gdGV4dAo=' | ripe -d --base64
 ```
-
-## Manual
-
-Residue ripe is a quick tool that does not have a `man` page. Please refer to this document when needed.
 
 ## Licence
 ```
