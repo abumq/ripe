@@ -37,3 +37,4 @@ script: "make && make test && ./ripe-unit-tests"
 branches:
   only:
     - master
+
