@@ -7,6 +7,8 @@ Ripe is a 256-bit security tool.
     
 [![Build Status](https://travis-ci.org/muflihun/ripe.png?branch=master)](https://travis-ci.org/muflihun/ripe)
 
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
+
 ## Options
 
 | Option Name | Description |
@@ -151,12 +153,6 @@ In order to decode you may use `-d` option instead
 ```
 echo 'cGxhaW4gdGV4dAo=' | ripe -d --base64
 ```
-
-## Support
-
-Please consider donating to support this project.
-
- [![paypal]](http://muflihun.com/support/)
  
 ## Licence
 ```
@@ -185,5 +181,3 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
-
-  [paypal]: https://www.paypalobjects.com/en_AU/i/btn/btn_donateCC_LG.gif
