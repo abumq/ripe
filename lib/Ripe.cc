@@ -340,7 +340,9 @@ std::string Ripe::decryptAES(const char* buffer, size_t length, const char* key,
     byte* decryptedBuffer = new byte[length];
     AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), decryptedBuffer, length, &decryptKey, ivArr, AES_DECRYPT);
     std::string result = std::string(reinterpret_cast<const char *>(decryptedBuffer));
+
     delete[] decryptedBuffer;
+
     return result;
 }
 
