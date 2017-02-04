@@ -317,13 +317,14 @@ std::string Ripe::encryptAES(const char* buffer, std::size_t length, const char*
     AES_KEY encryptKey;
     AES_set_encrypt_key(reinterpret_cast<const byte*>(normalizedKey.data()), 256, &encryptKey);
 
-    RipeByte encryptedBuffer(new byte[length]);
-    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), encryptedBuffer.get(), length, &encryptKey, ivArr, AES_ENCRYPT);
+    byte* encryptedBuffer = new byte[length];
+    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), encryptedBuffer, length, &encryptKey, ivArr, AES_ENCRYPT);
     if (length % Ripe::AES_BSIZE != 0) {
         // Round up the length of encrypted buffer to AES_BLOCK_SIZE multiple
         length = ((length / Ripe::AES_BSIZE) + 1) * Ripe::AES_BSIZE;
     }
-    std::string result = std::string(reinterpret_cast<const char *>(encryptedBuffer.get()), length);
+    std::string result = std::string(reinterpret_cast<const char *>(encryptedBuffer), length);
+    delete[] encryptedBuffer;
     return result;
 }
 
@@ -336,9 +337,10 @@ std::string Ripe::decryptAES(const char* buffer, size_t length, const char* key,
     AES_KEY decryptKey;
     AES_set_decrypt_key(reinterpret_cast<const byte*>(normalizedKey.data()), 256, &decryptKey);
 
-    RipeByte decryptedBuffer(new byte[length]);
-    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), decryptedBuffer.get(), length, &decryptKey, ivArr, AES_DECRYPT);
-    std::string result = std::string(reinterpret_cast<const char *>(decryptedBuffer.get()));
+    byte* decryptedBuffer = new byte[length];
+    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), decryptedBuffer, length, &decryptKey, ivArr, AES_DECRYPT);
+    std::string result = std::string(reinterpret_cast<const char *>(decryptedBuffer));
+    delete[] decryptedBuffer;
     return result;
 }
 
