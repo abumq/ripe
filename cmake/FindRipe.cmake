@@ -7,6 +7,11 @@ find_path(RIPE_INCLUDE_DIR
         PATHS ${RIPE_PATHS}
 )
 
+find_library(RIPE_LIBRARY
+    NAMES ripe libripe
+    HINTS "${CMAKE_PREFIX_PATH}/lib"
+)
+
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(Ripe REQUIRED_VARS RIPE_INCLUDE_DIR)
