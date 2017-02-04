@@ -1,17 +1,33 @@
-echo "\nAES Encryption\n"
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AES Encryption"
+echo
 echo "plain text" | valgrind ./ripe -e --key my_key
-echo "\nAES Decryption\n"
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AES Decryption"
+echo
 echo "EM+2WPE9fXxrna+Pyb0Ycw==" | valgrind ./ripe -d --key my_key --iv 313004c475a3986d2034e77542ab1d5b --base64
-echo "\nAES Decryption (echo)\n"
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AES Decryption (echo)"
+echo
 echo "313004c475a3986d2034e77542ab1d5b:123:EM+2WPE9fXxrna+Pyb0Ycw==" | valgrind ./ripe -d --key my_key --base64
-echo "\nRSA Keypair Generation\n"
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RSA Keypair Generation"
+echo
 valgrind ./ripe -g --rsa --out-private private.pem --out-public public.pem
-echo "\nRSA Encryption\n"
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RSA Encryption"
+echo
 echo 'plain text' | valgrind ./ripe -e --rsa --in-key public.pem
-echo "\nRSA Decryption\n"
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RSA Decryption"
+echo
 valgrind ./ripe -d --rsa --in-key private.pem --in /tmp/output.enc --base64
-echo "\nBase64 Encoding\n"
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Base64 Encoding"
+echo
 echo 'plain text' | ./ripe -e --base64
-echo "\nBase64 Decoding\n"
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Base64 Decoding"
+echo
 echo \"EM+2WPE9fXxrna+Pyb0Ycw==\" | valgrind ./ripe -d --key my_key --iv 313004c475a3986d2034e77542ab1d5b --base64
-
+echo
