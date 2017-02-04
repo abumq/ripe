@@ -1,7 +1,7 @@
 
                                                ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
 
-![Ripe](https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png)
+![Ripe](https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png?)
 
 Ripe is a 256-bit security tool.
     
