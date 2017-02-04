@@ -34,7 +34,7 @@ before_install:
  - cmake -Dtest=ON -Dtravis=ON ..
  - make
 
-script: "valgrind ./ripe-unit-tests && echo 'echo \"EM+2WPE9fXxrna+Pyb0Ycw==\" | valgrind ./ripe -d --key my_key --iv 313004c475a3986d2034e77542ab1d5b --base64'"
+script: "echo 'echo \"EM+2WPE9fXxrna+Pyb0Ycw==\" | valgrind ./ripe -d --key my_key --iv 313004c475a3986d2034e77542ab1d5b --base64' && valgrind ./ripe-unit-tests --leak-check=full"
 branches:
   only:
     - master
