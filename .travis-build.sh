@@ -25,7 +25,7 @@ valgrind ./ripe -d --rsa --in-key private.pem --in /tmp/output.enc --base64
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Base64 Encoding"
 echo
-echo 'plain text' | ./ripe -e --base64
+echo 'plain text' | valgrind ./ripe -e --base64
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Base64 Decoding"
 echo
