@@ -5,7 +5,7 @@
 
 Ripe is a 256-bit security tool.
     
-[![Build Status](https://travis-ci.org/muflihun/ripe.png?branch=master)](https://travis-ci.org/muflihun/ripe)
+[![Build Status](https://img.shields.io/travis/muflihun/ripe.svg)](https://travis-ci.org/muflihun/ripe)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
@@ -29,7 +29,7 @@ Ripe is a 256-bit security tool.
 
 ### Dependencies
   * C++11 (or higher)
-  * Easylogging++ v9.91 (or higher)
+  * Easylogging++ v9.93 (or higher)
   * OpenSSL v1.0.2 (or higher)
   * [CMake Toolchains](https://cmake.org/) 2.8.12 (or higher)
  
