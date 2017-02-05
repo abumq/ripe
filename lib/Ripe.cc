@@ -81,7 +81,7 @@ bool Ripe::writeRSAKeyPair(const char* publicOutputFile, const char* privateOutp
     return false;
 }
 
-bool Ripe::getRSAString(RipeRSA& rsa, bool isPublic, char** strPtr) noexcept
+bool Ripe::getRSAString(RSA* rsa, bool isPublic, char** strPtr) noexcept
 {
     EVP_CIPHER* enc = nullptr;
     int status;
@@ -89,9 +89,9 @@ bool Ripe::getRSAString(RipeRSA& rsa, bool isPublic, char** strPtr) noexcept
     RipeBio bio = RipeBio(BIO_new(BIO_s_mem()), ::BIO_free);
 
     if (isPublic) {
-        status = PEM_write_bio_RSA_PUBKEY(bio.get(), rsa.get());
+        status = PEM_write_bio_RSA_PUBKEY(bio.get(), rsa);
     } else {
-        status = PEM_write_bio_RSAPrivateKey(bio.get(), rsa.get(), enc, nullptr, 0, nullptr, nullptr);
+        status = PEM_write_bio_RSAPrivateKey(bio.get(), rsa, enc, nullptr, 0, nullptr, nullptr);
     }
     if (status != 1) {
         RLOG(ERROR) << "Unable to write BIO to memory";
@@ -104,7 +104,7 @@ bool Ripe::getRSAString(RipeRSA& rsa, bool isPublic, char** strPtr) noexcept
     return size > 0;
 }
 
-std::pair<std::string, std::string> Ripe::generateRSAKeyPair(unsigned int length, unsigned long exponent) noexcept
+Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length, unsigned long exponent) noexcept
 {
     RipeRSA rsa(RSA_new(), ::RSA_free);
     int status;
@@ -127,11 +127,11 @@ std::pair<std::string, std::string> Ripe::generateRSAKeyPair(unsigned int length
     }
 
     char* priv = new char[length];
-    getRSAString(rsa, false, &priv);
+    getRSAString(rsa.get(), false, &priv);
     std::string privStr(priv);
     delete[] priv;
     char* pub = new char[length];
-    getRSAString(rsa, true, &pub);
+    getRSAString(rsa.get(), true, &pub);
     std::string pubStr(pub);
     delete[] pub;
     return std::make_pair(privStr, pubStr);

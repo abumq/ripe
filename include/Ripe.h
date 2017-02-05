@@ -95,7 +95,7 @@ public:
 
 private:
     static RipeRSA createRSA(byte* key, bool isPublic) noexcept;
-    static bool getRSAString(RipeRSA& rsa, bool isPublic, char** strPtr) noexcept;
+    static bool getRSAString(RSA* rsa, bool isPublic, char** strPtr) noexcept;
 
     static std::string normalizeAESKey(const char* keyBuffer, std::size_t keySize) noexcept;
 
