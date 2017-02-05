@@ -13,15 +13,15 @@ echo "313004c475a3986d2034e77542ab1d5b:123:EM+2WPE9fXxrna+Pyb0Ycw==" | valgrind 
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RSA Keypair Generation"
 echo
-valgrind --leak-check=full ./ripe -g --rsa --out-private private.pem --out-public public.pem
+valgrind ./ripe -g --rsa --out-private private.pem --out-public public.pem --leak-check=full --show-leak-kinds=all
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RSA Encryption"
 echo
-echo 'plain text' | valgrind --leak-check=full ./ripe -e --rsa --in-key public.pem --out output.enc
+echo 'plain text' | valgrind ./ripe -e --rsa --in-key public.pem --out output.enc --leak-check=full --show-leak-kinds=all
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RSA Decryption"
 echo
-valgrind --leak-check=full ./ripe -d --rsa --in-key private.pem --in output.enc --base64
+valgrind ./ripe -d --rsa --in-key private.pem --in output.enc --base64 --leak-check=full --show-leak-kinds=all
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Base64 Encoding"
 echo
