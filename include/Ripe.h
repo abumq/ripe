@@ -23,7 +23,9 @@ public:
     using RipeEVPKey = std::unique_ptr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
     using RipeBio = std::unique_ptr<BIO, decltype(&::BIO_free)>;
     using KeyPair = std::pair<std::string, std::string>;
-    using RipeByte = std::unique_ptr<byte, std::default_delete<byte[]>>;
+
+    template <typename T>
+    using RipeArray = std::unique_ptr<T, std::default_delete<T[]>>;
 
     static const std::string BASE64_CHARS;
     static const int BITS_PER_BYTE;
