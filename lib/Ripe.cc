@@ -126,11 +126,11 @@ Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length, unsigned long expone
         RLOG_IF(keyCheck == 0, ERROR) << "Failed to validate RSA key. Please check length and exponent value";
     }
 
-    std::unique_ptr<char*> priv(std::unique_ptr<char*>(new char[length]), std::default_delete<char[]>);
+    std::unique_ptr<char*> priv(new char[length], std::default_delete<char[]>);
     getRSAString(rsa.get(), false, &priv);
     std::string privStr(priv);
 
-    std::unique_ptr<char*> pub(std::unique_ptr<char*>(new char[length]), std::default_delete<char[]>);
+    std::unique_ptr<char*> pub(new char[length], std::default_delete<char[]>);
     getRSAString(rsa.get(), true, &pub);
     std::string pubStr(pub);
     return std::make_pair(privStr, pubStr);
