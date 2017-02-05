@@ -17,11 +17,11 @@ valgrind ./ripe -g --rsa --out-private private.pem --out-public public.pem
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RSA Encryption"
 echo
-echo 'plain text' | valgrind ./ripe -e --rsa --in-key public.pem
+echo 'plain text' | valgrind ./ripe -e --rsa --in-key public.pem --out output.enc
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> RSA Decryption"
 echo
-valgrind ./ripe -d --rsa --in-key private.pem --in /tmp/output.enc --base64
+valgrind ./ripe -d --rsa --in-key private.pem --in output.enc --base64
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Base64 Encoding"
 echo
