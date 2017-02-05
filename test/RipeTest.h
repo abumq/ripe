@@ -4,9 +4,9 @@
 #include <cmath>
 #include <cstring>
 #include <tuple>
-#include "easylogging++.h"
-#include "test.h"
+#include <easylogging++.h>
 #include "include/Ripe.h"
+#include "test.h"
 
 static const TestData base64Data = {
     {"cGxhaW4gdGV4dA==", "plain text"},
@@ -106,6 +106,7 @@ TEST(RipeTest, RSAKeyGeneration)
 {
     for (const auto& item : RSAData) {
         const int length = std::get<0>(item);
+        LOG(INFO) << (length / 8) << " bit keypair";
         ASSERT_TRUE(Ripe::writeRSAKeyPair(RipeTest::publicKeyFile.c_str(), RipeTest::privateKeyFile.c_str(), length)) << "Could not generate RSA key pair";
 
         // Just ensure it can be generated
