@@ -29,5 +29,5 @@ echo 'plain text' | valgrind ./ripe -e --base64
 echo
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Base64 Decoding"
 echo
-echo \"EM+2WPE9fXxrna+Pyb0Ycw==\" | valgrind ./ripe -d --key my_key --iv 313004c475a3986d2034e77542ab1d5b --base64
+echo 'cGxhaW4gdGV4dAo=' | ripe -d --base64
 echo
