@@ -7,8 +7,6 @@ Ripe is a 256-bit security tool.
     
 [![Build Status](https://img.shields.io/travis/muflihun/ripe.svg)](https://travis-ci.org/muflihun/ripe)
 
-[![Licence (MIT)](https://img.shields.io/license/muflihun/ripe.svg)](https://github.com/muflihun/ripe/blob/master/LICENSE)
-
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 ## Options
