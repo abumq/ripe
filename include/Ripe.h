@@ -10,27 +10,20 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <openssl/rsa.h>
-#include <openssl/x509.h>
 
 using byte = unsigned char;
 
 class Ripe {
 public:
-
-    using RipeBigNum = std::unique_ptr<BIGNUM, decltype(&::BN_free)>;
-    using RipeRSA = std::unique_ptr<RSA, decltype(&::RSA_free)>;
-    using RipeEVPKey = std::unique_ptr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
-    using RipeBio = std::unique_ptr<BIO, decltype(&::BIO_free)>;
-    using KeyPair = std::pair<std::string, std::string>;
-
     template <typename T>
     using RipeArray = std::unique_ptr<T, std::default_delete<T[]>>;
+    using KeyPair = std::pair<std::string, std::string>;
 
     static const std::string BASE64_CHARS;
     static const int BITS_PER_BYTE;
     static const int AES_BSIZE;
     static const int RSA_PADDING;
+    static const long RIPE_RSA_3;
 
     // Asymmetric cryptography
     static int encryptRSA(byte* data, int dataLength, byte* key, byte* destination) noexcept;
@@ -50,8 +43,8 @@ public:
         return Ripe::encryptRSA(const_cast<byte*>(reinterpret_cast<const byte*>(data)), length, const_cast<byte*>(reinterpret_cast<const byte*>(key)), destination);
     }
 
-    static bool writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length = 2048, unsigned long exponent = RSA_3) noexcept;
-    static KeyPair generateRSAKeyPair(unsigned int length = 2048, unsigned long exponent = RSA_3) noexcept;
+    static bool writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length = 2048, unsigned long exponent = RIPE_RSA_3) noexcept;
+    static KeyPair generateRSAKeyPair(unsigned int length = 2048, unsigned long exponent = RIPE_RSA_3) noexcept;
 
     static std::string convertDecryptedRSAToString(byte* decryptedData, int dataLength) noexcept;
 
@@ -96,8 +89,6 @@ public:
     static std::vector<byte> ivToVector(byte* iv) noexcept;
 
 private:
-    static RipeRSA createRSA(byte* key, bool isPublic) noexcept;
-    static bool getRSAString(RSA* rsa, bool isPublic, char** strPtr) noexcept;
 
     static std::string normalizeAESKey(const char* keyBuffer, std::size_t keySize) noexcept;
 

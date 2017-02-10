@@ -7,6 +7,8 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <openssl/rsa.h>
+#include <openssl/x509.h>
 #include <openssl/bn.h>
 #include <openssl/pem.h>
 #include <openssl/bio.h>
@@ -17,12 +19,18 @@
 
 INITIALIZE_EASYLOGGINGPP
 
+using RipeRSA = std::unique_ptr<RSA, decltype(&::RSA_free)>;
+using RipeBigNum = std::unique_ptr<BIGNUM, decltype(&::BN_free)>;
+using RipeEVPKey = std::unique_ptr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
+using RipeBio = std::unique_ptr<BIO, decltype(&::BIO_free)>;
+
 const std::string Ripe::BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const int Ripe::RSA_PADDING = RSA_PKCS1_PADDING;
 const int Ripe::BITS_PER_BYTE = 8;
 const int Ripe::AES_BSIZE = AES_BLOCK_SIZE;
+const long Ripe::RIPE_RSA_3 = RSA_3;
 
-Ripe::RipeRSA Ripe::createRSA(byte* key, bool isPublic) noexcept
+static RipeRSA createRSA(byte* key, bool isPublic) noexcept
 {
     RipeBio keybio(BIO_new_mem_buf(key, -1), ::BIO_free);
     if (keybio.get() == nullptr) {
@@ -81,7 +89,7 @@ bool Ripe::writeRSAKeyPair(const char* publicOutputFile, const char* privateOutp
     return false;
 }
 
-bool Ripe::getRSAString(RSA* rsa, bool isPublic, char** strPtr) noexcept
+static bool getRSAString(RSA* rsa, bool isPublic, char** strPtr) noexcept
 {
     EVP_CIPHER* enc = nullptr;
     int status;
@@ -140,7 +148,7 @@ Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length, unsigned long expone
 
 int Ripe::encryptRSA(byte* data, int dataLength, byte* key, byte* destination) noexcept
 {
-    Ripe::RipeRSA rsa = Ripe::createRSA(key, true);
+    RipeRSA rsa = createRSA(key, true);
     if (rsa.get() == nullptr) {
         return -1;
     }
@@ -149,7 +157,7 @@ int Ripe::encryptRSA(byte* data, int dataLength, byte* key, byte* destination) n
 
 int Ripe::decryptRSA(byte* encryptedData, int dataLength, byte* key, byte* destination) noexcept
 {
-    Ripe::RipeRSA rsa = Ripe::createRSA(key, false);
+    RipeRSA rsa = createRSA(key, false);
     if (rsa.get() == nullptr) {
         return -1;
     }
