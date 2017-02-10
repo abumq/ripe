@@ -88,6 +88,8 @@ public:
     static bool normalizeIV(std::string& iv) noexcept;
     static std::vector<byte> ivToVector(byte* iv) noexcept;
 
+    static std::string version() noexcept;
+
 private:
 
     static std::string normalizeAESKey(const char* keyBuffer, std::size_t keySize) noexcept;

@@ -2,10 +2,6 @@
 # Creates ${RIPE_INCLUDE_DIR}
 set(RIPE_PATHS ${RIPE_ROOT} $ENV{RIPE_ROOT})
 
-# Check for OpenSSL
-find_package (openssl REQUIRED)
-include_directories (${OPENSSL_INCLUDE_DIR})
-
 find_path(RIPE_INCLUDE_DIR
     Ripe.h
     RipeHelpers.h

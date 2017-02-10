@@ -372,3 +372,8 @@ std::string Ripe::prepareData(const char* data, std::size_t length, const char* 
     ss << base64Encoded;
     return ss.str();
 }
+
+static std::string version() noexcept
+{
+    return RIPE_VERSION;
+}

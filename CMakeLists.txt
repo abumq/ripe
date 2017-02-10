@@ -5,8 +5,8 @@ project(Ripe)
 option(test "Build all tests" OFF)
 option(travis "Build all tests for travis" OFF)
 
-set (RIPE_VERSION "1.0")
-set (RIPE_SOVERSION "1.0")
+set (RIPE_VERSION "1.1")
+set (RIPE_SOVERSION "1.1")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
@@ -147,7 +147,7 @@ if (test)
     target_link_libraries(ripe-unit-tests gtest gtest_main)
 
     # Extra linking for the project.
-    target_link_libraries(ripe-unit-tests ripe) 
+    target_link_libraries(ripe-unit-tests ripe)
 
     add_test(NAME ripeUnitTests COMMAND ripe-unit-tests)
 endif()
