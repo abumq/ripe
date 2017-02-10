@@ -373,7 +373,7 @@ std::string Ripe::prepareData(const char* data, std::size_t length, const char* 
     return ss.str();
 }
 
-static std::string version() noexcept
+std::string Ripe::version() noexcept
 {
     return RIPE_VERSION;
 }
