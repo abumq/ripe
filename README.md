@@ -3,7 +3,7 @@
 
 ![Ripe](https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png?)
 
-Ripe is a 256-bit security tool.
+Ripe is a 256-bit security tool. It consists of command-line tool and shared library for OpenSSL with C++ interface.
     
 [![Build Status](https://img.shields.io/travis/muflihun/ripe.svg)](https://travis-ci.org/muflihun/ripe)
 
@@ -28,10 +28,10 @@ Ripe is a 256-bit security tool.
 ## Installation
 
 ### Dependencies
-  * C++11 (or higher)
-  * Easylogging++ v9.93 (or higher)
-  * OpenSSL v1.0.2 (or higher)
-  * [CMake Toolchains](https://cmake.org/) 2.8.12 (or higher)
+  * C++11
+  * [Easylogging++ v9.93](https://github.com/muflihun/easyloggingpp)
+  * OpenSSL v1.0.2j
+  * [CMake Toolchains](https://cmake.org/) 2.8.12
  
 ### Get Code
 You can either [download code from master branch](https://github.com/muflihun/ripe/archive/master.zip) or clone it using `git`:
@@ -161,7 +161,6 @@ The MIT License (MIT)
 Copyright (c) 2017 muflihun.com
 
 http://github.com/muflihun/
-http://easylogging.muflihun.com
 http://muflihun.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
