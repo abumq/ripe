@@ -7,22 +7,22 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <openssl/aes.h>
+#include <openssl/bio.h>
+#include <openssl/bn.h>
+#include <openssl/err.h>
+#include <openssl/pem.h>
 #include <openssl/rsa.h>
 #include <openssl/x509.h>
-#include <openssl/bn.h>
-#include <openssl/pem.h>
-#include <openssl/bio.h>
-#include <openssl/err.h>
-#include <openssl/aes.h>
 #include "include/Ripe.h"
 #include "include/log.h"
 
 INITIALIZE_EASYLOGGINGPP
 
-using RipeRSA = std::unique_ptr<RSA, decltype(&::RSA_free)>;
-using RipeBigNum = std::unique_ptr<BIGNUM, decltype(&::BN_free)>;
-using RipeEVPKey = std::unique_ptr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
-using RipeBio = std::unique_ptr<BIO, decltype(&::BIO_free)>;
+using RipeRSA = Ripe::RipeCPtr<RSA, decltype(&::RSA_free)>;
+using RipeBigNum = Ripe::RipeCPtr<BIGNUM, decltype(&::BN_free)>;
+using RipeEVPKey = Ripe::RipeCPtr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
+using RipeBio = Ripe::RipeCPtr<BIO, decltype(&::BIO_free)>;
 
 const std::string Ripe::BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const int Ripe::RSA_PADDING = RSA_PKCS1_PADDING;

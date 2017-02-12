@@ -4,10 +4,10 @@
 //  Copyright © 2017 Muflihun.com. All rights reserved.
 //
 
-#include <vector>
-#include <sstream>
 #include <iomanip>
 #include <memory>
+#include <sstream>
+#include <vector>
 #include "include/RipeHelpers.h"
 #include "include/Ripe.h"
 #include "include/log.h"

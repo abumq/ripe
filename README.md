@@ -25,7 +25,7 @@ Ripe is a 256-bit security tool. It consists of command-line tool and shared lib
 | `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
 
-## Installation
+## Getting Started
 
 ### Dependencies
   * C++11
