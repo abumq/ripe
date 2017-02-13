@@ -1,5 +1,9 @@
 # Ripe
 
+## 1.1.2 / 13-02-2016
+
+* fixed; Fixed versioning
+
 ## 1.1.0 / 10-02-2016
 
 * changed; Removed references of OpenSSL from header
