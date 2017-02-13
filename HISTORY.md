@@ -3,6 +3,7 @@
 ## 1.1.2 / 13-02-2016
 
 * fixed; Fixed versioning
+* added; Documentation and website (http://labs.muflihun.com/ripe)
 
 ## 1.1.0 / 10-02-2016
 
