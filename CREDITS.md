@@ -1,8 +1,7 @@
 # Credits
 
-## Easylogging++
-### [Homepage](https://muflihun.github.io/easyloggingpp/)
-### License
+## [Easylogging++](https://muflihun.github.io/easyloggingpp/)
+#### License
 ```
 The MIT License (MIT)
 
@@ -30,9 +29,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-## OpenSSL
-### [Homepage](https://www.openssl.org)
-### License
+## [OpenSSL](https://www.openssl.org)
+#### License
 ```
 Copyright (c) 1998-2016 The OpenSSL Project.  All rights reserved.
 
@@ -85,9 +83,8 @@ This product includes cryptographic software written by Eric Young
 Hudson (tjh@cryptsoft.com)
 ```
 
-## CMake
-### [Homepage](https://cmake.org)
-### License
+## [CMake](https://cmake.org)
+#### License
 ```
 CMake - Cross Platform Makefile Generator
 Copyright 2000-2017 Kitware, Inc. and Contributors
