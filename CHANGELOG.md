@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Changed
+- Added payload length in prepare()
+
 ## [1.1.2] - 13-02-2017
 ### Fixed
 - Fixed versioning
