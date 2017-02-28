@@ -370,7 +370,10 @@ std::string Ripe::prepareData(const char* data, std::size_t length, const char* 
         ss << clientId << ":";
     }
     ss << base64Encoded;
-    return ss.str();
+    std::stringstream fss;
+    std::string ssstr(ss.str());
+    fss << ssstr.size() << ":" << ssstr;
+    return fss.str();
 }
 
 std::string Ripe::version() noexcept
