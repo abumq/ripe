@@ -123,10 +123,9 @@ std::string RipeHelpers::decryptAES(std::string& data, const std::string& key, s
     if (ivec.empty() && isBase64) {
         // Extract IV from data
         std::size_t lengthPos = data.find_first_of(':');
-        std::size_t pos = data.find_first_of(':', lengthPos); // find second of
-        std::cout << "OUT: " << pos << std::endl;
-        if (pos == 32) {
-            ivec = data.substr(lengthPos, pos);
+        std::size_t pos = data.find_first_of(':', lengthPos + 1); // find second of
+        if (pos - lengthPos - 1 /* : */ == 32) {
+            ivec = data.substr(lengthPos + 1, pos - lengthPos - 1);
             Ripe::normalizeIV(ivec);
             data = data.substr(pos + 1);
             pos = data.find_first_of(':');
