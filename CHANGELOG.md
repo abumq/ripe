@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - Added payload length in prepare()
+- Changed decryptAES signature
 
 ## [1.1.2] - 13-02-2017
 ### Fixed

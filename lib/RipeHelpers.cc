@@ -118,14 +118,17 @@ std::string RipeHelpers::encryptAES(std::string& data, const std::string& key, c
     return ss.str();
 }
 
-std::string RipeHelpers::decryptAES(std::string& data, const std::string& key, std::string& ivec, bool isBase64) noexcept
+std::string RipeHelpers::decryptAES(std::string& data, const std::string& key, std::string& ivec, bool isBase64, bool containsLength) noexcept
 {
     if (ivec.empty() && isBase64) {
         // Extract IV from data
         std::size_t lengthPos = data.find_first_of(':');
-        std::size_t pos = data.find_first_of(':', lengthPos + 1); // find second of
-        if (pos - lengthPos - 1 /* : */ == 32) {
-            ivec = data.substr(lengthPos + 1, pos - lengthPos - 1);
+        std::size_t pos = data.find_first_of(':', containsLength ? lengthPos + 1 : 0); // find second of
+        std::size_t offset = containsLength ? lengthPos - 1 /* : */ : 0;
+        std::size_t loffset = containsLength ? lengthPos + 1 : 0;
+        std::size_t roffset = containsLength ? (pos - lengthPos - 1) : (pos + 1);
+        if (pos - offset == 32) {
+            ivec = data.substr(loffset, roffset);
             Ripe::normalizeIV(ivec);
             data = data.substr(pos + 1);
             pos = data.find_first_of(':');

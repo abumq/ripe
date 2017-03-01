@@ -22,7 +22,7 @@ public:
     /// \brief decryptAES Decrypts data using specified symmetric key.
     /// \param isBase64 If true, first base64 decoding is done on data and then decryption is processed
     ///
-    static std::string decryptAES(std::string& data, const std::string& key, std::string& iv, bool isBase64) noexcept;
+    static std::string decryptAES(std::string& data, const std::string& key, std::string& iv, bool isBase64, bool containsLength = false) noexcept;
 
     ///
     /// \brief encodeBase64 Encodes data to base64
