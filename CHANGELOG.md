@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+
+## [1.1.3] - 01-02-2017
 ### Changed
 - Added payload length in prepare()
 - Changed decryptAES signature
