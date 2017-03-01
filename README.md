@@ -28,6 +28,7 @@ Ripe is a 256-bit security tool. It consists of command-line tool and shared lib
 | `--iv`      | Initializaion vector for decription       |
 | `--rsa`      | Use RSA encryption/decryption (Must use `--in-key` with it)      |
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
+| `--length-included`   | Tells ripe the data includes length (`<length>:<DATA>`) so it needs to handle / strip it accordingly |
 | `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
 

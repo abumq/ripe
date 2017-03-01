@@ -16,7 +16,7 @@ static int LENGTH = 2048;
 
 void displayUsage()
 {
-    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length] [--out <output_file_path>]" << std::endl;
+    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length] [--out <output_file_path>] [--length-included]" << std::endl;
 }
 
 void displayVersion()
@@ -86,6 +86,7 @@ int main(int argc, char* argv[])
     std::string data;
     std::string clientId;
     bool isBase64 = false;
+    bool lengthIncluded = false;
     bool isRSA = false;
     std::string outputFile;
     bool fileArgSpecified = false;
@@ -106,6 +107,8 @@ int main(int argc, char* argv[])
             key = argv[++i];
         } else if (arg == "--length" && i < argc) {
             LENGTH = atoi(argv[++i]);
+        } else if (arg == "--length-included" && i < argc) {
+            lengthIncluded = true;
         } else if (arg == "--out-public" && i < argc) {
             publicKeyFile = argv[++i];
         } else if (arg == "--out-private" && i < argc) {
@@ -143,6 +146,10 @@ int main(int argc, char* argv[])
         data = ss.str();
         // Remove last 'new line'
         data.erase(data.size() - 1);
+    }
+
+    if (lengthIncluded) {
+        data.erase(0, data.find_first_of(':') + 1);
     }
 
     if (type == 1) { // Decrypt / Decode
