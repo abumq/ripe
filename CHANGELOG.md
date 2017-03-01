@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.1.4] - 01-02-2017
+### Changed
+- Removed length stuffs from decryptAES
+
 ## [1.1.3] - 01-02-2017
 ### Changed
 - Added payload length in prepare()

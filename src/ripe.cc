@@ -133,7 +133,6 @@ int main(int argc, char* argv[])
             fs.open (argv[i + 1], std::fstream::binary | std::fstream::in);
             data = std::string((std::istreambuf_iterator<char>(fs) ),
                             (std::istreambuf_iterator<char>()));
-
             fs.close();
         }
     }
