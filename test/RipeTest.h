@@ -121,7 +121,7 @@ TEST(RipeTest, AESDecryptionUsingHelpers)
         EXPECT_STRCASEEQ(expected.c_str(), decryptedUsingHelpers.c_str());
     }
 }
-/*
+
 TEST(RipeTest, RSAKeyGeneration)
 {
     for (const auto& item : RSAData) {
@@ -210,6 +210,6 @@ TEST(RipeTest, RSAOperations)
         }
 
     }
-}*/
+}
 
 #endif // RIPE_TEST_H
