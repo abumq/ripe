@@ -84,13 +84,11 @@ TEST(RipeTest, AESEncryption)
         TIMED_BLOCK(timer, "AES Encryption & Decryption") {
             std::string encrypted = Ripe::encryptAES(testData.c_str(), testKey, iv);
             ASSERT_EQ(encrypted.size(), Ripe::expectedAESCipherLength(testData.size()));
-            std::string ivStr = Ripe::vecToString(iv);
-            Ripe::normalizeIV(ivStr);
             LOG(INFO) << "Test: " << testCase;
-            LOG(INFO) << "IV: " << ivStr;
             LOG(INFO) << "Cipher Length: " << encrypted.length() << std::endl;
             EXPECT_STRCASEEQ(testData.c_str(), std::string(Ripe::decryptAES(encrypted.c_str(), testKey, iv)).c_str()) << testCase;
             std::string b64 = Ripe::base64Encode(encrypted);
+            std::string ivStr = Ripe::vecToString(iv);
             EXPECT_EQ(testData, RipeHelpers::decryptAES(b64, testKey, ivStr, true)) << testCase << " USING Base64 Encoded and RipeHelpers";
         }
     }
