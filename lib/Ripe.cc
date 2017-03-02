@@ -18,7 +18,6 @@
 #include <cryptopp/osrng.h>
 #include <cryptopp/base64.h>
 #include <cryptopp/modes.h>
-#include <cryptopp/hex.h>
 
 #include "include/Ripe.h"
 #include "include/log.h"
