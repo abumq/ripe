@@ -15,21 +15,15 @@ static const TestData base64Data = {
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string>> AESData = {
-    std::make_tuple("128-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "71997e8f17d7cdb111398cb3bef4a424"),/*
-    std::make_tuple("256-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "qciCyzOu0PLrZBx4EQZ886aA9Ouv819F"),
-    std::make_tuple("256-bit key (Token JSON)", "{\"logger_id\":\"muflihun\",\"token\":\"123456789\"}", "qciCyzOu0PLrZBx4EQZ886aA9Ouv819F"),
-    std::make_tuple("256-bit key (Log JSON)", "{\"token\":\"03682182\",\"datetime\":1484812901665,\"logger\":\"muflihun\",\"msg\":\"This is debug message\",\"file\":\"index.html\",\"line\":857,\"app\":\"Muflihun.com\",\"level\":4}", "qciCyzOu0PLrZBx4EQZ886aA9Ouv819F"),*/
+    std::make_tuple("128-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "71997e8f17d7cdb111398cb3bef4a424"),
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionData = {
-    std::make_tuple("M3XXqMSxg2SFLYZ5EL5LFQ==", "plain text", "test_key", "4daeb83d4ecf563d834d1b483ebcb0d3"),
-    std::make_tuple("9c5SiZyGWiNXM19geI3JsF0rvrcOc55R16WuCKIQwtVIuYkI/dB971ByqMUCO1/a", "{\"logger_id\":\"sample-app\",\"access_code\":\"a2dcb\"}", "irPqmuOEhjxGVVOMjIMNFgUSDwYtvhvh", "b3a24f41809d8df3dad54958f5745ef6"),
+    std::make_tuple("VgUNMJr88rHn4vgumKRj0w==", "plain text", "71997e8f17d7cdb111398cb3bef4a424", "47be00dcde88c3084ae9e0a21f89cb81"),
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionDataUsingHelpers = {
-    std::make_tuple("M3XXqMSxg2SFLYZ5EL5LFQ==", "plain text", "test_key", "4daeb83d4ecf563d834d1b483ebcb0d3"),
-    std::make_tuple("9c5SiZyGWiNXM19geI3JsF0rvrcOc55R16WuCKIQwtVIuYkI/dB971ByqMUCO1/a", "{\"logger_id\":\"sample-app\",\"access_code\":\"a2dcb\"}", "irPqmuOEhjxGVVOMjIMNFgUSDwYtvhvh", "b3a24f41809d8df3dad54958f5745ef6"),
-    std::make_tuple("b3a24f41809d8df3dad54958f5745ef6:9c5SiZyGWiNXM19geI3JsF0rvrcOc55R16WuCKIQwtVIuYkI/dB971ByqMUCO1/a", "{\"logger_id\":\"sample-app\",\"access_code\":\"a2dcb\"}", "irPqmuOEhjxGVVOMjIMNFgUSDwYtvhvh", ""),
+    std::make_tuple("VgUNMJr88rHn4vgumKRj0w==", "plain text", "71997e8f17d7cdb111398cb3bef4a424", "47be00dcde88c3084ae9e0a21f89cb81"),
 };
 
 static const std::vector<std::tuple<int, std::string>> RSAData = {
