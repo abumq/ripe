@@ -11,12 +11,13 @@
 #include <string>
 #include <vector>
 #include "include/RipeHelpers.h"
+#include "include/Ripe.h"
 
 static int LENGTH = 2048;
 
 void displayUsage()
 {
-    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length] [--out <output_file_path>] [--length-included]" << std::endl;
+    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length] [--out <output_file_path>] [--length-included] [--aes-key <key_length>]" << std::endl;
 }
 
 void displayVersion()
@@ -32,6 +33,15 @@ void encryptAES(std::string& data, const std::string& key, const std::string& cl
 void decryptAES(std::string& data, const std::string& key, std::string& iv, bool isBase64)
 {
     std::cout << RipeHelpers::decryptAES(data, key, iv, isBase64);
+}
+
+void generateAESKey(int length)
+{
+    if (length == 0) {
+        std::cout << "Invalid length!" << std::endl;
+        return;
+    }
+    std::cout << Ripe::generateNewKey(length / 8);
 }
 
 void encodeBase64(std::string& data)
@@ -83,8 +93,10 @@ int main(int argc, char* argv[])
     std::string publicKeyFile;
     std::string privateKeyFile;
     std::string iv;
+    int keyLength = 0;
     std::string data;
     std::string clientId;
+    bool isGenerateAESKey = false;
     bool isBase64 = false;
     bool lengthIncluded = false;
     bool isRSA = false;
@@ -105,6 +117,9 @@ int main(int argc, char* argv[])
             isRSA = true;
         } else if (arg == "--key" && i < argc) {
             key = argv[++i];
+        } else if (arg == "--aes-key" && i < argc) {
+            isGenerateAESKey = true;
+            keyLength = atoi(argv[++i]);
         } else if (arg == "--length" && i < argc) {
             LENGTH = atoi(argv[++i]);
         } else if (arg == "--length-included" && i < argc) {
@@ -179,7 +194,9 @@ int main(int argc, char* argv[])
             } else {
                 writeRSAKeyPair(publicKeyFile, privateKeyFile);
             }
-        } else {
+        } else if (isGenerateAESKey) {
+            generateAESKey(keyLength);
+        }else {
             std::cout << "ERROR: Please provide method (you probably forgot '--rsa')" << std::endl;
         }
     } else {

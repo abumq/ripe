@@ -23,6 +23,7 @@ Ripe is a 256-bit security tool. It consists of command-line tool and shared lib
 | `-g`        | Generate key |
 | `-e`        | Encrypt the data |
 | `-d`        | Decrypt the data |
+| `--aes-key` | Generate AES key (requires `-g`) |
 | `--key`     | Symmetric key for encryption / decryption |
 | `--in-key`     | Symmetric key for encryption / decryption file path |
 | `--iv`      | Initializaion vector for decription       |
@@ -107,6 +108,13 @@ You can also provide filename, e.g,
 OR
 
 `echo 47be00dcde88c3084ae9e0a21f89cb81:VgUNMJr88rHn4vgumKRj0w== |  ripe -d --key 71997e8f17d7cdb111398cb3bef4a424 --base64`
+
+### Generate AES Key
+Following command will generate 128-bit AES key
+
+```
+ripe -g --aes-key 128
+```
 
 ### Generate RSA Key
 
