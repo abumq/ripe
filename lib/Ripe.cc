@@ -14,6 +14,9 @@
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
 #include <openssl/x509.h>
+
+#include <cryptopp/base64.h>
+
 #include "include/Ripe.h"
 #include "include/log.h"
 
@@ -29,6 +32,8 @@ const int Ripe::RSA_PADDING = RSA_PKCS1_PADDING;
 const int Ripe::BITS_PER_BYTE = 8;
 const int Ripe::AES_BSIZE = AES_BLOCK_SIZE;
 const long Ripe::RIPE_RSA_3 = RSA_3;
+
+using namespace CryptoPP;
 
 static RipeRSA createRSA(byte* key, bool isPublic) noexcept
 {
@@ -184,6 +189,7 @@ void Ripe::printLastError(const char* name) noexcept
 }
 
 std::string Ripe::base64Encode(const byte* input, std::size_t length) noexcept {
+    /*
     std::string ret;
     unsigned int i = 0;
     unsigned int j = 0;
@@ -226,8 +232,29 @@ std::string Ripe::base64Encode(const byte* input, std::size_t length) noexcept {
 
     }
 
-    return ret;
+    return ret;*/
+    std::string encoded;
+    Base64Encoder encoder;
+    encoder.Put(input, length);
+    encoder.MessageEnd();
+    word64 size = encoder.MaxRetrievable();
+    if (size) {
+        encoded.resize(size);
+        encoder.Get(reinterpret_cast<byte*>(const_cast<char*>(encoded.data())), encoded.size());
+        auto replaceAll = [](std::string& str, const std::string& replaceWhat,
+                                     const std::string& replaceWith) {
+          if (replaceWhat == replaceWith)
+            return str;
+          std::size_t foundAt = std::string::npos;
+          while ((foundAt = str.find(replaceWhat, foundAt + 1)) != std::string::npos) {
+            str.replace(foundAt, replaceWhat.length(), replaceWith);
+          }
+          return str;
+        };
+        replaceAll(encoded, "\n", "");
+    }
 
+    return encoded;
 }
 
 std::string Ripe::base64Decode(const std::string& base64Encoded) noexcept {

@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changed
 - Changed `decryptAES` to use const ref instead of changing original data
+- Start to move to Crypto++
 
 ## [1.1.4] - 01-02-2017
 ### Changed

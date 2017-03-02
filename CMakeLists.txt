@@ -59,6 +59,10 @@ endif()
 find_package (openssl REQUIRED)
 include_directories (${OPENSSL_INCLUDE_DIR})
 
+# Check for cryptopp
+find_package(CryptoPP REQUIRED)
+include_directories (${CRYPTOPP_INCLUDE_DIRS})
+
 # Check for Easylogging++
 find_package(EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
@@ -95,6 +99,7 @@ set_target_properties(ripe PROPERTIES
 )
 target_link_libraries(ripe
     ${OPENSSL_LIBRARIES}
+    ${CRYPTOPP_LIBRARIES}
 )
 
 target_compile_definitions(ripe PRIVATE

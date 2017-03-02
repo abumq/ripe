@@ -78,7 +78,7 @@ TEST(RipeTest, Base64Decode)
         ASSERT_EQ(item.second, decoded);
     }
 }
-
+/*
 TEST(RipeTest, AESEncryption)
 {
     for (const auto& item : AESData) {
@@ -213,6 +213,6 @@ TEST(RipeTest, RSAOperations)
         }
 
     }
-}
+}*/
 
 #endif // RIPE_TEST_H
