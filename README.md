@@ -3,7 +3,7 @@
 
 ![Ripe](https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png?)
 
-Ripe is a 256-bit security tool. It consists of command-line tool and shared library for OpenSSL with C++ interface.
+Ripe is a 256-bit security tool. It consists of command-line tool and C++ API for cryptography.
     
 [![Build Status](https://img.shields.io/travis/muflihun/ripe.svg)](https://travis-ci.org/muflihun/ripe)
 
@@ -86,36 +86,43 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 
 Following command will encrypt `sample.json` file to be ready to send to the server.
 
-`echo "plain text" | ripe -e --key 71997e8f17d7cdb111398cb3bef4a424`
+`echo "plain text" | ripe -e --key B1C8BFB9DA2D4FB054FE73047AE700BC`
 
 You can specify binary file as destination that will save only encrypted data, e.g,
 
-`echo "plain text" | ripe -e --key 71997e8f17d7cdb111398cb3bef4a424 --out sample.enc`
+`echo "plain text" | ripe -e --key B1C8BFB9DA2D4FB054FE73047AE700BC --out sample.enc`
 
 Above command will provide you with IV that you can use to decrypt
 
-Please note: If you do not provide `--out`, the output will base64 and it will have three parts. `{LENGTH}:{IV}:{Client_ID}:{Base64_Encoded_Encrypted_Data}`.
+Please note: If you do not provide `--out`, the output will base64 and it will have four parts. `{LENGTH}:{IV}:{Client_ID}:{Base64_Encoded_Encrypted_Data}`.
 
 ### Decryption (AES)
 
-Following command will decrypt `VgUNMJr88rHn4vgumKRj0w==` (`plain text`) that was supposedly encrypted using same key and init vector.
+Following command will decrypt `hkz20HKQA491wZqbEctxCA==` (`plain text`) that was supposedly encrypted using same key and init vector.
 
-`echo "VgUNMJr88rHn4vgumKRj0w==" | ripe -d --key 71997e8f17d7cdb111398cb3bef4a424 --iv 47be00dcde88c3084ae9e0a21f89cb81 --base64 --length-included`
+`echo "hkz20HKQA491wZqbEctxCA==" | ripe -d --key B1C8BFB9DA2D4FB054FE73047AE700BC --iv 88505d29e8f56bbd7c9e1408f4f42240 --base64`
 
 You can also provide filename, e.g,
 
-`ripe -d --key 71997e8f17d7cdb111398cb3bef4a424 --in sample.enc --iv 47be00dcde88c3084ae9e0a21f89cb81`
+`ripe -d --key B1C8BFB9DA2D4FB054FE73047AE700BC --in sample.enc --iv 88505d29e8f56bbd7c9e1408f4f42240`
 
 OR
 
-`echo 47be00dcde88c3084ae9e0a21f89cb81:VgUNMJr88rHn4vgumKRj0w== |  ripe -d --key 71997e8f17d7cdb111398cb3bef4a424 --base64`
+`echo 88505d29e8f56bbd7c9e1408f4f42240:hkz20HKQA491wZqbEctxCA== | ripe -d --key B1C8BFB9DA2D4FB054FE73047AE700BC --base64`
 
 ### Generate AES Key
 Following command will generate 128-bit AES key
 
 ```
-ripe -g --aes 128
+ripe -g --aes 256
 ```
+
+Alternatively you can do
+```
+ripe -g --aes --length 256
+```
+
+Valid keys sizes: `128-bit`, `192-bit`, `256-bit`
 
 ### Generate RSA Key
 
@@ -175,7 +182,7 @@ echo 'cGxhaW4gdGV4dAo=' | ripe -d --base64
 ```
 The MIT License (MIT)
 
-Copyright (c) 2017 muflihun.com
+Copyright (c) 2017 Muflihun Labs
 
 http://github.com/muflihun/
 http://muflihun.com

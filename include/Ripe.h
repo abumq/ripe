@@ -7,58 +7,111 @@
 #ifndef Ripe_h
 #define Ripe_h
 
-#include <memory>
-#include <string>
-#include <vector>
-
-using byte = unsigned char;
+#include "RipeCrypto.h"
 
 ///
-/// \brief The Ripe class contains wrapper functions for OpenSSL that are memory-leak safe.
-/// User does not need to have OpenSSL installed in order to use pre-compiled Ripe library.
+/// \brief The RipeHelpers class contains wrapper functions for Ripe class. Please refer to it's documentation for details
 ///
 class Ripe {
 public:
-    ///
-    /// \brief Safe array using unique_ptr for ripe
-    ///
-    template <typename T>
-    using RipeArray = std::unique_ptr<T, std::default_delete<T[]>>;
+
 
     ///
-    /// \brief Safe C-pointer for ripe with custom free function
+    /// \brief Data delimiter for prepared data
+    /// \see prepareData(const char*, const std::string&, const char*)
     ///
-    template <typename T, typename T_Free>
-    using RipeCPtr = std::unique_ptr<T, T_Free>;
+    static const char DATA_DELIMITER;
 
     ///
-    /// \brief RSA Key pair
-    ///
-    using KeyPair = std::pair<std::string, std::string>;
-
-    ///
-    /// \brief BITS_PER_BYTE constant value for bits per bytes (8)
+    /// \brief Constant value for bits per bytes (8)
     ///
     static const int BITS_PER_BYTE;
 
-    ///
-    /// \brief AES_BSIZE constant value for AES block size
-    ///
-    static const int AES_BSIZE;
-
-    // Asymmetric cryptography
+    //
+    // AES
+    //
 
     ///
-    /// \brief encryptRSA Encrypts data of length = dataLength using RSA key and puts it in destination
-    /// \return The size of the encrypted data. On error -1 is returned. use printLastError(const char*) to see the error details
+    /// \brief encryptAES Encrypts data with provided symmetric key
+    /// \param outputFile Optional, if provided instead of printing it to console data is saved to file and IV is printed on console
     ///
-    static int encryptRSA(byte* data, int dataLength, byte* key, byte* destination) noexcept;
+    static std::string encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile);
 
     ///
-    /// \brief decryptRSA Decrypts encryptedData of length dataLength with RSA key and puts result in destination
-    /// \return The size of the recovered plaintext. On error -1 is returned. use printLastError(const char* name) to see the error details
+    /// \brief Helper function that takes hex key
+    /// \see encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile)
     ///
-    static int decryptRSA(byte* encryptedData, int dataLength, byte* key, byte* destination) noexcept;
+    static inline std::string encryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv)
+    {
+        return RipeCrypto::encryptAES(buffer, Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
+    }
+
+    ///
+    /// \brief decryptAES Decrypts data using specified symmetric key.
+    /// \param isBase64 If true, first base64 decoding is done on data and then decryption is processed
+    ///
+    static std::string decryptAES(const std::string& data, const std::string& hexKey, std::string& iv, bool isBase64);
+
+    ///
+    /// \brief Helper function that takes hex key
+    /// \see decryptAES(const std::string& data, const std::string& hexKey, std::string& iv, bool isBase64)
+    ///
+    static inline std::string decryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv)
+    {
+        return RipeCrypto::decryptAES(buffer, Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
+    }
+
+    ///
+    /// \brief decryptAES Helper method
+    /// \see decryptAES(const std::string& data, const std::string& hexKey, std::string& iv, bool isBase64)
+    ///
+    static inline std::string decryptAES(const char* buffer, const std::string& hexKey, byte* iv)
+    {
+        std::vector<byte> ivHex = Ripe::byteToVec(iv);
+        return Ripe::decryptAES(buffer, hexKey, ivHex);
+    }
+
+    ///
+    /// \brief base64Encode Helper method
+    /// \see base64Encode(const byte* input, std::size_t length)
+    ///
+    static inline std::string base64Encode(const std::string& binaryData)
+    {
+        return RipeCrypto::base64Encode(reinterpret_cast<byte*>(const_cast<char*>(binaryData.data())), binaryData.size());
+    }
+
+    ///
+    /// \brief base64Decode wrapper
+    ///
+    static inline std::string base64Decode(const std::string& base64Encoded)
+    {
+        return RipeCrypto::base64Decode(base64Encoded);
+    }
+
+    ///
+    /// \brief maxRSABlockSize Maximum size of RSA block with specified key size
+    ///
+    ///
+    static inline unsigned int maxRSABlockSize(std::size_t keySize)
+    {
+        return ((keySize - 384) / 8) + 7;
+    }
+    ///
+    /// \brief expectedBase64Length Returns expected base64 length
+    /// \param n Length of input (plain data)
+    ///
+    static inline std::size_t expectedBase64Length(std::size_t n) noexcept
+    {
+        return ((4 * n / 3) + 3) & ~0x03;
+    }
+
+    ///
+    /// \brief Exceptect size of AES cipher when plainDataSize size data is encrypted
+    ///
+    static inline std::size_t expectedAESCipherLength(std::size_t plainDataSize) noexcept
+    {
+        return (plainDataSize / RipeCrypto::AES_BSIZE + 1) * RipeCrypto::AES_BSIZE;
+    }
 
     ///
     /// \brief decryptRSA helper method
@@ -66,7 +119,7 @@ public:
     ///
     static inline int decryptRSA(byte* encryptedData, int dataLength, const char* key, byte* destination) noexcept
     {
-        return Ripe::decryptRSA(encryptedData, dataLength, const_cast<byte*>(reinterpret_cast<const byte*>(key)), destination);
+        return RipeCrypto::decryptRSA(encryptedData, dataLength, const_cast<byte*>(reinterpret_cast<const byte*>(key)), destination);
     }
 
     ///
@@ -84,30 +137,38 @@ public:
     ///
     static inline int encryptCStringRSA(const char* data, int length, const char* key, byte* destination) noexcept
     {
-        return Ripe::encryptRSA(const_cast<byte*>(reinterpret_cast<const byte*>(data)), length, const_cast<byte*>(reinterpret_cast<const byte*>(key)), destination);
+        return RipeCrypto::encryptRSA(const_cast<byte*>(reinterpret_cast<const byte*>(data)), length, const_cast<byte*>(reinterpret_cast<const byte*>(key)), destination);
     }
 
     ///
-    /// \brief writeRSAKeyPair Writes RSA key pair and saves private key to privateOutputFile (file path) and public key to publicOutputFile
-    /// \param length Length of the key (defaults to 256-bit [2048])
+    /// \brief encryptRSA Encrypts using RSA key
+    /// \param outputFile Optional, if provided instead of printing it to console data is saved to file
+    /// \param length Size of encryption (RSA key size)
     ///
-    static bool writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length = 2048, unsigned long exponent = RIPE_RSA_3) noexcept;
+    static std::string encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, int length = 2048) noexcept;
 
     ///
-    /// \brief generateRSAKeyPair Generate key pair and returns KeyPair, where KeyPair.first is private key and KeyPair.second is public key
-    /// \see writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length, unsigned long exponent)
+    /// \brief decryptRSA Decrypts using RSA key
+    /// \param isBase64 If true, first base64 decoding is done on data and then decryption is processed
+    /// \param length Size of encryption (RSA key size)
     ///
-    static KeyPair generateRSAKeyPair(unsigned int length = 2048, unsigned long exponent = RIPE_RSA_3) noexcept;
+    static std::string decryptRSA(std::string& data, const std::string& key, bool isBase64, int length = 2048) noexcept;
 
     ///
-    /// \brief convertDecryptedRSAToString Helper method to treat decryptedData as string adding nul-terminator at the end of dataLength
+    /// \brief Helper function that basically puts null terminator in the end of data and return it as string
     ///
     static std::string convertDecryptedRSAToString(byte* decryptedData, int dataLength) noexcept;
 
     ///
-    /// \brief printLastError Print last RSA error
+    /// \brief writeRSAKeyPair Writes RSA key pair to public and private file paths.
+    /// \param length RSA key size
     ///
-    static void printLastError(const char* name = "Error: ") noexcept;
+    static void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length = 2048) noexcept;
+
+    ///
+    /// \brief generateRSAKeyPair Generates RSA key pair and returns colon seperated base64 where first part is private key and second part is public key.
+    ///
+    static std::string generateRSAKeyPair(int length = 2048) noexcept;
 
     ///
     /// \brief prepareData Helper method to encrypt data with symmetric key and convert it in to tranferable data.
@@ -117,70 +178,36 @@ public:
     static std::string prepareData(const char* data, const std::string& hexKey, const char* clientId = "");
 
     ///
-    /// \brief maxRSABlockSize Maximum size of RSA block with specified key size
+    /// \brief Calculates expected data size. Assumed IV size = 32
+    /// \see prepareData(const char*, const std::string&, const char*)
     ///
-    ///
-    static inline unsigned int maxRSABlockSize(std::size_t keySize)
+    static std::size_t expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize = 16) noexcept
     {
-        return ((keySize - 384) / 8) + 7;
+        static const int DATA_DELIMITER_LENGTH = sizeof(DATA_DELIMITER);
+
+        std::size_t dataSize = 32 /* IV */
+                + DATA_DELIMITER_LENGTH
+                + (clientIdSize > 0 ? clientIdSize + DATA_DELIMITER_LENGTH : 0)
+                + expectedBase64Length(expectedAESCipherLength(plainDataSize));
+        unsigned int digits = 0;
+        unsigned int n = static_cast<unsigned int>(dataSize);
+        while (n) {
+            n /= 10;
+            ++digits;
+        };
+        return digits + DATA_DELIMITER_LENGTH + dataSize;
     }
 
-    ///
-    /// \brief base64Encode Encode input of length to base64 encoding
-    ///
-    static std::string base64Encode(const byte* input, std::size_t length);
 
     ///
-    /// \brief base64Encode Helper method
-    /// \see base64Encode(const byte* input, std::size_t length)
+    /// \brief Helper functino to convert string to hexdecimal e.g, khn = 6b686e
     ///
-    static inline std::string base64Encode(const std::string& binaryData)
-    {
-        return Ripe::base64Encode(reinterpret_cast<byte*>(const_cast<char*>(binaryData.data())), binaryData.size());
-    }
+    static std::string stringToHex(const std::string& str) noexcept;
 
     ///
-    /// \brief base64Decode Decode encoded base64
+    /// \brief Helper function to convert hexadecimal input to byte array e.g, 6b686e = (byte*)khn
     ///
-    static std::string base64Decode(const std::string& base64Encoded);
-
-    ///
-    /// \brief expectedBase64Length Returns expected base64 length
-    /// \param n Length of input (plain data)
-    ///
-    static inline unsigned int expectedBase64Length(unsigned int n) noexcept
-    {
-        return ((4 * n / 3) + 3) & ~0x03;
-    }
-
-    static inline unsigned int expectedAESCipherLength(std::size_t size) noexcept
-    {
-        return (size / Ripe::AES_BSIZE + 1) * Ripe::AES_BSIZE;
-    }
-
-    ///
-    /// \brief encryptAES Encrypts data of length with symmetric key of size = keySize with specified initialization vector
-    ///
-    static std::string encryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
-
-    static std::string encryptAES(const char* data, const std::string& hexKey, std::vector<byte>& iv);
-
-    ///
-    /// \brief decryptAES Decrypts data of specified length with specified key and initialization vector
-    ///
-    static std::string decryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
-
-    static std::string decryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv);
-
-    ///
-    /// \brief decryptAES Helper method
-    /// \see decryptAES(const char* data, std::size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv)
-    ///
-    static inline std::string decryptAES(const char* buffer, const std::string& hexKey, byte* iv)
-    {
-        std::vector<byte> ivHex = Ripe::byteToVec(iv);
-        return Ripe::decryptAES(buffer, hexKey, ivHex);
-    }
+    static const byte* hexToByte(const std::string& hex);
 
     ///
     /// \brief normalizeIV If IV with no space is provided e.g, <pre>67e56fee50e22a8c2ba05c0fb2932bfa:</pre> normalized IV
@@ -199,14 +226,5 @@ public:
     /// \brief version Version of Ripe library
     ///
     static std::string version() noexcept;
-
-    static std::string generateNewKey(int length);
-
-
-    static std::string stringToHex(const std::string& str) noexcept;
-    static const byte* hexToByte(const std::string& hex);
-private:
-    static const int RSA_PADDING;
-    static const long RIPE_RSA_3;
 };
-#endif /* Ripe_h */
+#endif /* RipeHelpers_h */

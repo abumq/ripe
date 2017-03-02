@@ -2,9 +2,16 @@
 
 ## [Unreleased]
 ### Changed
-- Changed `decryptAES` to use const ref instead of changing original data
-- Base64 functions using Crypto++
-- AES encryption and decryption using Crypto++
+- api; Base64 functions using Crypto++
+- api; AES encryption and decryption using Crypto++
+- api; Changed `Ripe::expectedBase64Length` to take and return `std::size_t`
+- api; Renamed `RipeHelpers` => `Ripe` and `Ripe` => `RipeCrypto`
+- tool; Replaced `--length-included` to `--clean`
+- tool; Added AES key generation using `--aes`
+### Added
+- api; `Ripe::expectedAESCipherLength`
+- api; `Ripe::expectedDataSize`
+- api; Added a lot of helpers
 
 ## [1.1.4] - 01-02-2017
 ### Changed
@@ -20,7 +27,7 @@
 - Fixed versioning
 
 ### Added
-- Documentation and website (http://labs.muflihun.com/ripe)
+- Documentation and website (https://muflihun.github.io/ripe)
 
 ## [1.1.0] - 10-02-2017
 ### Changed

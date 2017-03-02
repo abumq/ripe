@@ -6,29 +6,35 @@
 #include <tuple>
 #include <easylogging++.h>
 #include "include/Ripe.h"
-#include "include/RipeHelpers.h"
+#include "include/RipeCrypto.h"
 #include "test.h"
 
-static const TestData base64Data = {
+static const TestData Base64TestData = {
     {"cGxhaW4gdGV4dA==", "plain text"},
     {"cXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nIFFVSUNLIEJST1dOIEZPWCBKVU1QUyBPVkVSIFRIRSBMQVpZIERPRw==", "quick brown fox jumps over the lazy dog QUICK BROWN FOX JUMPS OVER THE LAZY DOG"}
 };
 
-static const std::vector<std::tuple<std::string, std::string, std::string>> AESData = {
-    std::make_tuple("128-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "784AF17957F3E7AB54B26DC7D733C263"),
-    std::make_tuple("192-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "4353383F7CD3B7BAB4317011E9A201BBBE71BCDABD1DAA5C"),
-    std::make_tuple("256-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "A72A5C822D8E7F8ACDFFF6EF1A1BE77FE9F41705EF06726148BE9D92C691AF7F"),
+static const std::vector<std::tuple<std::size_t, std::size_t, std::size_t>> DataSizeTestData = {
+    std::make_tuple(4, 16, 77),
+    std::make_tuple(4, 0, 60),
+    std::make_tuple(55, 0, 125),
+    std::make_tuple(55, 16, 142)
+};
+
+static const std::vector<std::tuple<std::size_t, std::string>> AESTestData = {
+    std::make_tuple(16, "plain text"),
+    std::make_tuple(24, "plain text"),
+    std::make_tuple(32, "plain text"),
+    std::make_tuple(16, "Quick Brown Fox Jumps Over The Lazy Dog"),
+    std::make_tuple(24, "Quick Brown Fox Jumps Over The Lazy Dog"),
+    std::make_tuple(32, "Quick Brown Fox Jumps Over The Lazy Dog"),
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionData = {
-    std::make_tuple("TsQvHoZ+2WgfoV26cZB2hQ==", "plain_text", "71997e8f17d7cdb111398cb3bef4a424", "798f1188b3943e8cf27db0ece677a4ab"),
+    std::make_tuple("hkz20HKQA491wZqbEctxCA==", "plain text", "B1C8BFB9DA2D4FB054FE73047AE700BC", "88505d29e8f56bbd7c9e1408f4f42240"),
 };
 
-static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionDataUsingHelpers = {
-    std::make_tuple("TsQvHoZ+2WgfoV26cZB2hQ==", "plain_text", "71997e8f17d7cdb111398cb3bef4a424", "798f1188b3943e8cf27db0ece677a4ab"),
-};
-
-static const std::vector<std::tuple<int, std::string>> RSAData = {
+static const std::vector<std::tuple<int, std::string>> RSATestData = {
     /*std::make_tuple(1024, "plain text"),
     std::make_tuple(1024, "Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(1024, "{plain text}"),
@@ -60,7 +66,7 @@ const std::string RipeTest::encryptedDataFile = "/tmp/ripe-unit-test-rsa-encrypt
 
 TEST(RipeTest, Base64Encode)
 {
-    for (const auto& item : base64Data) {
+    for (const auto& item : Base64TestData) {
         std::string encoded = Ripe::base64Encode(item.second);
         ASSERT_EQ(item.first, encoded);
     }
@@ -68,28 +74,49 @@ TEST(RipeTest, Base64Encode)
 
 TEST(RipeTest, Base64Decode)
 {
-    for (const auto& item : base64Data) {
-        std::string decoded = Ripe::base64Decode(item.first);
+    for (const auto& item : Base64TestData) {
+        std::size_t s = Ripe::expectedBase64Length(item.second.size());
+        ASSERT_EQ(item.first.size(), s);
+    }
+}
+
+TEST(RipeTest, ExpectedB64Size)
+{
+    for (const auto& item : Base64TestData) {
+        std::string decoded = RipeCrypto::base64Decode(item.first);
         ASSERT_EQ(item.second, decoded);
+    }
+}
+
+TEST(RipeTest, ExpectedDataSize)
+{
+    for (const auto& item : DataSizeTestData) {
+        std::size_t plainSize = std::get<0>(item);
+        std::size_t clientIdSize = std::get<1>(item);
+        std::size_t expected = std::get<2>(item);
+        ASSERT_EQ(expected, Ripe::expectedDataSize(plainSize, clientIdSize));
     }
 }
 
 TEST(RipeTest, AESEncryption)
 {
-    for (const auto& item : AESData) {
-        const std::string testCase = std::get<0>(item);
+    for (const auto& item : AESTestData) {
+        const std::size_t testKeySize = std::get<0>(item);
         const std::string testData = std::get<1>(item);
-        const std::string testKey = std::get<2>(item);
+        const std::string testKey = "6BC027B45BE1B5A912EEE837B723A5DEEE397181439986AD9B1AB307780ECC8A";//RipeCrypto::generateNewKey(testKeySize);
+        LOG(INFO) << "Test: " << testData;
+        LOG(INFO) << "Key: " << testKey;
         std::vector<byte> iv;
         TIMED_BLOCK(timer, "AES Encryption & Decryption") {
             std::string encrypted = Ripe::encryptAES(testData.c_str(), testKey, iv);
             ASSERT_EQ(encrypted.size(), Ripe::expectedAESCipherLength(testData.size()));
-            LOG(INFO) << "Test: " << testCase;
             LOG(INFO) << "Cipher Length: " << encrypted.length() << std::endl;
-            EXPECT_STRCASEEQ(testData.c_str(), std::string(Ripe::decryptAES(encrypted.c_str(), testKey, iv)).c_str()) << testCase;
+            EXPECT_STRCASEEQ(testData.c_str(), std::string(Ripe::decryptAES(encrypted.c_str(), testKey, iv)).c_str()) << (testKeySize * Ripe::BITS_PER_BYTE) << "-bit key";
             std::string b64 = Ripe::base64Encode(encrypted);
             std::string ivStr = Ripe::vecToString(iv);
-            EXPECT_EQ(testData, RipeHelpers::decryptAES(b64, testKey, ivStr, true)) << testCase << " USING Base64 Encoded and RipeHelpers";
+            LOG(INFO) << "IV: " << ivStr;
+            LOG(INFO) << "CLI Command: echo " << b64 << " | ripe -d --key " << testKey << " --iv " << ivStr << " --base64";
+            EXPECT_EQ(testData, Ripe::decryptAES(b64, testKey, ivStr, true)) << (testKeySize * Ripe::BITS_PER_BYTE) << "-bit key";
         }
     }
 }
@@ -104,35 +131,20 @@ TEST(RipeTest, AESDecryption)
         std::string encrypted = Ripe::base64Decode(data);
         Ripe::normalizeIV(ivec);
         byte* iv = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
-        std::string decrypted = std::string(Ripe::decryptAES(encrypted.c_str(), key, iv));
+        std::string decrypted = Ripe::decryptAES(encrypted.c_str(), key, iv);
         EXPECT_STRCASEEQ(expected.c_str(), decrypted.c_str());
-    }
-}
-
-TEST(RipeTest, AESDecryptionUsingHelpers)
-{
-    for (const auto& item : AESDecryptionDataUsingHelpers) {
-        const std::string data = std::get<0>(item);
-        const std::string expected = std::get<1>(item);
-        const std::string key = std::get<2>(item);
-        std::string ivec = std::get<3>(item);
-
-        std::string e(data);
-        LOG(INFO) << "AES Data (Base64): " << e << " KEY: " << key << " IV: " << ivec;
-        std::string decryptedUsingHelpers = RipeHelpers::decryptAES(e, key, ivec, true);
-        EXPECT_STRCASEEQ(expected.c_str(), decryptedUsingHelpers.c_str());
     }
 }
 
 TEST(RipeTest, RSAKeyGeneration)
 {
-    for (const auto& item : RSAData) {
+    for (const auto& item : RSATestData) {
         const int length = std::get<0>(item);
         const int lengthInBits = length / Ripe::BITS_PER_BYTE;
         std::stringstream ss;
         ss << lengthInBits << " bit keypair";
         TIMED_BLOCK(timer, ss.str()) {
-            ASSERT_TRUE(Ripe::writeRSAKeyPair(RipeTest::publicKeyFile.c_str(), RipeTest::privateKeyFile.c_str(), length)) << "Could not generate RSA key pair";
+            ASSERT_TRUE(RipeCrypto::writeRSAKeyPair(RipeTest::publicKeyFile.c_str(), RipeTest::privateKeyFile.c_str(), length)) << "Could not generate RSA key pair";
 
             // Just ensure it can be generated
             std::ifstream publicKeyStream(RipeTest::publicKeyFile);
@@ -150,7 +162,7 @@ TEST(RipeTest, RSAKeyGeneration)
 
 TEST(RipeTest, RSAOperations)
 {
-    for (const auto& item : RSAData) {
+    for (const auto& item : RSATestData) {
 
         const int length = std::get<0>(item);
         const int lengthInBits = length / Ripe::BITS_PER_BYTE;
@@ -161,7 +173,7 @@ TEST(RipeTest, RSAOperations)
             int expectedBase64Length = Ripe::expectedBase64Length(lengthInBits);
             const std::string data = std::get<1>(item);
             PERFORMANCE_CHECKPOINT_WITH_ID(timer, "generate keypair");
-            std::pair<std::string, std::string> pair = Ripe::generateRSAKeyPair(length);
+            std::pair<std::string, std::string> pair = RipeCrypto::generateRSAKeyPair(length);
             std::string privateKey = pair.first;
             std::string publicKey = pair.second;
 
@@ -172,7 +184,7 @@ TEST(RipeTest, RSAOperations)
             // Encrypt
             int encryptedLength = Ripe::encryptStringRSA(data, publicKey.c_str(), encrypted);
             ASSERT_EQ(encryptedLength, lengthInBits) << "Unable to encrypt RSA properly";
-            std::string b64 = Ripe::base64Encode(encrypted, encryptedLength);
+            std::string b64 = RipeCrypto::base64Encode(encrypted, encryptedLength);
             ASSERT_EQ(b64.size(), expectedBase64Length);
 
             PERFORMANCE_CHECKPOINT_WITH_ID(timer, "decrypt");
@@ -200,7 +212,7 @@ TEST(RipeTest, RSAOperations)
                             (std::istreambuf_iterator<char>()));
 
             // Confirm we read correct data
-            encryptedDataFromFile = Ripe::base64Decode(encryptedDataFromFile);
+            encryptedDataFromFile = RipeCrypto::base64Decode(encryptedDataFromFile);
             ASSERT_EQ(encryptedDataFromFile.size(), encryptedLength);
 
             // Decrypt file's data
