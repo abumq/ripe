@@ -34,7 +34,7 @@ before_install:
  - cmake -Dtest=ON -Dtravis=ON ..
  - make
 
-script: "../.travis-build.sh && ./ripe-unit-tests"
+script: "valgrind ./ripe-unit-tests && ../.travis-build.sh"
 branches:
   only:
     - master

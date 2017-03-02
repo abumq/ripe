@@ -234,26 +234,15 @@ std::string Ripe::base64Encode(const byte* input, std::size_t length) noexcept {
 
     return ret;*/
     std::string encoded;
-    Base64Encoder encoder;
-    encoder.Put(input, length);
-    encoder.MessageEnd();
-    word64 size = encoder.MaxRetrievable();
-    if (size) {
-        encoded.resize(size);
-        encoder.Get(reinterpret_cast<byte*>(const_cast<char*>(encoded.data())), encoded.size());
-        auto replaceAll = [](std::string& str, const std::string& replaceWhat,
-                                     const std::string& replaceWith) {
-          if (replaceWhat == replaceWith)
-            return str;
-          std::size_t foundAt = std::string::npos;
-          while ((foundAt = str.find(replaceWhat, foundAt + 1)) != std::string::npos) {
-            str.replace(foundAt, replaceWhat.length(), replaceWith);
-          }
-          return str;
-        };
-        replaceAll(encoded, "\n", "");
-    }
-
+    CryptoPP::StringSource ss(
+                input,
+                length,
+                true,
+                new CryptoPP::Base64Encoder(
+                    new CryptoPP::StringSink(encoded),
+                    false
+                    )
+                );
     return encoded;
 }
 
