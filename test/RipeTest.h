@@ -6,6 +6,7 @@
 #include <tuple>
 #include <easylogging++.h>
 #include "include/Ripe.h"
+#include "include/RipeHelpers.h"
 #include "test.h"
 
 static const TestData base64Data = {
@@ -23,6 +24,13 @@ static const std::vector<std::tuple<std::string, std::string, std::string>> AESD
 
 static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionData = {
     std::make_tuple("M3XXqMSxg2SFLYZ5EL5LFQ==", "plain text", "test_key", "4daeb83d4ecf563d834d1b483ebcb0d3"),
+    std::make_tuple("9c5SiZyGWiNXM19geI3JsF0rvrcOc55R16WuCKIQwtVIuYkI/dB971ByqMUCO1/a", "{\"logger_id\":\"sample-app\",\"access_code\":\"a2dcb\"}", "irPqmuOEhjxGVVOMjIMNFgUSDwYtvhvh", "b3a24f41809d8df3dad54958f5745ef6"),
+};
+
+static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionDataUsingHelpers = {
+    std::make_tuple("M3XXqMSxg2SFLYZ5EL5LFQ==", "plain text", "test_key", "4daeb83d4ecf563d834d1b483ebcb0d3"),
+    std::make_tuple("9c5SiZyGWiNXM19geI3JsF0rvrcOc55R16WuCKIQwtVIuYkI/dB971ByqMUCO1/a", "{\"logger_id\":\"sample-app\",\"access_code\":\"a2dcb\"}", "irPqmuOEhjxGVVOMjIMNFgUSDwYtvhvh", "b3a24f41809d8df3dad54958f5745ef6"),
+    std::make_tuple("b3a24f41809d8df3dad54958f5745ef6:9c5SiZyGWiNXM19geI3JsF0rvrcOc55R16WuCKIQwtVIuYkI/dB971ByqMUCO1/a", "{\"logger_id\":\"sample-app\",\"access_code\":\"a2dcb\"}", "irPqmuOEhjxGVVOMjIMNFgUSDwYtvhvh", ""),
 };
 
 static const std::vector<std::tuple<int, std::string>> RSAData = {
@@ -99,6 +107,21 @@ TEST(RipeTest, AESDecryption)
         byte* iv = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
         std::string decrypted = std::string(Ripe::decryptAES(encrypted.c_str(), encrypted.size(), key.c_str(), key.size(), iv));
         EXPECT_STRCASEEQ(expected.c_str(), decrypted.c_str());
+    }
+}
+
+TEST(RipeTest, AESDecryptionUsingHelpers)
+{
+    for (const auto& item : AESDecryptionDataUsingHelpers) {
+        const std::string data = std::get<0>(item);
+        const std::string expected = std::get<1>(item);
+        const std::string key = std::get<2>(item);
+        std::string ivec = std::get<3>(item);
+
+        std::string e(data);
+        LOG(INFO) << "AES Data (Base64): " << e << " KEY: " << key << " IV: " << ivec;
+        std::string decryptedUsingHelpers = RipeHelpers::decryptAES(e, key, ivec, true);
+        EXPECT_STRCASEEQ(expected.c_str(), decryptedUsingHelpers.c_str());
     }
 }
 

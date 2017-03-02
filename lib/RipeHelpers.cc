@@ -138,6 +138,7 @@ std::string RipeHelpers::decryptAES(std::string& data, const std::string& key, s
         // Condensed form needs to be normalized
         Ripe::normalizeIV(ivec);
     }
+
     byte* iv = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
 
     if (isBase64) {
