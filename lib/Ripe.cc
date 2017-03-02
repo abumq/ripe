@@ -15,12 +15,16 @@
 #include <openssl/rsa.h>
 #include <openssl/x509.h>
 
+#include <cryptopp/osrng.h>
 #include <cryptopp/base64.h>
+#include <cryptopp/modes.h>
 
 #include "include/Ripe.h"
 #include "include/log.h"
 
 INITIALIZE_EASYLOGGINGPP
+
+using namespace CryptoPP;
 
 using RipeRSA = Ripe::RipeCPtr<RSA, decltype(&::RSA_free)>;
 using RipeBigNum = Ripe::RipeCPtr<BIGNUM, decltype(&::BN_free)>;
@@ -29,10 +33,8 @@ using RipeBio = Ripe::RipeCPtr<BIO, decltype(&::BIO_free)>;
 
 const int Ripe::RSA_PADDING = RSA_PKCS1_PADDING;
 const int Ripe::BITS_PER_BYTE = 8;
-const int Ripe::AES_BSIZE = AES_BLOCK_SIZE;
+const int Ripe::AES_BSIZE = AES::BLOCKSIZE;
 const long Ripe::RIPE_RSA_3 = RSA_3;
-
-using namespace CryptoPP;
 
 static RipeRSA createRSA(byte* key, bool isPublic) noexcept
 {
@@ -222,6 +224,16 @@ bool Ripe::normalizeIV(std::string& iv) noexcept
     return false;
 }
 
+std::string Ripe::ivToString(std::vector<byte>& iv) noexcept
+{
+    std::stringstream ss;
+    ss << std::hex << std::setfill('0');
+    for (byte b : iv) {
+        ss << std::setw(2) << static_cast<unsigned int>(b);
+    }
+    return ss.str();
+}
+
 std::vector<byte> Ripe::ivToVector(byte* iv) noexcept
 {
     std::vector<byte> ivAsHex;
@@ -235,27 +247,44 @@ std::vector<byte> Ripe::ivToVector(byte* iv) noexcept
     return ivAsHex;
 }
 
+
+std::string Ripe::generateNewKey(int length) noexcept
+{
+    AutoSeededRandomPool prng;
+    SecByteBlock key(length);
+    std::size_t size = key.size();
+    prng.GenerateBlock(key, size);
+    byte* b = key.BytePtr();
+    std::stringstream ss;
+    for (std::size_t i = 0; i < size; ++i) {
+        ss << std::hex << static_cast<unsigned>(b[i]);
+    }
+    return ss.str();
+}
+
 std::string Ripe::encryptAES(const char* buffer, std::size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv) noexcept
 {
-    // Create random IV using std::rand
-    byte ivArr[Ripe::AES_BSIZE] = {0};
-    std::srand(static_cast<int>(std::time(0)));
-    std::generate(std::begin(ivArr), std::end(ivArr), std::rand);
+    AutoSeededRandomPool randomPool;
+
+    SecByteBlock keyBlock(keySize);
+    keyBlock.Assign((const byte*)key, keySize);
+
+    byte ivArr[Ripe::AES_BSIZE];
+    randomPool.GenerateBlock( ivArr, sizeof(ivArr) );
+    std::string cipher;
+
+    CBC_Mode<AES>::Encryption e;
+    e.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr );
+
+    // store for user
     iv.resize(sizeof(ivArr));
     std::copy(std::begin(ivArr), std::end(ivArr), iv.begin());
 
-    const std::string normalizedKey(Ripe::normalizeAESKey(key, keySize));
-    AES_KEY encryptKey;
-    AES_set_encrypt_key(reinterpret_cast<const byte*>(normalizedKey.data()), 256, &encryptKey);
-
-    RipeArray<byte> encryptedBuffer(new byte[length]);
-    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), encryptedBuffer.get(), length, &encryptKey, ivArr, AES_ENCRYPT);
-    if (length % Ripe::AES_BSIZE != 0) {
-        // Round up the length of encrypted buffer to AES_BLOCK_SIZE multiple
-        length = ((length / Ripe::AES_BSIZE) + 1) * Ripe::AES_BSIZE;
-    }
-    std::string result = std::string(reinterpret_cast<const char *>(encryptedBuffer.get()), length);
-    return result;
+    // The StreamTransformationFilter adds padding
+    //  as required. ECB and CBC Mode must be padded
+    //  to the block size of the cipher.
+    StringSource ss(buffer, true, new StreamTransformationFilter(e, new StringSink(cipher)));
+    return cipher;
 }
 
 std::string Ripe::decryptAES(const char* buffer, size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv) noexcept

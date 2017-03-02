@@ -15,11 +15,10 @@ static const TestData base64Data = {
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string>> AESData = {
-    std::make_tuple("64-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "F5AB6"),
-    std::make_tuple("128-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "A7C3295136EC8"),
+    std::make_tuple("128-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "71997e8f17d7cdb111398cb3bef4a424"),/*
     std::make_tuple("256-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "qciCyzOu0PLrZBx4EQZ886aA9Ouv819F"),
     std::make_tuple("256-bit key (Token JSON)", "{\"logger_id\":\"muflihun\",\"token\":\"123456789\"}", "qciCyzOu0PLrZBx4EQZ886aA9Ouv819F"),
-    std::make_tuple("256-bit key (Log JSON)", "{\"token\":\"03682182\",\"datetime\":1484812901665,\"logger\":\"muflihun\",\"msg\":\"This is debug message\",\"file\":\"index.html\",\"line\":857,\"app\":\"Muflihun.com\",\"level\":4}", "qciCyzOu0PLrZBx4EQZ886aA9Ouv819F"),
+    std::make_tuple("256-bit key (Log JSON)", "{\"token\":\"03682182\",\"datetime\":1484812901665,\"logger\":\"muflihun\",\"msg\":\"This is debug message\",\"file\":\"index.html\",\"line\":857,\"app\":\"Muflihun.com\",\"level\":4}", "qciCyzOu0PLrZBx4EQZ886aA9Ouv819F"),*/
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionData = {
@@ -78,7 +77,7 @@ TEST(RipeTest, Base64Decode)
         ASSERT_EQ(item.second, decoded);
     }
 }
-/*
+
 TEST(RipeTest, AESEncryption)
 {
     for (const auto& item : AESData) {
@@ -90,11 +89,15 @@ TEST(RipeTest, AESEncryption)
             std::string encrypted = Ripe::encryptAES(testData.c_str(), testData.size(), testKey.c_str(), testKey.size(), iv);
             int expectedBlockSize = (testData.size() / Ripe::AES_BSIZE + 1) * Ripe::AES_BSIZE;
             ASSERT_EQ(encrypted.size(), expectedBlockSize);
+
+            std::string ivStr = Ripe::ivToString(iv);
+            Ripe::normalizeIV(ivStr);
+            LOG(INFO) << "IV: " << ivStr;
             EXPECT_STRCASEEQ(testData.c_str(), std::string(Ripe::decryptAES(encrypted.c_str(), encrypted.size(), testKey.c_str(), testKey.size(), iv)).c_str()) << testCase;
         }
     }
 }
-
+/*
 TEST(RipeTest, AESDecryption)
 {
     for (const auto& item : AESDecryptionData) {

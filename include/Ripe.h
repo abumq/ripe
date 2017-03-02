@@ -179,6 +179,8 @@ public:
     ///
     static bool normalizeIV(std::string& iv) noexcept;
 
+    static std::string ivToString(std::vector<byte>& iv) noexcept;
+
     ///
     /// \brief ivToVector Converts plain (unsigned char*) IV to std::vector<byte>
     ///
@@ -189,6 +191,7 @@ public:
     ///
     static std::string version() noexcept;
 
+    static std::string generateNewKey(int length) noexcept;
 private:
     static const int RSA_PADDING;
     static const long RIPE_RSA_3;
