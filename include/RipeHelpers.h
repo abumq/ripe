@@ -16,23 +16,13 @@ public:
     /// \brief encryptAES Encrypts data with provided symmetric key
     /// \param outputFile Optional, if provided instead of printing it to console data is saved to file and IV is printed on console
     ///
-    static std::string encryptAES(std::string& data, const std::string& key, const std::string& clientId, const std::string& outputFile) noexcept;
+    static std::string encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile) noexcept;
 
     ///
     /// \brief decryptAES Decrypts data using specified symmetric key.
     /// \param isBase64 If true, first base64 decoding is done on data and then decryption is processed
     ///
-    static std::string decryptAES(const std::string& data, const std::string& key, std::string& iv, bool isBase64) noexcept;
-
-    ///
-    /// \brief encodeBase64 Encodes data to base64
-    ///
-    static std::string encodeBase64(std::string& data) noexcept;
-
-    ///
-    /// \brief decodeBase64 Decodes base64
-    ///
-    static std::string decodeBase64(std::string& data) noexcept;
+    static std::string decryptAES(const std::string& data, const std::string& hexKey, std::string& iv, bool isBase64);
 
     ///
     /// \brief encryptRSA Encrypts using RSA key

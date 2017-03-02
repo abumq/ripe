@@ -15,19 +15,21 @@ static const TestData base64Data = {
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string>> AESData = {
-    std::make_tuple("128-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "71997e8f17d7cdb111398cb3bef4a424"),
+    std::make_tuple("128-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "784AF17957F3E7AB54B26DC7D733C263"),
+    std::make_tuple("192-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "4353383F7CD3B7BAB4317011E9A201BBBE71BCDABD1DAA5C"),
+    std::make_tuple("256-bit key", "Quick Brown Fox Jumps Over The Lazy Dog", "A72A5C822D8E7F8ACDFFF6EF1A1BE77FE9F41705EF06726148BE9D92C691AF7F"),
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionData = {
-    std::make_tuple("VgUNMJr88rHn4vgumKRj0w==", "plain text", "71997e8f17d7cdb111398cb3bef4a424", "47be00dcde88c3084ae9e0a21f89cb81"),
+    std::make_tuple("TsQvHoZ+2WgfoV26cZB2hQ==", "plain_text", "71997e8f17d7cdb111398cb3bef4a424", "798f1188b3943e8cf27db0ece677a4ab"),
 };
 
 static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionDataUsingHelpers = {
-    std::make_tuple("VgUNMJr88rHn4vgumKRj0w==", "plain text", "71997e8f17d7cdb111398cb3bef4a424", "47be00dcde88c3084ae9e0a21f89cb81"),
+    std::make_tuple("TsQvHoZ+2WgfoV26cZB2hQ==", "plain_text", "71997e8f17d7cdb111398cb3bef4a424", "798f1188b3943e8cf27db0ece677a4ab"),
 };
 
 static const std::vector<std::tuple<int, std::string>> RSAData = {
-    std::make_tuple(1024, "plain text"),
+    /*std::make_tuple(1024, "plain text"),
     std::make_tuple(1024, "Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(1024, "{plain text}"),
     std::make_tuple(1024, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
@@ -41,7 +43,7 @@ static const std::vector<std::tuple<int, std::string>> RSAData = {
     std::make_tuple(4096, "Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(4096, "{plain text}"),
     std::make_tuple(4096, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(4096, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
+    std::make_tuple(4096, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),*/
 };
 
 class RipeTest : public ::testing::Test
@@ -80,14 +82,16 @@ TEST(RipeTest, AESEncryption)
         const std::string testKey = std::get<2>(item);
         std::vector<byte> iv;
         TIMED_BLOCK(timer, "AES Encryption & Decryption") {
-            std::string encrypted = Ripe::encryptAES(testData.c_str(), testData.size(), testKey.c_str(), testKey.size(), iv);
-            int expectedBlockSize = (testData.size() / Ripe::AES_BSIZE + 1) * Ripe::AES_BSIZE;
-            ASSERT_EQ(encrypted.size(), expectedBlockSize);
-
-            std::string ivStr = Ripe::ivToString(iv);
+            std::string encrypted = Ripe::encryptAES(testData.c_str(), testKey, iv);
+            ASSERT_EQ(encrypted.size(), Ripe::expectedAESCipherLength(testData.size()));
+            std::string ivStr = Ripe::vecToString(iv);
             Ripe::normalizeIV(ivStr);
+            LOG(INFO) << "Test: " << testCase;
             LOG(INFO) << "IV: " << ivStr;
-            EXPECT_STRCASEEQ(testData.c_str(), std::string(Ripe::decryptAES(encrypted.c_str(), encrypted.size(), testKey.c_str(), testKey.size(), iv)).c_str()) << testCase;
+            LOG(INFO) << "Cipher Length: " << encrypted.length() << std::endl;
+            EXPECT_STRCASEEQ(testData.c_str(), std::string(Ripe::decryptAES(encrypted.c_str(), testKey, iv)).c_str()) << testCase;
+            std::string b64 = Ripe::base64Encode(encrypted);
+            EXPECT_EQ(testData, RipeHelpers::decryptAES(b64, testKey, ivStr, true)) << testCase << " USING Base64 Encoded and RipeHelpers";
         }
     }
 }
@@ -102,7 +106,7 @@ TEST(RipeTest, AESDecryption)
         std::string encrypted = Ripe::base64Decode(data);
         Ripe::normalizeIV(ivec);
         byte* iv = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
-        std::string decrypted = std::string(Ripe::decryptAES(encrypted.c_str(), encrypted.size(), key.c_str(), key.size(), iv));
+        std::string decrypted = std::string(Ripe::decryptAES(encrypted.c_str(), key, iv));
         EXPECT_STRCASEEQ(expected.c_str(), decrypted.c_str());
     }
 }

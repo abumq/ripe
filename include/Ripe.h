@@ -114,7 +114,7 @@ public:
     /// \param clientId Extra text in between representing client ID (leave empty if you don't need it)
     /// \return Base64 format of encrypted data with format: <pre>[IV]:[<Client_ID>:]:[Base64 Data]</pre>
     ///
-    static std::string prepareData(const char* data, std::size_t length, const char* key, int keySize, const char* clientId = "") noexcept;
+    static std::string prepareData(const char* data, const std::string& hexKey, const char* clientId = "") noexcept;
 
     ///
     /// \brief maxRSABlockSize Maximum size of RSA block with specified key size
@@ -153,24 +153,33 @@ public:
         return ((4 * n / 3) + 3) & ~0x03;
     }
 
+    static inline unsigned int expectedAESCipherLength(std::size_t size) noexcept
+    {
+        return (size / Ripe::AES_BSIZE + 1) * Ripe::AES_BSIZE;
+    }
+
     ///
     /// \brief encryptAES Encrypts data of length with symmetric key of size = keySize with specified initialization vector
     ///
-    static std::string encryptAES(const char* data, std::size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv) noexcept;
+    static std::string encryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv) noexcept;
+
+    static std::string encryptAES(const char* data, const std::string& hexKey, std::vector<byte>& iv) noexcept;
 
     ///
     /// \brief decryptAES Decrypts data of specified length with specified key and initialization vector
     ///
-    static std::string decryptAES(const char* data, std::size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv) noexcept;
+    static std::string decryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
+
+    static std::string decryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv);
 
     ///
     /// \brief decryptAES Helper method
     /// \see decryptAES(const char* data, std::size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv)
     ///
-    static inline std::string decryptAES(const char* buffer, std::size_t length, const char* key, std::size_t keySize, byte* iv) noexcept
+    static inline std::string decryptAES(const char* buffer, const std::string& hexKey, byte* iv)
     {
-        std::vector<byte> ivHex = Ripe::ivToVector(iv);
-        return Ripe::decryptAES(buffer, length, key, keySize, ivHex);
+        std::vector<byte> ivHex = Ripe::byteToVec(iv);
+        return Ripe::decryptAES(buffer, hexKey, ivHex);
     }
 
     ///
@@ -179,12 +188,12 @@ public:
     ///
     static bool normalizeIV(std::string& iv) noexcept;
 
-    static std::string ivToString(std::vector<byte>& iv) noexcept;
+    static std::string vecToString(const std::vector<byte>& iv) noexcept;
 
     ///
     /// \brief ivToVector Converts plain (unsigned char*) IV to std::vector<byte>
     ///
-    static std::vector<byte> ivToVector(byte* iv) noexcept;
+    static std::vector<byte> byteToVec(const byte* iv) noexcept;
 
     ///
     /// \brief version Version of Ripe library
@@ -192,10 +201,12 @@ public:
     static std::string version() noexcept;
 
     static std::string generateNewKey(int length) noexcept;
+
+
+    static std::string stringToHex(const std::string& str) noexcept;
+    static const byte* hexToByte(const std::string& hex) noexcept;
 private:
     static const int RSA_PADDING;
     static const long RIPE_RSA_3;
-
-    static std::string normalizeAESKey(const char* keyBuffer, std::size_t keySize) noexcept;
 };
 #endif /* Ripe_h */

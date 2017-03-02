@@ -88,22 +88,12 @@ std::string RipeHelpers::generateRSAKeyPair(int length) noexcept
     return std::string(Ripe::base64Encode(pair.first) + ":" + Ripe::base64Encode(pair.second));
 }
 
-std::string RipeHelpers::encodeBase64(std::string& data) noexcept
-{
-    return Ripe::base64Encode(data);
-}
-
-std::string RipeHelpers::decodeBase64(std::string& data) noexcept
-{
-    return Ripe::base64Decode(data);
-}
-
-std::string RipeHelpers::encryptAES(std::string& data, const std::string& key, const std::string& clientId, const std::string& outputFile) noexcept
+std::string RipeHelpers::encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile) noexcept
 {
     std::stringstream ss;
     if (!outputFile.empty()) {
         std::vector<byte> iv;
-        std::string encrypted = Ripe::encryptAES(data.data(), data.size(), key.data(), key.size(), iv);
+        std::string encrypted = Ripe::encryptAES(data.data(), hexKey, iv);
         std::ofstream out(outputFile);
         out << encrypted.data();
         out.close();
@@ -113,12 +103,12 @@ std::string RipeHelpers::encryptAES(std::string& data, const std::string& key, c
         }
         ss << std::endl;
     } else {
-        ss << Ripe::prepareData(data.data(), data.size(), key.data(), key.size(), clientId.c_str());
+        ss << Ripe::prepareData(data.data(), hexKey, clientId.c_str());
     }
     return ss.str();
 }
 
-std::string RipeHelpers::decryptAES(const std::string& d, const std::string& key, std::string& ivec, bool isBase64) noexcept
+std::string RipeHelpers::decryptAES(const std::string& d, const std::string& hexKey, std::string& ivec, bool isBase64)
 {
     std::string data(d);
     if (ivec.empty() && isBase64) {
@@ -146,5 +136,5 @@ std::string RipeHelpers::decryptAES(const std::string& d, const std::string& key
         data = Ripe::base64Decode(data);
     }
 
-    return Ripe::decryptAES(data.data(), data.size(), key.data(), key.size(), iv);
+    return Ripe::decryptAES(data.data(), hexKey, iv);
 }

@@ -18,6 +18,7 @@
 #include <cryptopp/osrng.h>
 #include <cryptopp/base64.h>
 #include <cryptopp/modes.h>
+#include <cryptopp/hex.h>
 
 #include "include/Ripe.h"
 #include "include/log.h"
@@ -203,15 +204,6 @@ std::string Ripe::base64Decode(const std::string& base64Encoded) noexcept {
     return decoded;
 }
 
-std::string Ripe::normalizeAESKey(const char* keyBuffer, std::size_t keySize) noexcept
-{
-    static const char key32[32] = {0};
-    const char *const keyBufferLocal = keyBuffer;
-    std::string result(key32, 32);
-    std::copy(keyBufferLocal, keyBufferLocal + std::min(keySize, static_cast<std::size_t>(32)), result.begin());
-    return result;
-}
-
 bool Ripe::normalizeIV(std::string& iv) noexcept
 {
     if (iv.size() == 32) {
@@ -224,7 +216,7 @@ bool Ripe::normalizeIV(std::string& iv) noexcept
     return false;
 }
 
-std::string Ripe::ivToString(std::vector<byte>& iv) noexcept
+std::string Ripe::vecToString(const std::vector<byte>& iv) noexcept
 {
     std::stringstream ss;
     ss << std::hex << std::setfill('0');
@@ -234,17 +226,17 @@ std::string Ripe::ivToString(std::vector<byte>& iv) noexcept
     return ss.str();
 }
 
-std::vector<byte> Ripe::ivToVector(byte* iv) noexcept
+std::vector<byte> Ripe::byteToVec(const byte* b) noexcept
 {
-    std::vector<byte> ivAsHex;
+    std::vector<byte> hexData;
 
-    std::istringstream stream(reinterpret_cast<char*>(iv));
+    std::istringstream ss(reinterpret_cast<const char*>(b));
 
     unsigned int c;
-    while (stream >> std::hex >> c) {
-        ivAsHex.push_back(c);
+    while (ss >> std::hex >> c) {
+        hexData.push_back(c);
     }
-    return ivAsHex;
+    return hexData;
 }
 
 
@@ -254,20 +246,19 @@ std::string Ripe::generateNewKey(int length) noexcept
     SecByteBlock key(length);
     std::size_t size = key.size();
     prng.GenerateBlock(key, size);
-    byte* b = key.BytePtr();
-    std::stringstream ss;
-    for (std::size_t i = 0; i < size; ++i) {
-        ss << std::hex << static_cast<unsigned>(b[i]);
-    }
-    return ss.str();
+    std::string s;
+    HexEncoder hex(new StringSink(s));
+    hex.Put(key.data(), key.size());
+    hex.MessageEnd();
+    return s;
 }
 
-std::string Ripe::encryptAES(const char* buffer, std::size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv) noexcept
+std::string Ripe::encryptAES(const char* buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv) noexcept
 {
     AutoSeededRandomPool randomPool;
 
     SecByteBlock keyBlock(keySize);
-    keyBlock.Assign(reinterpret_cast<const byte*>(key), keySize);
+    keyBlock.Assign(key, keySize);
 
     byte ivArr[Ripe::AES_BSIZE];
     randomPool.GenerateBlock(ivArr, sizeof ivArr);
@@ -280,14 +271,45 @@ std::string Ripe::encryptAES(const char* buffer, std::size_t length, const char*
     iv.resize(sizeof ivArr);
     std::copy(std::begin(ivArr), std::end(ivArr), iv.begin());
 
-    // The StreamTransformationFilter adds padding
-    //  as required. ECB and CBC Mode must be padded
-    //  to the block size of the cipher.
-    StringSource ss(buffer, true, new StreamTransformationFilter(e, new StringSink(cipher)));
+    // The StreamTransformationFilter adds padding as required.
+    StringSource ss(buffer, true,
+                    new StreamTransformationFilter(e, new StringSink(cipher))
+                    );
     return cipher;
 }
 
-std::string Ripe::decryptAES(const char* buffer, size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv) noexcept
+std::string Ripe::encryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv) noexcept
+{
+    return encryptAES(buffer, Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
+}
+
+std::string Ripe::stringToHex(const std::string& str) noexcept
+{
+    std::stringstream ss;
+    for (auto it = str.begin(); it != str.end(); ++it) {
+        ss << std::hex << static_cast<unsigned>(*it);
+    }
+    return ss.str();
+}
+
+const byte* Ripe::hexToByte(const std::string& hex) noexcept
+{
+    std::size_t len = hex.length();
+    if (len % 2 != 0) {
+        return nullptr;
+    }
+    std::string result;
+    result.resize(len / 2);
+    for (int i = 0; i < len; i += 2) {
+        std::string pair = hex.substr(i, 2);
+        char byte = static_cast<char>(strtol(pair.c_str(), NULL, 16));
+        result[i / 2] = byte;
+    }
+
+    return reinterpret_cast<const byte*>(result.c_str());
+}
+
+std::string Ripe::decryptAES(const char* buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv)
 {
 
     std::string result;
@@ -300,14 +322,24 @@ std::string Ripe::decryptAES(const char* buffer, size_t length, const char* key,
     CBC_Mode< AES >::Decryption d;
     d.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
 
-    StringSource ss(buffer, true, new StreamTransformationFilter( d, new StringSink(result)));
+    // FIXME: This length varies sometimes
+    // std::cout << "Length " << strlen(buffer) << std::endl;
+    StringSource ss(buffer, true,
+                new StreamTransformationFilter( d, new StringSink(result))
+                );
+
     return result;
 }
 
-std::string Ripe::prepareData(const char* data, std::size_t length, const char* key, int keySize, const char* clientId) noexcept
+std::string Ripe::decryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv)
+{
+    return decryptAES(buffer, Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
+}
+
+std::string Ripe::prepareData(const char* data, const std::string& hexKey, const char* clientId) noexcept
 {
     std::vector<byte> iv;
-    std::string encrypted = Ripe::encryptAES(data, length, key, keySize, iv);
+    std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
     // Encryption Base64 encoding
     std::string base64Encoded = Ripe::base64Encode(encrypted);
 

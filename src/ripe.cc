@@ -46,12 +46,12 @@ void generateAESKey(int length)
 
 void encodeBase64(std::string& data)
 {
-    std::cout << RipeHelpers::encodeBase64(data);
+    std::cout << Ripe::base64Encode(data);
 }
 
 void decodeBase64(std::string& data)
 {
-    std::cout << RipeHelpers::decodeBase64(data);
+    std::cout << Ripe::base64Decode(data);
 }
 
 void encryptRSA(std::string& data, const std::string& key, const std::string& outputFile)
