@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
         data.erase(data.size() - 1);
     }
 
-    if (lengthIncluded) {
+    if (isBase64 && lengthIncluded) {
         data.erase(0, data.find_first_of(':') + 1);
     }
 

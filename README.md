@@ -28,7 +28,7 @@ Ripe is a 256-bit security tool. It consists of command-line tool and shared lib
 | `--iv`      | Initializaion vector for decription       |
 | `--rsa`      | Use RSA encryption/decryption (Must use `--in-key` with it)      |
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
-| `--length-included`   | Tells ripe the data includes length (`<length>:<DATA>`) so it needs to handle / strip it accordingly |
+| `--length-included`   | (Only applicable when `--base64` data provided) Tells ripe the data includes length (`<length>:<DATA>`) so it needs to handle / strip it accordingly |
 | `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
 
@@ -84,29 +84,29 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 
 Following command will encrypt `sample.json` file to be ready to send to the server.
 
-`echo "plain text" | ripe -e --key my_key`
+`echo "plain text" | ripe -e --key 71997e8f17d7cdb111398cb3bef4a424`
 
 You can specify binary file as destination that will save only encrypted data, e.g,
 
-`echo "plain text" | ripe -e --key my_key --out sample.enc`
+`echo "plain text" | ripe -e --key 71997e8f17d7cdb111398cb3bef4a424 --out sample.enc`
 
 Above command will provide you with IV that you can use to decrypt
 
-Please note: If you do not provide `--out`, the output will base64 and it will have three parts. `{IV}:{Client_ID}:{Base64_Encoded_Encrypted_Data}`.
+Please note: If you do not provide `--out`, the output will base64 and it will have three parts. `{LENGTH}:{IV}:{Client_ID}:{Base64_Encoded_Encrypted_Data}`.
 
 ### Decryption (AES)
 
-Following command will decrypt `EM+2WPE9fXxrna+Pyb0Ycw==` (`plain text`) that was supposedly encrypted using same key and init vector.
+Following command will decrypt `VgUNMJr88rHn4vgumKRj0w==` (`plain text`) that was supposedly encrypted using same key and init vector.
 
-`echo "EM+2WPE9fXxrna+Pyb0Ycw==" | ripe -d --key my_key --iv 313004c475a3986d2034e77542ab1d5b --base64`
+`echo "VgUNMJr88rHn4vgumKRj0w==" | ripe -d --key 71997e8f17d7cdb111398cb3bef4a424 --iv 47be00dcde88c3084ae9e0a21f89cb81 --base64 --length-included`
 
 You can also provide filename, e.g,
 
-`ripe -d --key my_key --in sample.enc --iv 313004c475a3986d2034e77542ab1d5b`
+`ripe -d --key 71997e8f17d7cdb111398cb3bef4a424 --in sample.enc --iv 47be00dcde88c3084ae9e0a21f89cb81`
 
 OR
 
-`echo "313004c475a3986d2034e77542ab1d5b:123:EM+2WPE9fXxrna+Pyb0Ycw==" | ripe -d --key my_key --base64`
+`echo 47be00dcde88c3084ae9e0a21f89cb81:VgUNMJr88rHn4vgumKRj0w== |  ripe -d --key 71997e8f17d7cdb111398cb3bef4a424 --base64`
 
 ### Generate RSA Key
 

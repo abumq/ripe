@@ -4,7 +4,7 @@
 ### Changed
 - Changed `decryptAES` to use const ref instead of changing original data
 - Base64 functions using Crypto++
-- AES encryption using Crypto++
+- AES encryption and decryption using Crypto++
 
 ## [1.1.4] - 01-02-2017
 ### Changed

@@ -18,6 +18,7 @@
 #include <cryptopp/osrng.h>
 #include <cryptopp/base64.h>
 #include <cryptopp/modes.h>
+#include <cryptopp/hex.h>
 
 #include "include/Ripe.h"
 #include "include/log.h"
@@ -267,17 +268,17 @@ std::string Ripe::encryptAES(const char* buffer, std::size_t length, const char*
     AutoSeededRandomPool randomPool;
 
     SecByteBlock keyBlock(keySize);
-    keyBlock.Assign((const byte*)key, keySize);
+    keyBlock.Assign(reinterpret_cast<const byte*>(key), keySize);
 
     byte ivArr[Ripe::AES_BSIZE];
-    randomPool.GenerateBlock( ivArr, sizeof(ivArr) );
+    randomPool.GenerateBlock(ivArr, sizeof ivArr);
     std::string cipher;
 
     CBC_Mode<AES>::Encryption e;
-    e.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr );
+    e.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
 
     // store for user
-    iv.resize(sizeof(ivArr));
+    iv.resize(sizeof ivArr);
     std::copy(std::begin(ivArr), std::end(ivArr), iv.begin());
 
     // The StreamTransformationFilter adds padding
@@ -289,17 +290,18 @@ std::string Ripe::encryptAES(const char* buffer, std::size_t length, const char*
 
 std::string Ripe::decryptAES(const char* buffer, size_t length, const char* key, std::size_t keySize, std::vector<byte>& iv) noexcept
 {
+
+    std::string result;
+    SecByteBlock keyBlock(keySize);
+    keyBlock.Assign((const byte*)key, keySize);
+
     byte ivArr[Ripe::AES_BSIZE] = {0};
     std::copy(iv.begin(), iv.end(), std::begin(ivArr));
 
-    const std::string normalizedKey(Ripe::normalizeAESKey(key, keySize));
-    AES_KEY decryptKey;
-    AES_set_decrypt_key(reinterpret_cast<const byte*>(normalizedKey.data()), 256, &decryptKey);
+    CBC_Mode< AES >::Decryption d;
+    d.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
 
-    RipeArray<byte> decryptedBuffer(new byte[length]);
-    AES_cbc_encrypt(reinterpret_cast<const byte*>(buffer), decryptedBuffer.get(), length, &decryptKey, ivArr, AES_DECRYPT);
-    std::string result = std::string(reinterpret_cast<const char *>(decryptedBuffer.get()));
-
+    StringSource ss(buffer, true, new StreamTransformationFilter( d, new StringSink(result)));
     return result;
 }
 
