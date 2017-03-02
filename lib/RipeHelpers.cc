@@ -88,7 +88,7 @@ std::string RipeHelpers::generateRSAKeyPair(int length) noexcept
     return std::string(Ripe::base64Encode(pair.first) + ":" + Ripe::base64Encode(pair.second));
 }
 
-std::string RipeHelpers::encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile) noexcept
+std::string RipeHelpers::encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile)
 {
     std::stringstream ss;
     if (!outputFile.empty()) {

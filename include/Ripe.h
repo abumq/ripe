@@ -112,9 +112,9 @@ public:
     ///
     /// \brief prepareData Helper method to encrypt data with symmetric key and convert it in to tranferable data.
     /// \param clientId Extra text in between representing client ID (leave empty if you don't need it)
-    /// \return Base64 format of encrypted data with format: <pre>[IV]:[<Client_ID>:]:[Base64 Data]</pre>
+    /// \return Base64 format of encrypted data with format: <pre>[LENGTH]:[IV]:[<Client_ID>:]:[Base64 Data]</pre>
     ///
-    static std::string prepareData(const char* data, const std::string& hexKey, const char* clientId = "") noexcept;
+    static std::string prepareData(const char* data, const std::string& hexKey, const char* clientId = "");
 
     ///
     /// \brief maxRSABlockSize Maximum size of RSA block with specified key size
@@ -128,13 +128,13 @@ public:
     ///
     /// \brief base64Encode Encode input of length to base64 encoding
     ///
-    static std::string base64Encode(const byte* input, std::size_t length) noexcept;
+    static std::string base64Encode(const byte* input, std::size_t length);
 
     ///
     /// \brief base64Encode Helper method
     /// \see base64Encode(const byte* input, std::size_t length)
     ///
-    static inline std::string base64Encode(const std::string& binaryData) noexcept
+    static inline std::string base64Encode(const std::string& binaryData)
     {
         return Ripe::base64Encode(reinterpret_cast<byte*>(const_cast<char*>(binaryData.data())), binaryData.size());
     }
@@ -142,7 +142,7 @@ public:
     ///
     /// \brief base64Decode Decode encoded base64
     ///
-    static std::string base64Decode(const std::string& base64Encoded) noexcept;
+    static std::string base64Decode(const std::string& base64Encoded);
 
     ///
     /// \brief expectedBase64Length Returns expected base64 length
@@ -161,9 +161,9 @@ public:
     ///
     /// \brief encryptAES Encrypts data of length with symmetric key of size = keySize with specified initialization vector
     ///
-    static std::string encryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv) noexcept;
+    static std::string encryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
 
-    static std::string encryptAES(const char* data, const std::string& hexKey, std::vector<byte>& iv) noexcept;
+    static std::string encryptAES(const char* data, const std::string& hexKey, std::vector<byte>& iv);
 
     ///
     /// \brief decryptAES Decrypts data of specified length with specified key and initialization vector
@@ -200,11 +200,11 @@ public:
     ///
     static std::string version() noexcept;
 
-    static std::string generateNewKey(int length) noexcept;
+    static std::string generateNewKey(int length);
 
 
     static std::string stringToHex(const std::string& str) noexcept;
-    static const byte* hexToByte(const std::string& hex) noexcept;
+    static const byte* hexToByte(const std::string& hex);
 private:
     static const int RSA_PADDING;
     static const long RIPE_RSA_3;

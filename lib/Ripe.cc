@@ -190,14 +190,16 @@ void Ripe::printLastError(const char* name) noexcept
     RLOG(ERROR) << name << " " << errString;
 }
 
-std::string Ripe::base64Encode(const byte* input, std::size_t length) noexcept {
+std::string Ripe::base64Encode(const byte* input, std::size_t length)
+{
     std::string encoded;
     // Crypto++ has built-in smart pointer, it won't leak this memory
     StringSource ss(input, length, true, new Base64Encoder(new StringSink(encoded), false));
     return encoded;
 }
 
-std::string Ripe::base64Decode(const std::string& base64Encoded) noexcept {
+std::string Ripe::base64Decode(const std::string& base64Encoded)
+{
     std::string decoded;
     // Crypto++ has built-in smart pointer, it won't leak this memory
     StringSource ss(base64Encoded, true, new Base64Decoder(new StringSink(decoded)));
@@ -240,8 +242,11 @@ std::vector<byte> Ripe::byteToVec(const byte* b) noexcept
 }
 
 
-std::string Ripe::generateNewKey(int length) noexcept
+std::string Ripe::generateNewKey(int length)
 {
+    if (!(length == 16 || length == 24 || length == 32)) {
+        throw std::invalid_argument( "Invalid key length. Acceptable lengths are 16, 24 or 32" );
+    }
     AutoSeededRandomPool prng;
     SecByteBlock key(length);
     std::size_t size = key.size();
@@ -253,7 +258,7 @@ std::string Ripe::generateNewKey(int length) noexcept
     return s;
 }
 
-std::string Ripe::encryptAES(const char* buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv) noexcept
+std::string Ripe::encryptAES(const char* buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv)
 {
     AutoSeededRandomPool randomPool;
 
@@ -278,7 +283,7 @@ std::string Ripe::encryptAES(const char* buffer, const byte* key, std::size_t ke
     return cipher;
 }
 
-std::string Ripe::encryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv) noexcept
+std::string Ripe::encryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv)
 {
     return encryptAES(buffer, Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
 }
@@ -286,17 +291,17 @@ std::string Ripe::encryptAES(const char* buffer, const std::string& hexKey, std:
 std::string Ripe::stringToHex(const std::string& str) noexcept
 {
     std::stringstream ss;
-    for (auto it = str.begin(); it != str.end(); ++it) {
-        ss << std::hex << static_cast<unsigned>(*it);
+    for (char c : str) {
+        ss << std::hex << static_cast<unsigned>(c);
     }
     return ss.str();
 }
 
-const byte* Ripe::hexToByte(const std::string& hex) noexcept
+const byte* Ripe::hexToByte(const std::string& hex)
 {
     std::size_t len = hex.length();
     if (len % 2 != 0) {
-        return nullptr;
+        throw std::invalid_argument("Invalid hex");
     }
     std::string result;
     result.resize(len / 2);
@@ -336,7 +341,7 @@ std::string Ripe::decryptAES(const char* buffer, const std::string& hexKey, std:
     return decryptAES(buffer, Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
 }
 
-std::string Ripe::prepareData(const char* data, const std::string& hexKey, const char* clientId) noexcept
+std::string Ripe::prepareData(const char* data, const std::string& hexKey, const char* clientId)
 {
     std::vector<byte> iv;
     std::string encrypted = Ripe::encryptAES(data, hexKey, iv);

@@ -16,7 +16,7 @@ public:
     /// \brief encryptAES Encrypts data with provided symmetric key
     /// \param outputFile Optional, if provided instead of printing it to console data is saved to file and IV is printed on console
     ///
-    static std::string encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile) noexcept;
+    static std::string encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile);
 
     ///
     /// \brief decryptAES Decrypts data using specified symmetric key.
