@@ -23,15 +23,16 @@ Ripe is a 256-bit security tool. It consists of command-line tool and shared lib
 | `-g`        | Generate key |
 | `-e`        | Encrypt the data |
 | `-d`        | Decrypt the data |
-| `--aes-key` | Generate AES key (requires `-g`) |
+| `--aes` | Generate AES key (requires `-g`) |
 | `--key`     | Symmetric key for encryption / decryption |
 | `--in-key`     | Symmetric key for encryption / decryption file path |
 | `--iv`      | Initializaion vector for decription       |
 | `--rsa`      | Use RSA encryption/decryption (Must use `--in-key` with it)      |
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
-| `--length-included`   | (Only applicable when `--base64` data provided) Tells ripe the data includes length (`<length>:<DATA>`) so it needs to handle / strip it accordingly |
+| `--clean`   | (Only applicable when `--base64` data provided) Tells ripe to clean the data before processing |
 | `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
+| `--length`   | Specify key length |
 
 ## Getting Started
 
@@ -113,7 +114,7 @@ OR
 Following command will generate 128-bit AES key
 
 ```
-ripe -g --aes-key 128
+ripe -g --aes 128
 ```
 
 ### Generate RSA Key

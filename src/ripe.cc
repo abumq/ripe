@@ -17,7 +17,7 @@ static int LENGTH = 2048;
 
 void displayUsage()
 {
-    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length] [--out <output_file_path>] [--length-included] [--aes-key <key_length>]" << std::endl;
+    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]]" << std::endl;
 }
 
 void displayVersion()
@@ -38,7 +38,7 @@ void decryptAES(std::string& data, const std::string& key, std::string& iv, bool
 void generateAESKey(int length)
 {
     if (length == 0) {
-        std::cout << "Invalid length!" << std::endl;
+        std::cout << "ERROR: Please provide key length" << std::endl;
         return;
     }
     std::cout << Ripe::generateNewKey(length / 8);
@@ -96,9 +96,9 @@ int main(int argc, char* argv[])
     int keyLength = 0;
     std::string data;
     std::string clientId;
-    bool isGenerateAESKey = false;
+    bool isAES = false;
     bool isBase64 = false;
-    bool lengthIncluded = false;
+    bool clean = false;
     bool isRSA = false;
     std::string outputFile;
     bool fileArgSpecified = false;
@@ -111,19 +111,20 @@ int main(int argc, char* argv[])
             type = 2;
         } else if (arg == "-g" && type == -1) {
             type = 3;
-        } else if (arg == "--base64" && i < argc) {
+        } else if (arg == "--base64") {
             isBase64 = true;
-        } else if (arg == "--rsa" && i < argc) {
+        } else if (arg == "--rsa") {
             isRSA = true;
         } else if (arg == "--key" && i < argc) {
             key = argv[++i];
-        } else if (arg == "--aes-key" && i < argc) {
-            isGenerateAESKey = true;
+        } else if (arg == "--aes" && i < argc) {
+            isAES = true;
             keyLength = atoi(argv[++i]);
         } else if (arg == "--length" && i < argc) {
             LENGTH = atoi(argv[++i]);
-        } else if (arg == "--length-included" && i < argc) {
-            lengthIncluded = true;
+            keyLength = LENGTH;
+        } else if (arg == "--clean") {
+            clean = true;
         } else if (arg == "--out-public" && i < argc) {
             publicKeyFile = argv[++i];
         } else if (arg == "--out-private" && i < argc) {
@@ -162,7 +163,7 @@ int main(int argc, char* argv[])
         data.erase(data.size() - 1);
     }
 
-    if (isBase64 && lengthIncluded) {
+    if (isBase64 && clean) {
         data.erase(0, data.find_first_of(':') + 1);
     }
 
@@ -194,10 +195,10 @@ int main(int argc, char* argv[])
             } else {
                 writeRSAKeyPair(publicKeyFile, privateKeyFile);
             }
-        } else if (isGenerateAESKey) {
+        } else if (isAES) {
             generateAESKey(keyLength);
-        }else {
-            std::cout << "ERROR: Please provide method (you probably forgot '--rsa')" << std::endl;
+        } else {
+            std::cout << "ERROR: Please provide method (you probably forgot '--rsa' or '--aes')" << std::endl;
         }
     } else {
         displayUsage();
