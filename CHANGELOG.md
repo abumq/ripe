@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+### Changed
+- Changed `decryptAES` to use const ref instead of changing original data
 
 ## [1.1.4] - 01-02-2017
 ### Changed

@@ -118,8 +118,9 @@ std::string RipeHelpers::encryptAES(std::string& data, const std::string& key, c
     return ss.str();
 }
 
-std::string RipeHelpers::decryptAES(std::string& data, const std::string& key, std::string& ivec, bool isBase64) noexcept
+std::string RipeHelpers::decryptAES(const std::string& d, const std::string& key, std::string& ivec, bool isBase64) noexcept
 {
+    std::string data(d);
     if (ivec.empty() && isBase64) {
         // Extract IV from data
         std::size_t pos = data.find_first_of(':');
