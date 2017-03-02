@@ -27,7 +27,6 @@ using RipeBigNum = Ripe::RipeCPtr<BIGNUM, decltype(&::BN_free)>;
 using RipeEVPKey = Ripe::RipeCPtr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
 using RipeBio = Ripe::RipeCPtr<BIO, decltype(&::BIO_free)>;
 
-const std::string Ripe::BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const int Ripe::RSA_PADDING = RSA_PKCS1_PADDING;
 const int Ripe::BITS_PER_BYTE = 8;
 const int Ripe::AES_BSIZE = AES_BLOCK_SIZE;
@@ -189,110 +188,17 @@ void Ripe::printLastError(const char* name) noexcept
 }
 
 std::string Ripe::base64Encode(const byte* input, std::size_t length) noexcept {
-    /*
-    std::string ret;
-    unsigned int i = 0;
-    unsigned int j = 0;
-    byte bytes4[4];
-    byte bytes3[3];
-
-    while (length--) {
-        bytes3[i++] = *(input++);
-        if (i == 3) {
-            bytes4[0] = (bytes3[0] & 0xfc) >> 2;
-            bytes4[1] = ((bytes3[0] & 0x03) << 4) + ((bytes3[1] & 0xf0) >> 4);
-            bytes4[2] = ((bytes3[1] & 0x0f) << 2) + ((bytes3[2] & 0xc0) >> 6);
-            bytes4[3] = bytes3[2] & 0x3f;
-
-            for (i = 0; i < 4 ; i++) {
-                ret += Ripe::BASE64_CHARS[bytes4[i]];
-            }
-            i = 0;
-        }
-    }
-
-    if (i > 0)
-    {
-        for (j = i; j < 3; j++) {
-            bytes3[j] = '\0';
-        }
-
-        bytes4[0] = (bytes3[0] & 0xfc) >> 2;
-        bytes4[1] = ((bytes3[0] & 0x03) << 4) + ((bytes3[1] & 0xf0) >> 4);
-        bytes4[2] = ((bytes3[1] & 0x0f) << 2) + ((bytes3[2] & 0xc0) >> 6);
-        bytes4[3] = bytes3[2] & 0x3f;
-
-        for (j = 0; j < i + 1; j++) {
-            ret += Ripe::BASE64_CHARS[bytes4[j]];
-        }
-
-        while (i++ < 3) {
-            ret += '=';
-        }
-
-    }
-
-    return ret;*/
     std::string encoded;
-    CryptoPP::StringSource ss(
-                input,
-                length,
-                true,
-                new CryptoPP::Base64Encoder(
-                    new CryptoPP::StringSink(encoded),
-                    false
-                    )
-                );
+    // Crypto++ has built-in smart pointer, it won't leak this memory
+    StringSource ss(input, length, true, new Base64Encoder(new StringSink(encoded), false));
     return encoded;
 }
 
 std::string Ripe::base64Decode(const std::string& base64Encoded) noexcept {
-    std::size_t length = base64Encoded.size();
-    std::size_t curr = 0;
-    unsigned int i = 0;
-    unsigned int j = 0;
-    byte bytes4[4];
-    byte bytes3[3];
-    std::string ret;
-
-    while (length-- && (base64Encoded[curr] != '=') && Ripe::isBase64(base64Encoded[curr])) {
-        bytes4[i++] = base64Encoded[curr];
-        curr++;
-        if (i == 4) {
-            for (i = 0; i < 4; i++) {
-                bytes4[i] = Ripe::BASE64_CHARS.find(bytes4[i]);
-            }
-
-            bytes3[0] = (bytes4[0] << 2) + ((bytes4[1] & 0x30) >> 4);
-            bytes3[1] = ((bytes4[1] & 0xf) << 4) + ((bytes4[2] & 0x3c) >> 2);
-            bytes3[2] = ((bytes4[2] & 0x3) << 6) + bytes4[3];
-
-            for (i = 0; i < 3; i++) {
-                ret += bytes3[i];
-            }
-            i = 0;
-        }
-    }
-
-    if (i > 0) {
-        for (j = i; j < 4; j++) {
-            bytes4[j] = 0;
-        }
-
-        for (j = 0; j < 4; j++) {
-            bytes4[j] = Ripe::BASE64_CHARS.find(bytes4[j]);
-        }
-
-        bytes3[0] = (bytes4[0] << 2) + ((bytes4[1] & 0x30) >> 4);
-        bytes3[1] = ((bytes4[1] & 0xf) << 4) + ((bytes4[2] & 0x3c) >> 2);
-        bytes3[2] = ((bytes4[2] & 0x3) << 6) + bytes4[3];
-
-        for (j = 0; j < i - 1; j++) {
-            ret += bytes3[j];
-        }
-    }
-
-    return ret;
+    std::string decoded;
+    // Crypto++ has built-in smart pointer, it won't leak this memory
+    StringSource ss(base64Encoded, true, new Base64Decoder(new StringSink(decoded)));
+    return decoded;
 }
 
 std::string Ripe::normalizeAESKey(const char* keyBuffer, std::size_t keySize) noexcept

@@ -190,16 +190,9 @@ public:
     static std::string version() noexcept;
 
 private:
-
-    static const std::string BASE64_CHARS;
     static const int RSA_PADDING;
     static const long RIPE_RSA_3;
 
     static std::string normalizeAESKey(const char* keyBuffer, std::size_t keySize) noexcept;
-
-    static inline bool isBase64(byte c) noexcept
-    {
-        return (isalnum(c) || (c == '+') || (c == '/'));
-    }
 };
 #endif /* Ripe_h */
