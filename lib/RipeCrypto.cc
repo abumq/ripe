@@ -19,6 +19,7 @@
 #include <cryptopp/base64.h>
 #include <cryptopp/modes.h>
 #include <cryptopp/hex.h>
+#include <cryptopp/pem.h>
 #include <cryptopp/rsa.h>
 
 #include "include/RipeCrypto.h"
@@ -145,27 +146,27 @@ void RipeCrypto::printLastError(const char* name) noexcept
 
 RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned long exponent)
 {
-    /*
-    AutoSeededRandomPool rng;
-    InvertibleRSAFunction params;
+
+    CryptoPP::AutoSeededRandomPool rng;
+    CryptoPP::InvertibleRSAFunction params;
     params.GenerateRandomWithKeySize(rng, length);
     CryptoPP::RSA::PrivateKey privateKey(params);
     CryptoPP::RSA::PublicKey publicKey(params);
 
     RipeCrypto::KeyPair pair;
-
     {
-        Base64Encoder enc(new StringSink(pair.privateKey));
-        privateKey.DEREncode(enc);
-        enc.MessageEnd();
+        CryptoPP::StringSink snk(pair.privateKey);
+        CryptoPP::PEM_Save(snk, privateKey);
+        snk.MessageEnd();
     }
     {
-        Base64Encoder enc(new StringSink(pair.publicKey));
-        publicKey.DEREncode(enc);
-        enc.MessageEnd();
+        CryptoPP::StringSink snk(pair.publicKey);
+        CryptoPP::PEM_Save(snk, publicKey);
+        snk.MessageEnd();
     }
-    return pair;*/
+    return pair;
 
+/*
     RipeRSA rsa(RSA_new(), ::RSA_free);
     int status;
     RipeBigNum bign(BN_new(), ::BN_free);
@@ -195,7 +196,7 @@ RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned
     char* pu = pub.get();
     getRSAString(rsa.get(), true, &pu);
     std::string pubStr(pu);
-    return { privStr, pubStr };
+    return { privStr, pubStr };*/
 }
 
 using namespace CryptoPP;
