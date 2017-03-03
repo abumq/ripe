@@ -19,13 +19,12 @@
 #include <cryptopp/base64.h>
 #include <cryptopp/modes.h>
 #include <cryptopp/hex.h>
+#include <cryptopp/rsa.h>
 
 #include "include/RipeCrypto.h"
 #include "include/log.h"
 
 INITIALIZE_EASYLOGGINGPP
-
-using namespace CryptoPP;
 
 using RipeRSA = RipeCrypto::RipeCPtr<RSA, decltype(&::RSA_free)>;
 using RipeBigNum = RipeCrypto::RipeCPtr<BIGNUM, decltype(&::BN_free)>;
@@ -33,7 +32,7 @@ using RipeEVPKey = RipeCrypto::RipeCPtr<EVP_PKEY, decltype(&::EVP_PKEY_free)>;
 using RipeBio = RipeCrypto::RipeCPtr<BIO, decltype(&::BIO_free)>;
 
 const int RipeCrypto::RSA_PADDING = RSA_PKCS1_PADDING;
-const int RipeCrypto::AES_BSIZE = AES::BLOCKSIZE;
+const int RipeCrypto::AES_BSIZE = CryptoPP::AES::BLOCKSIZE;
 const long RipeCrypto::RIPE_RSA_3 = RSA_3;
 
 static RipeRSA createRSA(byte* key, bool isPublic) noexcept
@@ -118,8 +117,55 @@ static bool getRSAString(RSA* rsa, bool isPublic, char** strPtr) noexcept
     return size > 0;
 }
 
+int RipeCrypto::encryptRSA(byte* data, int dataLength, byte* key, byte* destination) noexcept
+{
+    RipeRSA rsa = createRSA(key, true);
+    if (rsa.get() == nullptr) {
+        return -1;
+    }
+    return RSA_public_encrypt(dataLength, data, destination, rsa.get(), RipeCrypto::RSA_PADDING);
+}
+
+int RipeCrypto::decryptRSA(byte* encryptedData, int dataLength, byte* key, byte* destination) noexcept
+{
+    RipeRSA rsa = createRSA(key, false);
+    if (rsa.get() == nullptr) {
+        return -1;
+    }
+    return RSA_private_decrypt(dataLength, encryptedData, destination, rsa.get(), RipeCrypto::RSA_PADDING);
+}
+
+void RipeCrypto::printLastError(const char* name) noexcept
+{
+    char errString[130];
+    ERR_load_crypto_strings();
+    ERR_error_string(ERR_get_error(), errString);
+    RLOG(ERROR) << name << " " << errString;
+}
+
 RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned long exponent)
 {
+    /*
+    AutoSeededRandomPool rng;
+    InvertibleRSAFunction params;
+    params.GenerateRandomWithKeySize(rng, length);
+    CryptoPP::RSA::PrivateKey privateKey(params);
+    CryptoPP::RSA::PublicKey publicKey(params);
+
+    RipeCrypto::KeyPair pair;
+
+    {
+        Base64Encoder enc(new StringSink(pair.privateKey));
+        privateKey.DEREncode(enc);
+        enc.MessageEnd();
+    }
+    {
+        Base64Encoder enc(new StringSink(pair.publicKey));
+        publicKey.DEREncode(enc);
+        enc.MessageEnd();
+    }
+    return pair;*/
+
     RipeRSA rsa(RSA_new(), ::RSA_free);
     int status;
     RipeBigNum bign(BN_new(), ::BN_free);
@@ -152,31 +198,7 @@ RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned
     return { privStr, pubStr };
 }
 
-int RipeCrypto::encryptRSA(byte* data, int dataLength, byte* key, byte* destination) noexcept
-{
-    RipeRSA rsa = createRSA(key, true);
-    if (rsa.get() == nullptr) {
-        return -1;
-    }
-    return RSA_public_encrypt(dataLength, data, destination, rsa.get(), RipeCrypto::RSA_PADDING);
-}
-
-int RipeCrypto::decryptRSA(byte* encryptedData, int dataLength, byte* key, byte* destination) noexcept
-{
-    RipeRSA rsa = createRSA(key, false);
-    if (rsa.get() == nullptr) {
-        return -1;
-    }
-    return RSA_private_decrypt(dataLength, encryptedData, destination, rsa.get(), RipeCrypto::RSA_PADDING);
-}
-
-void RipeCrypto::printLastError(const char* name) noexcept
-{
-    char errString[130];
-    ERR_load_crypto_strings();
-    ERR_error_string(ERR_get_error(), errString);
-    RLOG(ERROR) << name << " " << errString;
-}
+using namespace CryptoPP;
 
 std::string RipeCrypto::base64Encode(const byte* input, std::size_t length)
 {
