@@ -165,38 +165,6 @@ RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned
         snk.MessageEnd();
     }
     return pair;
-
-/*
-    RipeRSA rsa(RSA_new(), ::RSA_free);
-    int status;
-    RipeBigNum bign(BN_new(), ::BN_free);
-    status = BN_set_word(bign.get(), exponent);
-    if (status != 1) {
-        RLOG(ERROR) << "Could not set big numb (OpenSSL)";
-        throw std::logic_error("Could not set big numb (OpenSSL)");
-    }
-    status = RSA_generate_key_ex(rsa.get(), length, bign.get(), nullptr);
-    if (status != 1) {
-        RLOG(ERROR) << "Could not generate RSA key";
-        throw std::logic_error("Could not generate RSA key");
-    }
-
-    if (rsa.get() != nullptr) {
-        int keyCheck = RSA_check_key(rsa.get());
-        RLOG_IF(keyCheck == -1, ERROR) << "Failed to validate RSA key pair";
-        RLOG_IF(keyCheck == 0, ERROR) << "Failed to validate RSA key. Please check length and exponent value";
-    }
-
-    RipeArray<char> priv(new char[length]);
-    char* p = priv.get();
-    getRSAString(rsa.get(), false, &p);
-    std::string privStr(p);
-
-    RipeArray<char> pub(new char[length]);
-    char* pu = pub.get();
-    getRSAString(rsa.get(), true, &pu);
-    std::string pubStr(pu);
-    return { privStr, pubStr };*/
 }
 
 using namespace CryptoPP;

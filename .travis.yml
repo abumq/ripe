@@ -5,9 +5,18 @@ dist: trusty
 before_install:
  - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
  - sudo apt-get -qq update
- - sudo apt-get install -y libssl-dev libgtest-dev valgrind libcrypto++-dev libcrypto++-utils
+ - sudo apt-get install -y libssl-dev libgtest-dev valgrind
  - sudo apt-get install --only-upgrade cmake
  - cmake --version 
+ # Crypto++ (We manually install it because we need Pem Pack as well)
+ - wget -O cryptocpp.tar.gz https://github.com/weidai11/cryptopp/archive/CRYPTOPP_5_6_5.tar.gz
+ - tar xf cryptocpp
+ - cd cryptopp-CRYPTOPP_5_6_5
+ - wget -O pem_pack.zip https://www.cryptopp.com/w/images/5/5a/Pem-pack.zip
+ - unzip pem_pack.zip
+ - cmake .
+ - make
+ - sudo make install
  # GTest
  - wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
  - tar xf gtest.tar.gz
