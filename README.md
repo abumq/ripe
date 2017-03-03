@@ -34,13 +34,13 @@ Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-c
 | `--key`     | Symmetric key for encryption / decryption |
 | `--in-key`     | Symmetric key for encryption / decryption file path |
 | `--iv`      | Initializaion vector for decription       |
-| `--rsa`      | Use RSA encryption/decryption (Must use `--in-key` with it)      |
+| `--rsa`      | Use RSA encryption/decryption      |
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
 | `--clean`   | (Only applicable when `--base64` data provided) Tells ripe to clean the data before processing |
 | `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
 | `--length`   | Specify key length |
-| `--secret`   | Secret key to decrypted encrypted private key |
+| `--secret`   | Secret key for encrypted private key (RSA only) |
 
 ## Getting Started
 
