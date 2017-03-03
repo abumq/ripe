@@ -40,7 +40,7 @@ Ripe is a 256-bit security tool. It consists of command-line tool and C++ API fo
   * C++11
   * [Easylogging++ v9.94.1](https://github.com/muflihun/easyloggingpp)
   * OpenSSL v1.0.2j
-  * Crypto++ v6.0.0 (lower versions may also work)
+  * Crypto++ with Pem Pack v6.0.0 (lower versions may also work)
   * [CMake Toolchains](https://cmake.org/) 2.8.12
  
 ### Get Code
