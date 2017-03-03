@@ -87,7 +87,6 @@ set (CMAKE_REQUIRED_QUIET ${CMAKE_REQUIRED_QUIET_SAVE})
 
 # Ripe lib
 set(LIB_RIPE_SOURCE_FILES
-    lib/RipeCrypto.cc
     lib/Ripe.cc
     ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
@@ -107,7 +106,7 @@ target_compile_definitions(ripe PRIVATE
     ELPP_DEFAULT_LOGGING_FLAGS=4096
 )
 install (TARGETS ripe DESTINATION lib)
-install (FILES include/Ripe.h include/RipeCrypto.h DESTINATION "include")
+install (FILES include/Ripe.h DESTINATION "include")
 
 ################################################ RIPE ##############################################
 

@@ -35,13 +35,13 @@ Ripe contains encryption API for two major cryptography methods, RSA and AES (Ri
 | `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
 | `--length`   | Specify key length |
+| `--secret`   | Secret key to decrypted encrypted private key |
 
 ## Getting Started
 
 ### Minimum Requirements
   * C++11
   * [Easylogging++ v9.94.1](https://github.com/muflihun/easyloggingpp)
-  * OpenSSL v1.0.2j
   * Crypto++ with Pem Pack v5.6.5
   * [CMake Toolchains](https://cmake.org/) 2.8.12
  
@@ -162,6 +162,36 @@ Please note, decryption (RSA) is unstable at the moment, you may use following a
 
 ```
 cat /tmp/output.enc | openssl rsautl -decrypt -inkey private.pem --base64
+```
+
+#### Encrypted Keys
+If you have an RSA key that is encrypted with pass phrase, let's say
+```
+openssl genrsa -des3 -out private.pem 2048
+```
+
+extract public key: `openssl rsa -in private.pem -outform PEM -pubout -out public.pem`
+
+You can use `--secret` to decrypt it
+
+for example
+
+Encrypt:
+
+```
+echo ff | ripe -e --rsa --in-key public.pem
+```
+
+Decrypt (pass phrase we chose was ppks):
+
+```
+ripe -d --rsa --in-key private.pem --base64 --secret ppks
+```
+
+Failing to provide `--secret` option will give you error:
+
+```
+ERROR: PEM_Load: RSA private key is encrypted
 ```
 
 ### Base64 Encoding

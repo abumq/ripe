@@ -1,14 +1,15 @@
 # Change Log
 
 ## [Unreleased]
+
+## [2.0.0] - 04-03-2017
 ### Changed
-- api; Base64 functions using Crypto++
-- api; AES encryption and decryption using Crypto++
-- api; Changed `Ripe::expectedBase64Length` to take and return `std::size_t`
-- api; Renamed `RipeHelpers` => `Ripe` and `Ripe` => `RipeCrypto`
+- Switched to crypto++ (issue #1)
+- Merged `RipeHelpers` with `Ripe`
+- Major changes to API
 - tool; Replaced `--length-included` to `--clean`
+- tool; Added `--secret` option
 - tool; Added AES key generation using `--aes`
-- api; Removed a lot of redundant AES helper methods
 ### Added
 - api; `Ripe::expectedAESCipherLength`
 - api; `Ripe::expectedDataSize`

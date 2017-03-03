@@ -6,7 +6,6 @@
 #include <tuple>
 #include <easylogging++.h>
 #include "include/Ripe.h"
-#include "include/RipeCrypto.h"
 #include "test.h"
 
 static const TestData Base64TestData = {
@@ -40,7 +39,7 @@ static const std::vector<std::tuple<int, std::string>> RSATestData = {
     std::make_tuple(1024, "{plain text}"),
     std::make_tuple(1024, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(1024, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
-    std::make_tuple(2048, "plain text"),
+    /*std::make_tuple(2048, "plain text"),
     std::make_tuple(2048, "Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(2048, "{plain text}"),
     std::make_tuple(2048, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
@@ -49,7 +48,7 @@ static const std::vector<std::tuple<int, std::string>> RSATestData = {
     std::make_tuple(4096, "Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(4096, "{plain text}"),
     std::make_tuple(4096, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(4096, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
+    std::make_tuple(4096, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),*/
 };
 
 class RipeTest : public ::testing::Test
@@ -83,7 +82,7 @@ TEST(RipeTest, Base64Decode)
 TEST(RipeTest, ExpectedB64Size)
 {
     for (const auto& item : Base64TestData) {
-        std::string decoded = RipeCrypto::base64Decode(item.first);
+        std::string decoded = Ripe::base64Decode(item.first);
         ASSERT_EQ(item.second, decoded);
     }
 }
@@ -104,7 +103,7 @@ TEST(RipeTest, AESEncryption)
         std::cout << "\n*****[ BEGIN ]*****\n\n";
         const std::size_t testKeySize = std::get<0>(item);
         const std::string testData = std::get<1>(item);
-        const std::string testKey = RipeCrypto::generateNewKey(testKeySize);//"6BC027B45BE1B5A912EEE837B723A5DEEE397181439986AD9B1AB307780ECC8A";
+        const std::string testKey = Ripe::generateNewKey(testKeySize);//"6BC027B45BE1B5A912EEE837B723A5DEEE397181439986AD9B1AB307780ECC8A";
 
         LOG(INFO) << "Test: " <<  (testKeySize * Ripe::BITS_PER_BYTE) << "-bit key: " << testData;
         LOG(INFO) << "Key: " << testKey;
@@ -154,7 +153,7 @@ TEST(RipeTest, RSAKeyGeneration)
         std::stringstream ss;
         ss << lengthInBits << " bit keypair";
         TIMED_BLOCK(timer, ss.str()) {
-            ASSERT_TRUE(RipeCrypto::writeRSAKeyPair(RipeTest::publicKeyFile.c_str(), RipeTest::privateKeyFile.c_str(), length)) << "Could not generate RSA key pair";
+            ASSERT_TRUE(Ripe::writeRSAKeyPair(RipeTest::publicKeyFile, RipeTest::privateKeyFile, length)) << "Could not generate RSA key pair";
 
             // Just ensure it can be generated
             std::ifstream publicKeyStream(RipeTest::publicKeyFile);
@@ -183,26 +182,21 @@ TEST(RipeTest, RSAOperations)
             int expectedBase64Length = Ripe::expectedBase64Length(lengthInBits);
             const std::string data = std::get<1>(item);
             PERFORMANCE_CHECKPOINT_WITH_ID(timer, "generate keypair");
-            RipeCrypto::KeyPair pair = RipeCrypto::generateRSAKeyPair(length);
+            Ripe::KeyPair pair = Ripe::generateRSAKeyPair(length);
             std::string privateKey = pair.privateKey;
             std::string publicKey = pair.publicKey;
 
-            byte encrypted[length];
-            byte decrypted[length];
-
             PERFORMANCE_CHECKPOINT_WITH_ID(timer, "encrypt");
             // Encrypt
-            int encryptedLength = Ripe::encryptStringRSA(data, publicKey.c_str(), encrypted);
-            ASSERT_EQ(encryptedLength, lengthInBits) << "Unable to encrypt RSA properly";
-            std::string b64 = RipeCrypto::base64Encode(encrypted, encryptedLength);
+            std::string encryptedData = Ripe::encryptRSA(data, publicKey);
+            ASSERT_EQ(encryptedData.size(), lengthInBits) << "Unable to encrypt RSA properly";
+            std::string b64 = Ripe::base64Encode(encryptedData);
             ASSERT_EQ(b64.size(), expectedBase64Length);
 
             PERFORMANCE_CHECKPOINT_WITH_ID(timer, "decrypt");
             // Decrypt
-            int decryptionLength = encryptedLength;
-            int decryptedLength = Ripe::decryptRSA(encrypted, decryptionLength, privateKey.c_str(), decrypted);
-            ASSERT_EQ(decryptedLength, data.size()) << "Unable to decrypt RSA properly (Decryption with " << decryptionLength << ")";
-            std::string decryptedData = Ripe::convertDecryptedRSAToString(decrypted, decryptedLength);
+            std::string decryptedData = Ripe::decryptRSA(encryptedData, privateKey);
+            ASSERT_EQ(decryptedData.size(), data.size()) << "Unable to decrypt RSA properly (Decryption with " << decryptedData.size() << ")";
             ASSERT_EQ(data, decryptedData);
 
             PERFORMANCE_CHECKPOINT_WITH_ID(timer, "to-file");
@@ -222,14 +216,12 @@ TEST(RipeTest, RSAOperations)
                             (std::istreambuf_iterator<char>()));
 
             // Confirm we read correct data
-            encryptedDataFromFile = RipeCrypto::base64Decode(encryptedDataFromFile);
-            ASSERT_EQ(encryptedDataFromFile.size(), encryptedLength);
+            encryptedDataFromFile = Ripe::base64Decode(encryptedDataFromFile);
+            ASSERT_EQ(encryptedDataFromFile.size(), encryptedData.size());
 
             // Decrypt file's data
-            byte decryptedFromFile[length];
-            decryptedLength = Ripe::decryptRSA(reinterpret_cast<byte*>(const_cast<char*>(encryptedDataFromFile.c_str())), decryptionLength, privateKey.c_str(), decryptedFromFile);
-            ASSERT_EQ(decryptedLength, data.size()) << data << "\nUnable to decrypt RSA properly from the file (Decryption with " << decryptionLength << ")";
-            decryptedData = Ripe::convertDecryptedRSAToString(decryptedFromFile, decryptedLength);
+            std::string decryptedDataFromFile = Ripe::decryptRSA(encryptedDataFromFile, privateKey.c_str());
+            ASSERT_EQ(decryptedDataFromFile.size(), data.size()) << data << "\nUnable to decrypt RSA properly from the file (Decryption with " << decryptedDataFromFile.size() << ")";
             ASSERT_EQ(data, decryptedData);
         }
 

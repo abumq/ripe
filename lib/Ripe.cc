@@ -7,28 +7,191 @@
 #include <iomanip>
 #include <memory>
 #include <sstream>
+#include <fstream>
 #include <vector>
+
+#include <cryptopp/osrng.h>
+#include <cryptopp/base64.h>
+#include <cryptopp/modes.h>
+#include <cryptopp/hex.h>
+#include <cryptopp/pem.h>
+#include <cryptopp/rsa.h>
+
 #include "include/Ripe.h"
-#include "include/RipeCrypto.h"
 #include "include/log.h"
+
+INITIALIZE_EASYLOGGINGPP
+
+using namespace CryptoPP;
 
 const char Ripe::DATA_DELIMITER = ':';
 const int Ripe::BITS_PER_BYTE = 8;
+const int Ripe::DEFAULT_RSA_LENGTH = 2048;
+const int Ripe::AES_BSIZE = AES::BLOCKSIZE;
 
-std::string Ripe::encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, int length) noexcept
+bool loadPrivateKey(const std::string& key, RSA::PrivateKey& keyOut, const std::string& secret)
+{
+    StringSource source(key, true);
+    if (secret.empty()) {
+        PEM_Load(source, keyOut);
+    } else {
+        PEM_Load(source, keyOut, secret.data(), secret.size());
+    }
+    AutoSeededRandomPool prng;
+    return keyOut.Validate(prng, 3);
+}
+
+bool loadPublicKey(const std::string& key, RSA::PublicKey& keyOut)
+{
+    StringSource source(key, true);
+    PEM_Load(source, keyOut);
+    AutoSeededRandomPool prng;
+    return keyOut.Validate(prng, 3);
+}
+
+std::string Ripe::encryptRSA(const std::string& data, const std::string& publicKeyPEM)
+{
+    RSA::PublicKey publicKey;
+    bool rsaKeyValid = loadPublicKey(publicKeyPEM, publicKey);
+    if (!rsaKeyValid) {
+        throw std::invalid_argument("Could not load public key");
+    }
+    RSAES_OAEP_SHA_Encryptor e(publicKey);
+    std::string result;
+    AutoSeededRandomPool rng;
+    StringSource ss(data, true,
+        new PK_EncryptorFilter(rng, e,
+            new StringSink(result)
+       )
+    );
+    return result;
+}
+
+std::string Ripe::decryptRSA(const std::string& data, const std::string& privateKeyPEM, const std::string& secret)
+{
+    RSA::PrivateKey privateKey;
+    bool rsaKeyValid = loadPrivateKey(privateKeyPEM, privateKey, secret);
+    if (!rsaKeyValid) {
+        throw std::invalid_argument("Could not load private key");
+    }
+
+    std::string result;
+    AutoSeededRandomPool rng;
+    RSAES_OAEP_SHA_Decryptor d(privateKey);
+
+    StringSource ss(data, true,
+        new PK_DecryptorFilter(rng, d,
+            new StringSink(result)
+       )
+    );
+    return result;
+}
+
+Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length)
+{
+    AutoSeededRandomPool rng;
+    InvertibleRSAFunction params;
+    params.GenerateRandomWithKeySize(rng, length);
+    RSA::PrivateKey privateKey(params);
+    RSA::PublicKey publicKey(params);
+
+    Ripe::KeyPair pair;
+    {
+        StringSink snk(pair.privateKey);
+        PEM_Save(snk, privateKey);
+        snk.MessageEnd();
+    }
+    {
+        StringSink snk(pair.publicKey);
+        PEM_Save(snk, publicKey);
+        snk.MessageEnd();
+    }
+    return pair;
+}
+
+std::string Ripe::base64Encode(const byte* input, std::size_t length)
+{
+    std::string encoded;
+    StringSource ss(input, length, true, new Base64Encoder(
+                        new StringSink(encoded), false)
+                    );
+    return encoded;
+}
+
+std::string Ripe::base64Decode(const std::string& base64Encoded)
+{
+    std::string decoded;
+    StringSource ss(base64Encoded, true, new Base64Decoder(
+                        new StringSink(decoded))
+                    );
+    return decoded;
+}
+
+std::string Ripe::generateNewKey(int length)
+{
+    if (!(length == 16 || length == 24 || length == 32)) {
+        throw std::invalid_argument( "Invalid key length. Acceptable lengths are 16, 24 or 32" );
+    }
+    AutoSeededRandomPool rnd;
+    SecByteBlock key(length);
+    rnd.GenerateBlock(key, key.size());
+    std::string s;
+    HexEncoder hex(new StringSink(s));
+    hex.Put(key.data(), key.size());
+    hex.MessageEnd();
+    return s;
+}
+
+std::string Ripe::encryptAES(const char* buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv)
+{
+    SecByteBlock keyBlock(key, keySize);
+
+    byte ivArr[Ripe::AES_BSIZE] = {0};
+
+    AutoSeededRandomPool rnd;
+    rnd.GenerateBlock(ivArr, sizeof ivArr);
+
+    std::string cipher;
+
+    CBC_Mode<AES>::Encryption e;
+    e.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
+
+    // store for user
+    iv.resize(sizeof ivArr);
+    std::copy(std::begin(ivArr), std::end(ivArr), iv.begin());
+
+    // The StreamTransformationFilter adds padding as required.
+    StringSource ss(buffer, true,
+                    new StreamTransformationFilter(e, new StringSink(cipher))
+                    );
+    return cipher;
+}
+
+std::string Ripe::decryptAES(const std::string& data, const byte* key, std::size_t keySize, std::vector<byte>& iv)
+{
+    std::string result;
+    SecByteBlock keyBlock(key, keySize);
+
+    byte ivArr[Ripe::AES_BSIZE] = {0};
+    std::copy(iv.begin(), iv.end(), std::begin(ivArr));
+
+    CBC_Mode<AES>::Decryption d;
+    d.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
+
+    StringSource ss(data, true,
+                new StreamTransformationFilter( d, new StringSink(result))
+                );
+    return result;
+}
+
+std::string Ripe::encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, int length)
 {
     std::stringstream ss;
-    byte* newData = new byte[length];
-    int newLength = Ripe::encryptStringRSA(data, key.c_str(), newData);
-    if (newLength == -1) {
-        delete[] newData;
-        unsigned int maxBlockSize = Ripe::maxRSABlockSize(length);
-        if (data.size() > maxBlockSize) {
-            RLOG(FATAL) << "Data size should not exceed " << maxBlockSize << " bytes. You have " << data.size() << " bytes";
-        }
-        RipeCrypto::printLastError("Failed to encrypt");
-    } else {
-        std::string encrypted = RipeCrypto::base64Encode(newData, newLength);
+    std::string encryptedData;
+
+    try {
+        encryptedData = Ripe::encryptRSA(data, key);
+        std::string encrypted = Ripe::base64Encode(encryptedData);
         if (!outputFile.empty()) {
             std::ofstream out(outputFile);
             out << encrypted;
@@ -37,62 +200,56 @@ std::string Ripe::encryptRSA(std::string& data, const std::string& key, const st
         } else {
             ss << encrypted;
         }
+        return ss.str();
+    } catch (const std::exception& e) {
+        throw e;
     }
-    delete[] newData;
-    return ss.str();
 }
 
-std::string Ripe::decryptRSA(std::string& data, const std::string& key, bool isBase64, int length) noexcept
+std::string Ripe::decryptRSA(std::string& data, const std::string& key, bool isBase64, int length, const std::string& secret)
 {
-
     if (isBase64) {
-        data = RipeCrypto::base64Decode(data);
+        data = Ripe::base64Decode(data);
     }
-    int dataLength = static_cast<int>(data.size());
 
-    std::stringstream ss;
-    byte* newData = new byte[length];
-
-    int newLength = Ripe::decryptRSA(reinterpret_cast<byte*>(const_cast<char*>(data.c_str())), dataLength, key.c_str(), newData);
-    if (newLength == -1) {
-        delete[] newData;
-        unsigned int maxBlockSize = Ripe::maxRSABlockSize(length);
-        if (data.size() > maxBlockSize) {
-            RLOG(FATAL) << "Data size should not exceed " << maxBlockSize << " bytes. You have " << data.size() << " bytes";
-        }
-
-        RipeCrypto::printLastError("Failed to decrypt");
-    } else {
-        ss << newData;
-    }
-    delete[] newData;
-    return ss.str();
+    return Ripe::decryptRSA(data, key, secret);
 }
 
-std::string Ripe::convertDecryptedRSAToString(byte* decryptedData, int dataLength) noexcept
-{
-    std::string result;
-    if (dataLength != -1) {
-        result = std::string(reinterpret_cast<const char*>(decryptedData));
-        result[dataLength] = '\0';
-        result.erase(dataLength);
-    }
-    return result;
-}
-
-void Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length)
+bool Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length)
 {
     RLOG(INFO) << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes";
-    if (!RipeCrypto::writeRSAKeyPair(publicFile.c_str(), privateFile.c_str(), length)) {
+    bool result = true;
+    KeyPair keypair = Ripe::generateRSAKeyPair(length);
+    if (keypair.privateKey.size() > 0 && keypair.publicKey.size() > 0) {
+        std::ofstream fs(privateFile.c_str(), std::ios::out);
+        if (fs.is_open()) {
+            fs.write(keypair.privateKey.c_str(), keypair.privateKey.size());
+            fs.close();
+        } else {
+            RLOG(ERROR) << "Unable to open [" << privateFile << "]";
+            result = false;
+        }
+        fs.open(publicFile.c_str(), std::ios::out);
+        if (fs.is_open()) {
+            fs.write(keypair.publicKey.c_str(), keypair.publicKey.size());
+            fs.close();
+            result = result && true;
+        } else {
+            RLOG(ERROR) << "Unable to open [" << publicFile << "]";
+            result = false;
+        }
+    }
+    if (!result) {
         RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
         throw std::logic_error("Failed to generate key pair!");
     }
     RLOG(INFO) << "Successfully saved!";
+    return result;
 }
 
-std::string Ripe::generateRSAKeyPair(int length)
+std::string Ripe::generateRSAKeyPairBase64(int length)
 {
-    RipeCrypto::KeyPair pair = RipeCrypto::generateRSAKeyPair(length);
+    Ripe::KeyPair pair = Ripe::generateRSAKeyPair(length);
     if (pair.privateKey.empty() || pair.publicKey.empty()) {
         RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
         throw std::logic_error("Failed to generate key pair!");
@@ -145,9 +302,21 @@ std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::
     std::vector<byte> ivHex = Ripe::byteToVec(iv);
 
     if (isBase64) {
-        data = RipeCrypto::base64Decode(data);
+        data = Ripe::base64Decode(data);
     }
-    return RipeCrypto::decryptAES(data, Ripe::hexToByte(hexKey), hexKey.size() / 2, ivHex);
+    return Ripe::decryptAES(data, Ripe::hexToByte(hexKey), hexKey.size() / 2, ivHex);
+}
+
+bool Ripe::normalizeIV(std::string& iv) noexcept
+{
+    if (iv.size() == 32) {
+        for (int j = 2; j < 32 + 15; j += 2) {
+            iv.insert(j, " ");
+            j++;
+        }
+        return true;
+    }
+    return false;
 }
 
 std::string Ripe::prepareData(const char* data, const std::string& hexKey, const char* clientId)
@@ -172,19 +341,6 @@ std::string Ripe::prepareData(const char* data, const std::string& hexKey, const
     std::string ssstr(ss.str());
     fss << ssstr.size() << Ripe::DATA_DELIMITER << ssstr;
     return fss.str();
-}
-
-
-bool Ripe::normalizeIV(std::string& iv) noexcept
-{
-    if (iv.size() == 32) {
-        for (int j = 2; j < 32 + 15; j += 2) {
-            iv.insert(j, " ");
-            j++;
-        }
-        return true;
-    }
-    return false;
 }
 
 std::string Ripe::vecToString(const std::vector<byte>& iv) noexcept

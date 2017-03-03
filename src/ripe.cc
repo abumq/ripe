@@ -10,12 +10,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "include/RipeCrypto.h"
 #include "include/Ripe.h"
 
 void displayUsage()
 {
-    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]]" << std::endl;
+    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret]" << std::endl;
 }
 
 void displayVersion()
@@ -23,14 +22,21 @@ void displayVersion()
     std::cout << "Ripe - 256-bit security tool" << std::endl << "Version: " << RIPE_VERSION << std::endl << "http://muflihun.com" << std::endl;
 }
 
+#define TRY try {
+#define CATCH }  catch (const std::exception& e) { std::cout << "ERROR: " << e.what() << std::endl; }
+
 void encryptAES(std::string& data, const std::string& key, const std::string& clientId, const std::string& outputFile)
 {
-    std::cout << Ripe::encryptAES(data, key, clientId, outputFile);
+    TRY
+        std::cout << Ripe::encryptAES(data, key, clientId, outputFile);
+    CATCH
 }
 
 void decryptAES(std::string& data, const std::string& key, std::string& iv, bool isBase64)
 {
-    std::cout << Ripe::decryptAES(data, key, iv, isBase64);
+    TRY
+        std::cout << Ripe::decryptAES(data, key, iv, isBase64);
+    CATCH
 }
 
 void generateAESKey(int length)
@@ -39,37 +45,51 @@ void generateAESKey(int length)
         std::cout << "ERROR: Please provide valid key length" << std::endl;
         return;
     }
-    std::cout << RipeCrypto::generateNewKey(length / 8);
+    TRY
+        std::cout << Ripe::generateNewKey(length / 8);
+    CATCH
 }
 
 void encodeBase64(std::string& data)
 {
-    std::cout << Ripe::base64Encode(data);
+    TRY
+        std::cout << Ripe::base64Encode(data);
+    CATCH
 }
 
 void decodeBase64(std::string& data)
 {
-    std::cout << Ripe::base64Decode(data);
+    TRY
+        std::cout << Ripe::base64Decode(data);
+    CATCH
 }
 
 void encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, std::size_t length)
 {
-    std::cout << Ripe::encryptRSA(data, key, outputFile, length);
+    TRY
+        std::cout << Ripe::encryptRSA(data, key, outputFile, length);
+    CATCH
 }
 
-void decryptRSA(std::string& data, const std::string& key, bool isBase64, std::size_t length)
+void decryptRSA(std::string& data, const std::string& key, bool isBase64, std::size_t length, const std::string& secret)
 {
-    std::cout << Ripe::decryptRSA(data, key, isBase64, length);
+    TRY
+        std::cout << Ripe::decryptRSA(data, key, isBase64, length, secret);
+    CATCH
 }
 
 void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, std::size_t length)
 {
-    Ripe::writeRSAKeyPair(publicFile, privateFile, length);
+    TRY
+        Ripe::writeRSAKeyPair(publicFile, privateFile, length);
+    CATCH
 }
 
 void generateRSAKeyPair(std::size_t length)
 {
-    std::cout << Ripe::generateRSAKeyPair(length);
+    TRY
+        std::cout << Ripe::generateRSAKeyPairBase64(length);
+    CATCH
 }
 
 int main(int argc, char* argv[])
@@ -94,6 +114,7 @@ int main(int argc, char* argv[])
     int keyLength = 2048;
     std::string data;
     std::string clientId;
+    std::string secret;
     bool isAES = false;
     bool isBase64 = false;
     bool clean = false;
@@ -128,6 +149,8 @@ int main(int argc, char* argv[])
             }
         } else if (arg == "--length" && hasNext) {
             keyLength = atoi(argv[++i]);
+        } else if (arg == "--secret" && hasNext) {
+            secret = argv[++i];
         } else if (arg == "--clean") {
             clean = true;
         } else if (arg == "--out-public" && hasNext) {
@@ -177,7 +200,7 @@ int main(int argc, char* argv[])
             decodeBase64(data);
         } else if (isRSA) {
             // RSA decrypt (base64-flexiable)
-            decryptRSA(data, key, isBase64, keyLength);
+            decryptRSA(data, key, isBase64, keyLength, secret);
         } else {
             // AES decrypt (base64-flexible)
             decryptAES(data, key, iv, isBase64);
@@ -208,5 +231,6 @@ int main(int argc, char* argv[])
         displayUsage();
         return 1;
     }
+
     return 0;
 }
