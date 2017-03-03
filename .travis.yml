@@ -42,6 +42,7 @@ before_install:
  - ls -l ..
  - cmake -Dtest=ON -Dtravis=ON ..
  - make
+ - sudo make install
 
 script: "./ripe-unit-tests && ../.travis-build.sh && ../openssl-compatibility.sh"
 branches:
