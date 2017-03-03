@@ -47,4 +47,5 @@ script: "./ripe-unit-tests && ../.travis-build.sh && ../openssl-compatibility.sh
 branches:
   only:
     - master
+    - develop
 
