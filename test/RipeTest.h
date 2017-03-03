@@ -18,11 +18,11 @@ static const std::vector<std::tuple<std::size_t, std::size_t, std::size_t>> Data
     std::make_tuple(4, 16, 77),
     std::make_tuple(4, 0, 60),
     std::make_tuple(55, 0, 125),
-    std::make_tuple(55, 16, 142)
+    std::make_tuple(55, 16, 142),
 };
 
 static const std::vector<std::tuple<std::size_t, std::string>> AESTestData = {
-    std::make_tuple(16, "plain text"),
+    //std::make_tuple(16, "plain text"),
     std::make_tuple(24, "plain text"),
     std::make_tuple(32, "plain text"),
     std::make_tuple(16, "Quick Brown Fox Jumps Over The Lazy Dog"),
@@ -101,23 +101,34 @@ TEST(RipeTest, ExpectedDataSize)
 TEST(RipeTest, AESEncryption)
 {
     for (const auto& item : AESTestData) {
+        std::cout << "\n*****[ BEGIN ]*****\n\n";
         const std::size_t testKeySize = std::get<0>(item);
         const std::string testData = std::get<1>(item);
-        const std::string testKey = "6BC027B45BE1B5A912EEE837B723A5DEEE397181439986AD9B1AB307780ECC8A";//RipeCrypto::generateNewKey(testKeySize);
-        LOG(INFO) << "Test: " << testData;
+        const std::string testKey = RipeCrypto::generateNewKey(testKeySize);//"6BC027B45BE1B5A912EEE837B723A5DEEE397181439986AD9B1AB307780ECC8A";
+
+        LOG(INFO) << "Test: " <<  (testKeySize * Ripe::BITS_PER_BYTE) << "-bit key: " << testData;
         LOG(INFO) << "Key: " << testKey;
         std::vector<byte> iv;
         TIMED_BLOCK(timer, "AES Encryption & Decryption") {
-            std::string encrypted = Ripe::encryptAES(testData.c_str(), testKey, iv);
+
+            LOG(INFO) << "Encrypting...";
+            std::string encrypted = Ripe::encryptAES(testData, testKey, iv);
             ASSERT_EQ(encrypted.size(), Ripe::expectedAESCipherLength(testData.size()));
             LOG(INFO) << "Cipher Length: " << encrypted.length() << std::endl;
-            EXPECT_STRCASEEQ(testData.c_str(), std::string(Ripe::decryptAES(encrypted.c_str(), testKey, iv)).c_str()) << (testKeySize * Ripe::BITS_PER_BYTE) << "-bit key";
-            std::string b64 = Ripe::base64Encode(encrypted);
+
             std::string ivStr = Ripe::vecToString(iv);
+            std::string b64 = Ripe::base64Encode(encrypted);
+            LOG(INFO) << "Decrypting...";
             LOG(INFO) << "IV: " << ivStr;
-            LOG(INFO) << "CLI Command: echo " << b64 << " | ripe -d --key " << testKey << " --iv " << ivStr << " --base64";
-            EXPECT_EQ(testData, Ripe::decryptAES(b64, testKey, ivStr, true)) << (testKeySize * Ripe::BITS_PER_BYTE) << "-bit key";
+            LOG(INFO) << "CLI: echo " << b64 << " | ripe -d --key " << testKey << " --iv " << ivStr << " --base64";
+            std::string decrypted = Ripe::decryptAES(encrypted, testKey, ivStr);
+
+            EXPECT_STRCASEEQ(testData.c_str(), decrypted.c_str());
+
+            LOG(INFO) << "Decrypting using base64...";
+            EXPECT_EQ(testData, Ripe::decryptAES(b64, testKey, ivStr, true));
         }
+        std::cout << "\n*****[ END ]*****\n\n";
     }
 }
 
@@ -129,9 +140,8 @@ TEST(RipeTest, AESDecryption)
         const std::string key = std::get<2>(item);
         std::string ivec = std::get<3>(item);
         std::string encrypted = Ripe::base64Decode(data);
-        Ripe::normalizeIV(ivec);
-        byte* iv = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
-        std::string decrypted = Ripe::decryptAES(encrypted.c_str(), key, iv);
+
+        std::string decrypted = Ripe::decryptAES(encrypted, key, ivec);
         EXPECT_STRCASEEQ(expected.c_str(), decrypted.c_str());
     }
 }

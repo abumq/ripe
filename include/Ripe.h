@@ -27,10 +27,10 @@ public:
     ///
     static const int BITS_PER_BYTE;
 
-    //
-    // AES
-    //
 
+    /*******************************************************************\
+     *                               AES                               *
+    \*******************************************************************/
     ///
     /// \brief encryptAES Encrypts data with provided symmetric key
     /// \param outputFile Optional, if provided instead of printing it to console data is saved to file and IV is printed on console
@@ -41,35 +41,16 @@ public:
     /// \brief Helper function that takes hex key
     /// \see encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile)
     ///
-    static inline std::string encryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv)
+    static inline std::string encryptAES(const std::string& buffer, const std::string& hexKey, std::vector<byte>& iv)
     {
-        return RipeCrypto::encryptAES(buffer, Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
+        return RipeCrypto::encryptAES(buffer.c_str(), Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
     }
 
     ///
     /// \brief decryptAES Decrypts data using specified symmetric key.
     /// \param isBase64 If true, first base64 decoding is done on data and then decryption is processed
     ///
-    static std::string decryptAES(const std::string& data, const std::string& hexKey, std::string& iv, bool isBase64);
-
-    ///
-    /// \brief Helper function that takes hex key
-    /// \see decryptAES(const std::string& data, const std::string& hexKey, std::string& iv, bool isBase64)
-    ///
-    static inline std::string decryptAES(const char* buffer, const std::string& hexKey, std::vector<byte>& iv)
-    {
-        return RipeCrypto::decryptAES(buffer, Ripe::hexToByte(hexKey), hexKey.size() / 2, iv);
-    }
-
-    ///
-    /// \brief decryptAES Helper method
-    /// \see decryptAES(const std::string& data, const std::string& hexKey, std::string& iv, bool isBase64)
-    ///
-    static inline std::string decryptAES(const char* buffer, const std::string& hexKey, byte* iv)
-    {
-        std::vector<byte> ivHex = Ripe::byteToVec(iv);
-        return Ripe::decryptAES(buffer, hexKey, ivHex);
-    }
+    static std::string decryptAES(std::string& data, const std::string& hexKey, std::string& iv, bool isBase64 = false);
 
     ///
     /// \brief base64Encode Helper method

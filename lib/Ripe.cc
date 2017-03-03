@@ -122,9 +122,8 @@ std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const
     return ss.str();
 }
 
-std::string Ripe::decryptAES(const std::string& d, const std::string& hexKey, std::string& ivec, bool isBase64)
+std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::string& ivec, bool isBase64)
 {
-    std::string data(d);
     if (ivec.empty() && isBase64) {
         // Extract IV from data
         std::size_t pos = data.find_first_of(':');
@@ -145,12 +144,12 @@ std::string Ripe::decryptAES(const std::string& d, const std::string& hexKey, st
     }
 
     byte* iv = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
+    std::vector<byte> ivHex = Ripe::byteToVec(iv);
 
     if (isBase64) {
         data = RipeCrypto::base64Decode(data);
     }
-
-    return Ripe::decryptAES(data.data(), hexKey, iv);
+    return RipeCrypto::decryptAES(data, Ripe::hexToByte(hexKey), hexKey.size() / 2, ivHex);
 }
 
 std::string Ripe::prepareData(const char* data, const std::string& hexKey, const char* clientId)

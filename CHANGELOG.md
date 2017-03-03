@@ -8,10 +8,10 @@
 - api; Renamed `RipeHelpers` => `Ripe` and `Ripe` => `RipeCrypto`
 - tool; Replaced `--length-included` to `--clean`
 - tool; Added AES key generation using `--aes`
+- api; Removed a lot of redundant AES helper methods
 ### Added
 - api; `Ripe::expectedAESCipherLength`
 - api; `Ripe::expectedDataSize`
-- api; Added a lot of helpers
 
 ## [1.1.4] - 01-02-2017
 ### Changed

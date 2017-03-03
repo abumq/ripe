@@ -46,25 +46,25 @@ public:
     \*******************************************************************/
 
     ///
-    /// \brief encryptRSA Encrypts data of length = dataLength using RSA key and puts it in destination
+    /// \brief Encrypts data of length = dataLength using RSA key and puts it in destination
     /// \return The size of the encrypted data. On error -1 is returned. use printLastError(const char*) to see the error details
     ///
     static int encryptRSA(byte* data, int dataLength, byte* key, byte* destination) noexcept;
 
     ///
-    /// \brief decryptRSA Decrypts encryptedData of length dataLength with RSA key and puts result in destination
+    /// \brief Decrypts encryptedData of length dataLength with RSA key and puts result in destination
     /// \return The size of the recovered plaintext. On error -1 is returned. use printLastError(const char* name) to see the error details
     ///
     static int decryptRSA(byte* encryptedData, int dataLength, byte* key, byte* destination) noexcept;
 
     ///
-    /// \brief writeRSAKeyPair Writes RSA key pair and saves private key to privateOutputFile (file path) and public key to publicOutputFile
+    /// \brief Writes RSA key pair and saves private key to privateOutputFile (file path) and public key to publicOutputFile
     /// \param length Length of the key (defaults to 256-bit [2048])
     ///
     static bool writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length = 2048, unsigned long exponent = RipeCrypto::RIPE_RSA_3) noexcept;
 
     ///
-    /// \brief generateRSAKeyPair Generate key pair and returns KeyPair, where KeyPair.first is private key and KeyPair.second is public key
+    /// \brief Generate key pair and returns KeyPair, where KeyPair.first is private key and KeyPair.second is public key
     /// \see writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length, unsigned long exponent)
     ///
     static KeyPair generateRSAKeyPair(unsigned int length = 2048, unsigned long exponent = RipeCrypto::RIPE_RSA_3) noexcept;
@@ -79,12 +79,12 @@ public:
     \*******************************************************************/
 
     ///
-    /// \brief base64Encode Encode input of length to base64 encoding
+    /// \brief Encodes input of length to base64 encoding
     ///
     static std::string base64Encode(const byte* input, std::size_t length);
 
     ///
-    /// \brief base64Decode Decode encoded base64
+    /// \brief Decodes encoded base64
     ///
     static std::string base64Decode(const std::string& base64Encoded);
 
@@ -94,14 +94,14 @@ public:
     \*******************************************************************/
 
     ///
-    /// \brief encryptAES Encrypts data of length with symmetric key of size = keySize with specified initialization vector
+    /// \brief Encrypts data of length with symmetric key of size = keySize with specified initialization vector
     ///
     static std::string encryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
 
     ///
-    /// \brief decryptAES Decrypts data of specified length with specified key and initialization vector
+    /// \brief Decrypts data of specified length with specified key and initialization vector
     ///
-    static std::string decryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
+    static std::string decryptAES(const std::string& data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
 
     ///
     /// \brief Generate random AES key

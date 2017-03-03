@@ -213,13 +213,6 @@ std::string RipeCrypto::encryptAES(const char* buffer, const byte* key, std::siz
 {
     SecByteBlock keyBlock(key, keySize);
 
-#if 1
-    std::string s2;
-    HexEncoder h2(new StringSink(s2));
-    h2.Put(keyBlock.data(), keyBlock.size());
-    h2.MessageEnd();
-    std::cout << "KEY BEFORE AutoSeededRandomPool: " << s2 << "\n";
-#endif
     byte ivArr[RipeCrypto::AES_BSIZE] = {0};
 
     // DO NOT DEFINE AutoSeededRandomPool BEFORE INITIALIZING
@@ -228,13 +221,6 @@ std::string RipeCrypto::encryptAES(const char* buffer, const byte* key, std::siz
     AutoSeededRandomPool rnd;
     rnd.GenerateBlock(ivArr, sizeof ivArr);
 
-#if 1
-    std::string s;
-    HexEncoder hex(new StringSink(s));
-    hex.Put(keyBlock.data(), keyBlock.size());
-    hex.MessageEnd();
-    std::cout << " KEY AFTER AutoSeededRandomPool: " << s << "\n";
-#endif
     std::string cipher;
 
     CBC_Mode<AES>::Encryption e;
@@ -251,7 +237,7 @@ std::string RipeCrypto::encryptAES(const char* buffer, const byte* key, std::siz
     return cipher;
 }
 
-std::string RipeCrypto::decryptAES(const char* buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv)
+std::string RipeCrypto::decryptAES(const std::string& data, const byte* key, std::size_t keySize, std::vector<byte>& iv)
 {
     std::string result;
     SecByteBlock keyBlock(key, keySize);
@@ -262,7 +248,7 @@ std::string RipeCrypto::decryptAES(const char* buffer, const byte* key, std::siz
     CBC_Mode<AES>::Decryption d;
     d.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
 
-    StringSource ss(buffer, true,
+    StringSource ss(data, true,
                 new StreamTransformationFilter( d, new StringSink(result))
                 );
     return result;
