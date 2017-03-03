@@ -45,11 +45,14 @@ Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-c
 ## Getting Started
 
 ### Minimum Requirements
+
+These are the requirements to build Ripe binaries. When you use it in your C++ application, you can do so without following dependencies, including older version of C++.
+
   * C++11
   * [Easylogging++ v9.94.1](https://github.com/muflihun/easyloggingpp)
-  * Crypto++ with Pem Pack v5.6.5
+  * [Crypto++ v5.6.5](https://www.cryptopp.com/) (with Pem Pack)
   * [CMake Toolchains](https://cmake.org/) 2.8.12
- 
+
 ### Get Code
 You can either [download code from master branch](https://github.com/muflihun/ripe/archive/master.zip) or clone it using `git`:
 
@@ -75,7 +78,7 @@ Please consider running unit test before you move on
 make test
 ```
 
-The compilation process creates executable `ripe` in build directory. You can install it in system-wide directory using:
+The compilation process creates executable (`ripe`) as well as shared libraries in build directory. You can install it in system-wide directory using:
 
 ```
 make install
@@ -85,6 +88,21 @@ If the default path (`/usr/local`) is not where you want things installed, then 
 
 ```
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
+```
+
+### If build fails...
+
+Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ (with Pem Pack) using following commands
+
+```
+wget -O cryptocpp.tar.gz https://github.com/weidai11/cryptopp/archive/CRYPTOPP_5_6_5.tar.gz
+tar xf cryptocpp.tar.gz
+cd cryptopp-CRYPTOPP_5_6_5
+wget -O pem_pack.zip https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/Pem-pack.zip
+unzip pem_pack.zip
+cmake .
+make
+sudo make install
 ```
 
 ## Examples
