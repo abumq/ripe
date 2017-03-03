@@ -55,10 +55,6 @@ else()
     list(APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
 endif()
 
-# Check for OpenSSL
-find_package (openssl REQUIRED)
-include_directories (${OPENSSL_INCLUDE_DIR})
-
 # Check for cryptopp
 find_package(CryptoPP REQUIRED)
 include_directories (${CRYPTOPP_INCLUDE_DIRS})
@@ -97,7 +93,6 @@ set_target_properties(ripe PROPERTIES
     SOVERSION ${RIPE_SOVERSION}
 )
 target_link_libraries(ripe
-    ${OPENSSL_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
 )
 

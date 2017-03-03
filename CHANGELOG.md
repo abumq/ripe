@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [2.0.1] - 04-03-2017
+### Fixed
+- Removed dependancy for openssl from cmake
+
 ## [2.0.0] - 04-03-2017
 ### Changed
 - Switched to crypto++ (issue #1)
