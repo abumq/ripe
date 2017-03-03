@@ -61,6 +61,11 @@ public:
     static int decryptRSA(byte* encryptedData, int dataLength, byte* key, byte* destination) noexcept;
 
     ///
+    /// \brief printLastError Print last RSA error
+    ///
+    static void printLastError(const char* name = "Error: ") noexcept;
+
+    ///
     /// \brief Writes RSA key pair and saves private key to privateOutputFile (file path) and public key to publicOutputFile
     /// \param length Length of the key (defaults to 256-bit [2048])
     ///
@@ -69,14 +74,9 @@ public:
     ///
     /// \brief Generate key pair and returns KeyPair
     /// \see KeyPair
-    /// \see writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length, unsigned long exponent)
+    /// \see writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length)
     ///
     static KeyPair generateRSAKeyPair(unsigned int length = 2048);
-
-    ///
-    /// \brief printLastError Print last RSA error
-    ///
-    static void printLastError(const char* name = "Error: ") noexcept;
 
     /*******************************************************************\
      *                             Base64                              *

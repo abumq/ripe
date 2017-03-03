@@ -69,32 +69,6 @@ static RipeRSA createRSA(byte* key, bool isPublic) noexcept
     return rsa;
 }
 
-bool RipeCrypto::writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length)
-{
-    KeyPair keypair = RipeCrypto::generateRSAKeyPair(length);
-    if (keypair.privateKey.size() > 0 && keypair.publicKey.size() > 0) {
-        std::ofstream fs(privateOutputFile, std::ios::out);
-        if (fs.is_open()) {
-            fs.write(keypair.privateKey.c_str(), keypair.privateKey.size());
-            fs.close();
-        } else {
-            RLOG(ERROR) << "Unable to open [" << privateOutputFile << "]";
-            return false;
-        }
-        fs.open(publicOutputFile, std::ios::out);
-        if (fs.is_open()) {
-            fs.write(keypair.publicKey.c_str(), keypair.publicKey.size());
-            fs.close();
-        } else {
-            RLOG(ERROR) << "Unable to open [" << publicOutputFile << "]";
-            return false;
-        }
-        return true;
-    }
-    RLOG(ERROR) << "Key pair failed to generate";
-    return false;
-}
-
 static bool getRSAString(RSA* rsa, bool isPublic, char** strPtr) noexcept
 {
     EVP_CIPHER* enc = nullptr;
@@ -144,9 +118,34 @@ void RipeCrypto::printLastError(const char* name) noexcept
     RLOG(ERROR) << name << " " << errString;
 }
 
+bool RipeCrypto::writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length)
+{
+    KeyPair keypair = RipeCrypto::generateRSAKeyPair(length);
+    if (keypair.privateKey.size() > 0 && keypair.publicKey.size() > 0) {
+        std::ofstream fs(privateOutputFile, std::ios::out);
+        if (fs.is_open()) {
+            fs.write(keypair.privateKey.c_str(), keypair.privateKey.size());
+            fs.close();
+        } else {
+            RLOG(ERROR) << "Unable to open [" << privateOutputFile << "]";
+            return false;
+        }
+        fs.open(publicOutputFile, std::ios::out);
+        if (fs.is_open()) {
+            fs.write(keypair.publicKey.c_str(), keypair.publicKey.size());
+            fs.close();
+        } else {
+            RLOG(ERROR) << "Unable to open [" << publicOutputFile << "]";
+            return false;
+        }
+        return true;
+    }
+    RLOG(ERROR) << "Key pair failed to generate";
+    return false;
+}
+
 RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length)
 {
-
     CryptoPP::AutoSeededRandomPool rng;
     CryptoPP::InvertibleRSAFunction params;
     params.GenerateRandomWithKeySize(rng, length);
