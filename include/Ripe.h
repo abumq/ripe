@@ -166,7 +166,6 @@ public:
     ///
     /// \brief Generate key pair and returns KeyPair
     /// \see KeyPair
-    /// \see writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length)
     ///
     static KeyPair generateRSAKeyPair(unsigned int length = DEFAULT_RSA_LENGTH);
 
@@ -247,7 +246,7 @@ public:
 
     ///
     /// \brief base64Encode Helper method
-    /// \see base64Encode(const byte* input, std::size_t length)
+    /// \see base64Encode(const byte*, std::size_t)
     ///
     static inline std::string base64Encode(const std::string& binaryData)
     {
@@ -289,23 +288,7 @@ public:
     /// \brief Calculates expected data size. Assumed IV size = 32
     /// \see prepareData(const char*, const std::string&, const char*)
     ///
-    static std::size_t expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize = 16) noexcept
-    {
-        static const int DATA_DELIMITER_LENGTH = sizeof(DATA_DELIMITER);
-
-        std::size_t dataSize = 32 /* IV */
-                + DATA_DELIMITER_LENGTH
-                + (clientIdSize > 0 ? clientIdSize + DATA_DELIMITER_LENGTH : 0)
-                + expectedBase64Length(expectedAESCipherLength(plainDataSize));
-        unsigned int digits = 0;
-        unsigned int n = static_cast<unsigned int>(dataSize);
-        while (n) {
-            n /= 10;
-            ++digits;
-        };
-        return digits + DATA_DELIMITER_LENGTH + dataSize;
-    }
-
+    static std::size_t expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize = 16) noexcept;
 
     ///
     /// \brief Helper functino to convert string to hexdecimal e.g, khn = 6b686e

@@ -393,6 +393,24 @@ const byte* Ripe::hexToByte(const std::string& hex)
     return reinterpret_cast<const byte*>(result.c_str());
 }
 
+
+std::size_t Ripe::expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize) noexcept
+{
+    static const int DATA_DELIMITER_LENGTH = sizeof(DATA_DELIMITER);
+
+    std::size_t dataSize = 32 /* IV */
+            + DATA_DELIMITER_LENGTH
+            + (clientIdSize > 0 ? clientIdSize + DATA_DELIMITER_LENGTH : 0)
+            + expectedBase64Length(expectedAESCipherLength(plainDataSize));
+    unsigned int digits = 0;
+    unsigned int n = static_cast<unsigned int>(dataSize);
+    while (n) {
+        n /= 10;
+        ++digits;
+    };
+    return digits + DATA_DELIMITER_LENGTH + dataSize;
+}
+
 std::string Ripe::version() noexcept
 {
     return RIPE_VERSION;
