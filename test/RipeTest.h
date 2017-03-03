@@ -39,7 +39,7 @@ static const std::vector<std::tuple<int, std::string>> RSATestData = {
     std::make_tuple(1024, "{plain text}"),
     std::make_tuple(1024, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(1024, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
-    /*std::make_tuple(2048, "plain text"),
+    std::make_tuple(2048, "plain text"),
     std::make_tuple(2048, "Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(2048, "{plain text}"),
     std::make_tuple(2048, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
@@ -48,7 +48,7 @@ static const std::vector<std::tuple<int, std::string>> RSATestData = {
     std::make_tuple(4096, "Quick Brown Fox Jumps Over The Lazy Dog"),
     std::make_tuple(4096, "{plain text}"),
     std::make_tuple(4096, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(4096, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),*/
+    std::make_tuple(4096, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
 };
 
 class RipeTest : public ::testing::Test
