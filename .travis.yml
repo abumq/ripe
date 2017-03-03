@@ -12,7 +12,7 @@ before_install:
  - wget -O cryptocpp.tar.gz https://github.com/weidai11/cryptopp/archive/CRYPTOPP_5_6_5.tar.gz
  - tar xf cryptocpp.tar.gz
  - cd cryptopp-CRYPTOPP_5_6_5
- - wget -O pem_pack.zip https://www.cryptopp.com/w/images/5/5a/Pem-pack.zip
+ - wget -O pem_pack.zip https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/Pem-pack.zip
  - unzip pem_pack.zip
  - cmake .
  - make
