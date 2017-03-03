@@ -64,14 +64,14 @@ public:
     /// \brief Writes RSA key pair and saves private key to privateOutputFile (file path) and public key to publicOutputFile
     /// \param length Length of the key (defaults to 256-bit [2048])
     ///
-    static bool writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length = 2048, unsigned long exponent = RipeCrypto::RIPE_RSA_3) noexcept;
+    static bool writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length = 2048);
 
     ///
     /// \brief Generate key pair and returns KeyPair
     /// \see KeyPair
     /// \see writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length, unsigned long exponent)
     ///
-    static KeyPair generateRSAKeyPair(unsigned int length = 2048, unsigned long exponent = RipeCrypto::RIPE_RSA_3);
+    static KeyPair generateRSAKeyPair(unsigned int length = 2048);
 
     ///
     /// \brief printLastError Print last RSA error

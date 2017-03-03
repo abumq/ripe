@@ -143,12 +143,12 @@ public:
     /// \brief writeRSAKeyPair Writes RSA key pair to public and private file paths.
     /// \param length RSA key size
     ///
-    static void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length = 2048) noexcept;
+    static void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length = 2048);
 
     ///
     /// \brief generateRSAKeyPair Generates RSA key pair and returns colon seperated base64 where first part is private key and second part is public key.
     ///
-    static std::string generateRSAKeyPair(int length = 2048) noexcept;
+    static std::string generateRSAKeyPair(int length = 2048);
 
     ///
     /// \brief prepareData Helper method to encrypt data with symmetric key and convert it in to tranferable data.

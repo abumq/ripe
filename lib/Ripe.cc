@@ -80,24 +80,22 @@ std::string Ripe::convertDecryptedRSAToString(byte* decryptedData, int dataLengt
     return result;
 }
 
-void Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length) noexcept
+void Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length)
 {
     RLOG(INFO) << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes";
     if (!RipeCrypto::writeRSAKeyPair(publicFile.c_str(), privateFile.c_str(), length)) {
         RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
-        RipeCrypto::printLastError("Failed to decrypt");
-        return;
+        throw std::logic_error("Failed to generate key pair!");
     }
     RLOG(INFO) << "Successfully saved!";
 }
 
-std::string Ripe::generateRSAKeyPair(int length) noexcept
+std::string Ripe::generateRSAKeyPair(int length)
 {
     RipeCrypto::KeyPair pair = RipeCrypto::generateRSAKeyPair(length);
     if (pair.privateKey.empty() || pair.publicKey.empty()) {
         RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
-        RipeCrypto::printLastError("Failed to decrypt");
-        return "";
+        throw std::logic_error("Failed to generate key pair!");
     }
     return std::string(Ripe::base64Encode(pair.privateKey) + ":" + Ripe::base64Encode(pair.publicKey));
 }

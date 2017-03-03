@@ -69,9 +69,9 @@ static RipeRSA createRSA(byte* key, bool isPublic) noexcept
     return rsa;
 }
 
-bool RipeCrypto::writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length, unsigned long exponent) noexcept
+bool RipeCrypto::writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length)
 {
-    KeyPair keypair = RipeCrypto::generateRSAKeyPair(length, exponent);
+    KeyPair keypair = RipeCrypto::generateRSAKeyPair(length);
     if (keypair.privateKey.size() > 0 && keypair.publicKey.size() > 0) {
         std::ofstream fs(privateOutputFile, std::ios::out);
         if (fs.is_open()) {
@@ -144,7 +144,7 @@ void RipeCrypto::printLastError(const char* name) noexcept
     RLOG(ERROR) << name << " " << errString;
 }
 
-RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned long exponent)
+RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length)
 {
 
     CryptoPP::AutoSeededRandomPool rng;
