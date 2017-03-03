@@ -7,6 +7,8 @@ Ripe is a 256-bit security tool. It consists of command-line tool and C++ API fo
 
 Ripe contains encryption API for two major cryptography methods, RSA and AES (Rijndael). Also contains Base64 encoding/decoding API and some helper functions to make data transferable (called `prepareData`). Binaries do not depend on third-party tools or libraries but development will require cryptography libraries installed in system in order to compile.
 
+Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-compatibility.sh)
+
 
 [![Build Status (Develop)](https://img.shields.io/travis/muflihun/ripe/develop.svg)](https://travis-ci.org/muflihun/ripe) (`develop`)
 
