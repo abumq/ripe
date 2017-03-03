@@ -5,8 +5,8 @@ project(Ripe)
 option(test "Build all tests" OFF)
 option(travis "Build all tests for travis" OFF)
 
-set (RIPE_VERSION "2.0.0")
-set (RIPE_SOVERSION "2.0.0")
+set (RIPE_VERSION "2.0.2")
+set (RIPE_SOVERSION "2.0.2")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)

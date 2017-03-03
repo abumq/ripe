@@ -6,9 +6,12 @@
 Ripe is a 256-bit security tool. It consists of command-line tool and C++ API for cryptography.
 
 Ripe contains encryption API for two major cryptography methods, RSA and AES (Rijndael). Also contains Base64 encoding/decoding API and some helper functions to make data transferable (called `prepareData`). Binaries do not depend on third-party tools or libraries but development will require cryptography libraries installed in system in order to compile.
-    
-[![Build Status](https://img.shields.io/travis/muflihun/ripe.svg)](https://travis-ci.org/muflihun/ripe)
 
+
+[![Build Status (Develop)](https://img.shields.io/travis/muflihun/ripe/develop.svg)](https://travis-ci.org/muflihun/ripe) (`develop`)
+
+[![Build Status (Master)](https://img.shields.io/travis/muflihun/ripe/master.svg)](https://travis-ci.org/muflihun/ripe) (`master`)
+    
 [![Version](https://img.shields.io/github/release/muflihun/ripe.svg)](https://github.com/muflihun/ripe/releases/latest)
 
 [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/ripe)

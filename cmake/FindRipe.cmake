@@ -1,10 +1,17 @@
-# Finds Ripe headers and OpenSSL as dependency
-# Creates ${RIPE_INCLUDE_DIR}
+#
+# Finds Ripe library and headers
+#
+# (c) 2017 Muflihun Labs
+#
+# http://muflihun.com
+#
+# Creates ${RIPE_INCLUDE_DIR} and ${RIPE_LIBRARY}
+#
+
 set(RIPE_PATHS ${RIPE_ROOT} $ENV{RIPE_ROOT})
 
 find_path(RIPE_INCLUDE_DIR
     Ripe.h
-    RipeHelpers.h
     PATH_SUFFIXES include
     PATHS ${RIPE_PATHS}
 )
