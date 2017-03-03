@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [2.0.2] - 04-03-2017
+### Fixed
+- Added compatibility with openssl (issue #2)
+
 ## [2.0.1] - 04-03-2017
 ### Fixed
 - Removed dependancy for openssl from cmake

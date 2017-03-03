@@ -56,7 +56,7 @@ std::string Ripe::encryptRSA(const std::string& data, const std::string& publicK
     if (!rsaKeyValid) {
         throw std::invalid_argument("Could not load public key");
     }
-    RSAES_OAEP_SHA_Encryptor e(publicKey);
+    RSAES_PKCS1v15_Encryptor e(publicKey);
     std::string result;
     AutoSeededRandomPool rng;
     StringSource ss(data, true,
@@ -99,7 +99,7 @@ std::string Ripe::decryptRSA(const std::string& data, const std::string& private
 
     std::string result;
     AutoSeededRandomPool rng;
-    RSAES_OAEP_SHA_Decryptor d(privateKey);
+    RSAES_PKCS1v15_Decryptor d(privateKey);
 
     StringSource ss(data, true,
         new PK_DecryptorFilter(rng, d,
