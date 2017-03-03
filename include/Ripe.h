@@ -17,7 +17,8 @@
 using byte = unsigned char;
 
 ///
-/// \brief The RipeHelpers class contains wrapper functions for Ripe class. Please refer to it's documentation for details
+/// \brief The Ripe class is core of Ripe library and contains all
+/// the required cryptography API supported by Ripe
 ///
 class Ripe {
 public:
