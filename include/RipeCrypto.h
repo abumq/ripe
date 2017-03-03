@@ -33,7 +33,10 @@ public:
     ///
     /// \brief RSA Key pair
     ///
-    using KeyPair = std::pair<std::string, std::string>;
+    struct KeyPair {
+        std::string privateKey;
+        std::string publicKey;
+    };
 
     ///
     /// \brief Constant value for AES block size
@@ -64,10 +67,11 @@ public:
     static bool writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length = 2048, unsigned long exponent = RipeCrypto::RIPE_RSA_3) noexcept;
 
     ///
-    /// \brief Generate key pair and returns KeyPair, where KeyPair.first is private key and KeyPair.second is public key
+    /// \brief Generate key pair and returns KeyPair
+    /// \see KeyPair
     /// \see writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length, unsigned long exponent)
     ///
-    static KeyPair generateRSAKeyPair(unsigned int length = 2048, unsigned long exponent = RipeCrypto::RIPE_RSA_3) noexcept;
+    static KeyPair generateRSAKeyPair(unsigned int length = 2048, unsigned long exponent = RipeCrypto::RIPE_RSA_3);
 
     ///
     /// \brief printLastError Print last RSA error

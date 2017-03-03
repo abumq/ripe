@@ -15,7 +15,6 @@
 class Ripe {
 public:
 
-
     ///
     /// \brief Data delimiter for prepared data
     /// \see prepareData(const char*, const std::string&, const char*)

@@ -94,12 +94,12 @@ void Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& pri
 std::string Ripe::generateRSAKeyPair(int length) noexcept
 {
     RipeCrypto::KeyPair pair = RipeCrypto::generateRSAKeyPair(length);
-    if (pair.first.empty() || pair.second.empty()) {
+    if (pair.privateKey.empty() || pair.publicKey.empty()) {
         RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
         RipeCrypto::printLastError("Failed to decrypt");
         return "";
     }
-    return std::string(Ripe::base64Encode(pair.first) + ":" + Ripe::base64Encode(pair.second));
+    return std::string(Ripe::base64Encode(pair.privateKey) + ":" + Ripe::base64Encode(pair.publicKey));
 }
 
 std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile)

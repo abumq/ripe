@@ -183,9 +183,9 @@ TEST(RipeTest, RSAOperations)
             int expectedBase64Length = Ripe::expectedBase64Length(lengthInBits);
             const std::string data = std::get<1>(item);
             PERFORMANCE_CHECKPOINT_WITH_ID(timer, "generate keypair");
-            std::pair<std::string, std::string> pair = RipeCrypto::generateRSAKeyPair(length);
-            std::string privateKey = pair.first;
-            std::string publicKey = pair.second;
+            RipeCrypto::KeyPair pair = RipeCrypto::generateRSAKeyPair(length);
+            std::string privateKey = pair.privateKey;
+            std::string publicKey = pair.publicKey;
 
             byte encrypted[length];
             byte decrypted[length];

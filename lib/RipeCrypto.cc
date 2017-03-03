@@ -1,5 +1,5 @@
 //
-//  Ripe.cc
+//  RipeCrypto.cc
 //
 //  Copyright © 2017 Muflihun.com. All rights reserved.
 //
@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
-#include <openssl/aes.h>
+
 #include <openssl/bio.h>
 #include <openssl/bn.h>
 #include <openssl/err.h>
@@ -72,10 +72,10 @@ static RipeRSA createRSA(byte* key, bool isPublic) noexcept
 bool RipeCrypto::writeRSAKeyPair(const char* publicOutputFile, const char* privateOutputFile, unsigned int length, unsigned long exponent) noexcept
 {
     KeyPair keypair = RipeCrypto::generateRSAKeyPair(length, exponent);
-    if (keypair.first.size() > 0 && keypair.second.size() > 0) {
+    if (keypair.privateKey.size() > 0 && keypair.publicKey.size() > 0) {
         std::ofstream fs(privateOutputFile, std::ios::out);
         if (fs.is_open()) {
-            fs.write(keypair.first.c_str(), keypair.first.size());
+            fs.write(keypair.privateKey.c_str(), keypair.privateKey.size());
             fs.close();
         } else {
             RLOG(ERROR) << "Unable to open [" << privateOutputFile << "]";
@@ -83,7 +83,7 @@ bool RipeCrypto::writeRSAKeyPair(const char* publicOutputFile, const char* priva
         }
         fs.open(publicOutputFile, std::ios::out);
         if (fs.is_open()) {
-            fs.write(keypair.second.c_str(), keypair.second.size());
+            fs.write(keypair.publicKey.c_str(), keypair.publicKey.size());
             fs.close();
         } else {
             RLOG(ERROR) << "Unable to open [" << publicOutputFile << "]";
@@ -118,7 +118,7 @@ static bool getRSAString(RSA* rsa, bool isPublic, char** strPtr) noexcept
     return size > 0;
 }
 
-RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned long exponent) noexcept
+RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned long exponent)
 {
     RipeRSA rsa(RSA_new(), ::RSA_free);
     int status;
@@ -126,12 +126,12 @@ RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned
     status = BN_set_word(bign.get(), exponent);
     if (status != 1) {
         RLOG(ERROR) << "Could not set big numb (OpenSSL)";
-        return std::make_pair("", "");
+        throw std::logic_error("Could not set big numb (OpenSSL)");
     }
     status = RSA_generate_key_ex(rsa.get(), length, bign.get(), nullptr);
     if (status != 1) {
         RLOG(ERROR) << "Could not generate RSA key";
-        return std::make_pair("", "");
+        throw std::logic_error("Could not generate RSA key");
     }
 
     if (rsa.get() != nullptr) {
@@ -149,7 +149,7 @@ RipeCrypto::KeyPair RipeCrypto::generateRSAKeyPair(unsigned int length, unsigned
     char* pu = pub.get();
     getRSAString(rsa.get(), true, &pu);
     std::string pubStr(pu);
-    return std::make_pair(privStr, pubStr);
+    return { privStr, pubStr };
 }
 
 int RipeCrypto::encryptRSA(byte* data, int dataLength, byte* key, byte* destination) noexcept
