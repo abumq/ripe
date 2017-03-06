@@ -7,8 +7,8 @@ option(travis "Build all tests for travis" OFF)
 option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
 
-set (RIPE_VERSION "2.0.2")
-set (RIPE_SOVERSION "2.0.2")
+set (RIPE_VERSION "2.0.3")
+set (RIPE_SOVERSION "2.0.3")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
