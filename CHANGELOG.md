@@ -1,6 +1,11 @@
 # Change Log
 
 ## [Unreleased]
+### Removed
+- Removed `base64Encode(const byte*, std::size_t)`
+### Fixed
+- Unused warnings for some variables
+- Removed unnecessary constructor for `generateRSAKeyPairBase64`
 
 ## [2.0.2] - 04-03-2017
 ### Fixed

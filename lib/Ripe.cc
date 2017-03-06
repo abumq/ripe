@@ -20,6 +20,8 @@
 #include "include/Ripe.h"
 #include "include/log.h"
 
+#define RIPE_UNUSED(x) (void)x
+
 INITIALIZE_EASYLOGGINGPP
 
 using namespace CryptoPP;
@@ -64,6 +66,7 @@ std::string Ripe::encryptRSA(const std::string& data, const std::string& publicK
             new StringSink(result)
        )
     );
+    RIPE_UNUSED(ss);
     return result;
 }
 
@@ -106,6 +109,7 @@ std::string Ripe::decryptRSA(const std::string& data, const std::string& private
             new StringSink(result)
        )
     );
+    RIPE_UNUSED(ss);
     return result;
 }
 
@@ -157,7 +161,7 @@ std::string Ripe::generateRSAKeyPairBase64(int length)
         RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
         throw std::logic_error("Failed to generate key pair!");
     }
-    return std::string(Ripe::base64Encode(pair.privateKey) + ":" + Ripe::base64Encode(pair.publicKey));
+    return Ripe::base64Encode(pair.privateKey) + ":" + Ripe::base64Encode(pair.publicKey);
 }
 
 Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length)
@@ -182,12 +186,13 @@ Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length)
     return pair;
 }
 
-std::string Ripe::base64Encode(const byte* input, std::size_t length)
+std::string Ripe::base64Encode(const std::string& input)
 {
     std::string encoded;
-    StringSource ss(input, length, true, new Base64Encoder(
-                        new StringSink(encoded), false)
+    StringSource ss(input, true, new Base64Encoder(
+                        new StringSink(encoded), false /* insert line breaks */)
                     );
+    RIPE_UNUSED(ss);
     return encoded;
 }
 
@@ -197,6 +202,7 @@ std::string Ripe::base64Decode(const std::string& base64Encoded)
     StringSource ss(base64Encoded, true, new Base64Decoder(
                         new StringSink(decoded))
                     );
+    RIPE_UNUSED(ss);
     return decoded;
 }
 
@@ -237,6 +243,7 @@ std::string Ripe::encryptAES(const char* buffer, const byte* key, std::size_t ke
     StringSource ss(buffer, true,
                     new StreamTransformationFilter(e, new StringSink(cipher))
                     );
+    RIPE_UNUSED(ss);
     return cipher;
 }
 
@@ -274,6 +281,7 @@ std::string Ripe::decryptAES(const std::string& data, const byte* key, std::size
     StringSource ss(data, true,
                 new StreamTransformationFilter( d, new StringSink(result))
                 );
+    RIPE_UNUSED(ss);
     return result;
 }
 
@@ -384,7 +392,7 @@ const byte* Ripe::hexToByte(const std::string& hex)
     }
     std::string result;
     result.resize(len / 2);
-    for (int i = 0; i < len; i += 2) {
+    for (std::size_t i = 0; i < len; i += 2) {
         std::string pair = hex.substr(i, 2);
         char byte = static_cast<char>(strtol(pair.c_str(), NULL, 16));
         result[i / 2] = byte;

@@ -16,11 +16,21 @@
 
 using byte = unsigned char;
 
+#ifdef RIPE_DLL
+#ifdef RIPE_EXPORTS
+#define RIPE_API __declspec(dllexport)
+#else
+#define RIPE_API __declspec(dllimport)
+#endif
+#else
+#define RIPE_API
+#endif
+
 ///
 /// \brief The Ripe class is core of Ripe library and contains all
 /// the required cryptography API supported by Ripe
 ///
-class Ripe {
+RIPE_API class Ripe {
 public:
 
     ///
@@ -236,23 +246,14 @@ public:
                 \*******************************************************************/
 
     ///
-    /// \brief Encodes input of length to base64 encoding
-    ///
-    static std::string base64Encode(const byte* input, std::size_t length);
-
-    ///
     /// \brief Decodes encoded base64
     ///
     static std::string base64Decode(const std::string& base64Encoded);
 
     ///
-    /// \brief base64Encode Helper method
-    /// \see base64Encode(const byte*, std::size_t)
+    /// \brief Encodes input of length to base64 encoding
     ///
-    static inline std::string base64Encode(const std::string& binaryData)
-    {
-        return base64Encode(reinterpret_cast<byte*>(const_cast<char*>(binaryData.data())), binaryData.size());
-    }
+    static std::string base64Encode(const std::string& binaryData);
 
     ///
     /// \brief expectedBase64Length Returns expected base64 length
@@ -313,4 +314,4 @@ public:
     ///
     static std::string version() noexcept;
 };
-#endif /* RipeHelpers_h */
+#endif /* Ripe_h */

@@ -90,9 +90,13 @@ If the default path (`/usr/local`) is not where you want things installed, then 
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 ```
 
+### Windows
+
+You can do `cmake -Ddll_export=ON ...` to export symbols and `cmake -Ddll=ON ...` to import if needed
+
 ### If build fails...
 
-Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ (with Pem Pack) using following commands
+Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ [v5.6.5] (with Pem Pack) using following commands
 
 ```
 wget -O cryptocpp.tar.gz https://github.com/weidai11/cryptopp/archive/CRYPTOPP_5_6_5.tar.gz

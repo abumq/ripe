@@ -4,6 +4,8 @@ project(Ripe)
 
 option(test "Build all tests" OFF)
 option(travis "Build all tests for travis" OFF)
+option(dll "DLL imports (Use on windows only)" OFF)
+option(dll_export "DLL exports (Use on windows only)" OFF)
 
 set (RIPE_VERSION "2.0.2")
 set (RIPE_SOVERSION "2.0.2")
@@ -50,9 +52,16 @@ if (APPLE)
     endif()
 endif()
 
-if (travis)
-else()
+if (!travis)
     list(APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
+endif()
+
+if (dll)
+    add_definitions (-DRIPE_DLL)
+endif()
+
+if (dll_export)
+    add_definitions (-DRIPE_EXPORTS)
 endif()
 
 # Check for cryptopp
