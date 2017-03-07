@@ -34,7 +34,7 @@ else()
     )
 endif()
 
-message ("-- Ripe: Found headers in " ${RIPE_INCLUDE_DIR} " and binaries in " ${RIPE_LIBRARY})
+message ("-- Ripe: Include: " ${RIPE_INCLUDE_DIR} ", Binary: " ${RIPE_LIBRARY})
 
 include(FindPackageHandleStandardArgs)
 
