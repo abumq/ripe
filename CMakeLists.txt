@@ -68,7 +68,8 @@ endif()
 
 require_cpp11()
 
-# Check for cryptopp
+# Check for cryptopp (static)
+set(CryptoPP_USE_STATIC_LIBS OFF)
 find_package(CryptoPP REQUIRED)
 include_directories (${CRYPTOPP_INCLUDE_DIRS})
 

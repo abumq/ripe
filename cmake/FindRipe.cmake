@@ -28,7 +28,7 @@ if (Ripe_USE_STATIC_LIBS)
     )
 else()
     message ("-- Ripe: Dynamic linking is preferred")
-    find_library(RIPE_LIBRARY
+    find_library(RIPE_LIBS
         NAMES libripe.dylib libripe libripe.a
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
@@ -38,4 +38,4 @@ message ("-- Ripe: Found headers in " ${RIPE_INCLUDE_DIR} " and binaries in " ${
 
 include(FindPackageHandleStandardArgs)
 
-find_package_handle_standard_args(Ripe REQUIRED_VARS RIPE_INCLUDE_DIR)
+find_package_handle_standard_args(Ripe REQUIRED_VARS RIPE_INCLUDE_DIR RIPE_LIBRARY)
