@@ -285,14 +285,14 @@ std::string Ripe::decryptAES(const std::string& data, const byte* key, std::size
     return result;
 }
 
-std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::string& ivec, bool isBase64)
+std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::string& ivec, bool isBase64, bool isHex)
 {
     if (ivec.empty() && isBase64) {
         // Extract IV from data
         std::size_t pos = data.find_first_of(':');
         if (pos == 32) {
             ivec = data.substr(0, pos);
-            Ripe::normalizeIV(ivec);
+            Ripe::normalizeHex(ivec);
             data = data.substr(pos + 1);
             pos = data.find_first_of(':');
             if (pos != std::string::npos) {
@@ -303,7 +303,7 @@ std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::
     }
     if (ivec.size() == 32) {
         // Condensed form needs to be normalized
-        Ripe::normalizeIV(ivec);
+        Ripe::normalizeHex(ivec);
     }
 
     byte* iv = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
@@ -312,19 +312,10 @@ std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::
     if (isBase64) {
         data = Ripe::base64Decode(data);
     }
-    return Ripe::decryptAES(data, Ripe::hexToByte(hexKey), hexKey.size() / 2, ivHex);
-}
-
-bool Ripe::normalizeIV(std::string& iv) noexcept
-{
-    if (iv.size() == 32) {
-        for (int j = 2; j < 32 + 15; j += 2) {
-            iv.insert(j, " ");
-            j++;
-        }
-        return true;
+    if (isHex) {
+        data = Ripe::hexToString(data);
     }
-    return false;
+    return Ripe::decryptAES(data, reinterpret_cast<const byte*>(Ripe::hexToString(hexKey).c_str()), hexKey.size() / 2, ivHex);
 }
 
 std::string Ripe::prepareData(const char* data, const std::string& hexKey, const char* clientId)
@@ -351,6 +342,18 @@ std::string Ripe::prepareData(const char* data, const std::string& hexKey, const
     return fss.str();
 }
 
+bool Ripe::normalizeHex(std::string& iv) noexcept
+{
+    if (iv.size() == 32) {
+        for (int j = 2; j < 32 + 15; j += 2) {
+            iv.insert(j, " ");
+            j++;
+        }
+        return true;
+    }
+    return false;
+}
+
 std::string Ripe::vecToString(const std::vector<byte>& iv) noexcept
 {
     std::stringstream ss;
@@ -374,33 +377,29 @@ std::vector<byte> Ripe::byteToVec(const byte* b) noexcept
     return hexData;
 }
 
-
-std::string Ripe::stringToHex(const std::string& str) noexcept
+std::string Ripe::hexToString(const std::string& hex)
 {
-    std::stringstream ss;
-    for (char c : str) {
-        ss << std::hex << static_cast<unsigned>(c);
-    }
-    return ss.str();
-}
-
-const byte* Ripe::hexToByte(const std::string& hex)
-{
-    std::size_t len = hex.length();
-    if (len % 2 != 0) {
-        throw std::invalid_argument("Invalid hex");
-    }
     std::string result;
-    result.resize(len / 2);
-    for (std::size_t i = 0; i < len; i += 2) {
-        std::string pair = hex.substr(i, 2);
-        char byte = static_cast<char>(strtol(pair.c_str(), NULL, 16));
-        result[i / 2] = byte;
-    }
-
-    return reinterpret_cast<const byte*>(result.c_str());
+    StringSource ss(hex, true,
+        new HexDecoder(
+            new StringSink(result)
+        )
+    );
+    RIPE_UNUSED(ss);
+    return result;
 }
 
+std::string Ripe::stringToHex(const std::string& raw) noexcept
+{
+    std::string result;
+    StringSource ss(raw, true,
+        new HexEncoder(
+            new StringSink(result)
+        )
+    );
+    RIPE_UNUSED(ss);
+    return result;
+}
 
 std::size_t Ripe::expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize) noexcept
 {

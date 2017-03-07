@@ -14,7 +14,7 @@
 
 void displayUsage()
 {
-    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret]" << std::endl;
+    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex]" << std::endl;
 }
 
 void displayVersion()
@@ -32,10 +32,10 @@ void encryptAES(std::string& data, const std::string& key, const std::string& cl
     CATCH
 }
 
-void decryptAES(std::string& data, const std::string& key, std::string& iv, bool isBase64)
+void decryptAES(std::string& data, const std::string& key, std::string& iv, bool isBase64, bool isHex)
 {
     TRY
-        std::cout << Ripe::decryptAES(data, key, iv, isBase64);
+        std::cout << Ripe::decryptAES(data, key, iv, isBase64, isHex);
     CATCH
 }
 
@@ -61,6 +61,20 @@ void decodeBase64(std::string& data)
 {
     TRY
         std::cout << Ripe::base64Decode(data);
+    CATCH
+}
+
+void encodeHex(std::string& data)
+{
+    TRY
+        std::cout << Ripe::stringToHex(data);
+    CATCH
+}
+
+void decodeHex(std::string& data)
+{
+    TRY
+        std::cout << Ripe::hexToString(data);
     CATCH
 }
 
@@ -117,6 +131,7 @@ int main(int argc, char* argv[])
     std::string secret;
     bool isAES = false;
     bool isBase64 = false;
+    bool isHex = false;
     bool clean = false;
     bool isRSA = false;
     std::string outputFile;
@@ -133,6 +148,8 @@ int main(int argc, char* argv[])
             type = 3;
         } else if (arg == "--base64") {
             isBase64 = true;
+        } else if (arg == "--hex") {
+            isHex = true;
         } else if (arg == "--rsa") {
             isRSA = true;
         } else if (arg == "--key" && hasNext) {
@@ -191,23 +208,28 @@ int main(int argc, char* argv[])
         data.erase(data.size() - 1);
     }
 
-    if (isBase64 && clean) {
+    if ((isBase64 || isHex) && clean) {
         data.erase(0, data.find_first_of(':') + 1);
     }
     if (type == 1) { // Decrypt / Decode
         if (isBase64 && key.empty() && iv.empty()) {
             // base64 decode
             decodeBase64(data);
+        } else if (isHex && key.empty() && iv.empty()) {
+            // hex to ascii
+            decodeHex(data);
         } else if (isRSA) {
             // RSA decrypt (base64-flexiable)
             decryptRSA(data, key, isBase64, keyLength, secret);
         } else {
             // AES decrypt (base64-flexible)
-            decryptAES(data, key, iv, isBase64);
+            decryptAES(data, key, iv, isBase64, isHex);
         }
     } else if (type == 2) { // Encrypt / Encode
         if (isBase64 && key.empty() && iv.empty()) {
             encodeBase64(data);
+        } else if (isHex && key.empty() && iv.empty()) {
+            encodeHex(data);
         } else if (isRSA) {
             encryptRSA(data, key, outputFile, keyLength);
         } else {

@@ -1,13 +1,17 @@
 #
-# Finds Ripe library and headers
-#
-# (c) 2017 Muflihun Labs
-#
-# http://muflihun.com
+# CMake module for Ripe cryptography library
 #
 # Creates ${RIPE_INCLUDE_DIR} and ${RIPE_LIBRARY}
 #
+# If ${RIPE_USE_STATIC_LIBS} is ON then static libs are preferred over shared
+#
+# (c) 2017 Muflihun Labs
+#
+# https://github.com/muflihun/ripe
+# https://muflihun.com
+#
 
+message ("-- Ripe: Searching...")
 set(RIPE_PATHS ${RIPE_ROOT} $ENV{RIPE_ROOT})
 
 find_path(RIPE_INCLUDE_DIR
@@ -16,10 +20,21 @@ find_path(RIPE_INCLUDE_DIR
     PATHS ${RIPE_PATHS}
 )
 
-find_library(RIPE_LIBRARY
-    NAMES ripe libripe
-    HINTS "${CMAKE_PREFIX_PATH}/lib"
-)
+if (Ripe_USE_STATIC_LIBS)
+    message ("-- Ripe: Static linking is preferred")
+    find_library(RIPE_LIBRARY
+        NAMES libripe.a libripe.dylib libripe
+        HINTS "${CMAKE_PREFIX_PATH}/lib"
+    )
+else()
+    message ("-- Ripe: Dynamic linking is preferred")
+    find_library(RIPE_LIBRARY
+        NAMES libripe.dylib libripe libripe.a
+        HINTS "${CMAKE_PREFIX_PATH}/lib"
+    )
+endif()
+
+message ("-- Ripe: Found headers in " ${RIPE_INCLUDE_DIR} " and binaries in " ${RIPE_LIBRARY})
 
 include(FindPackageHandleStandardArgs)
 

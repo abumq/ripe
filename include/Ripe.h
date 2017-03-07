@@ -122,14 +122,15 @@ public:
     ///
     static inline std::string encryptAES(const std::string& buffer, const std::string& hexKey, std::vector<byte>& iv)
     {
-        return encryptAES(buffer.c_str(), hexToByte(hexKey), hexKey.size() / 2, iv);
+        return encryptAES(buffer.c_str(), reinterpret_cast<const byte*>(hexToString(hexKey).c_str()), hexKey.size() / 2, iv);
     }
 
     ///
     /// \brief decryptAES Decrypts data using specified symmetric key.
     /// \param isBase64 If true, first base64 decoding is done on data and then decryption is processed
+    /// \param isHex If true, hex string is decoded. If base64 is true, base64 decoding is done before hex decoding
     ///
-    static std::string decryptAES(std::string& data, const std::string& hexKey, std::string& iv, bool isBase64 = false);
+    static std::string decryptAES(std::string& data, const std::string& hexKey, std::string& iv, bool isBase64 = false, bool isHex = false);
 
 
     ///
@@ -144,7 +145,7 @@ public:
     /// \brief normalizeIV If IV with no space is provided e.g, <pre>67e56fee50e22a8c2ba05c0fb2932bfa:</pre> normalized IV
     /// is <pre>67 e5 6f ee 50 e2 2a 8c 2b a0 5c 0f b2 93 2b fa:</pre>
     ///
-    static bool normalizeIV(std::string& iv) noexcept;
+    static bool normalizeHex(std::string& iv) noexcept;
 
 
 
@@ -293,15 +294,18 @@ public:
     static std::size_t expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize = 16) noexcept;
 
     ///
-    /// \brief Helper functino to convert string to hexdecimal e.g, khn = 6b686e
+    /// \brief Helper function to convert string to hexdecimal e.g, khn = 6b686e.
     ///
-    static std::string stringToHex(const std::string& str) noexcept;
+    static std::string stringToHex(const std::string& raw) noexcept;
 
     ///
-    /// \brief Helper function to convert hexadecimal input to byte array e.g, 6b686e = (byte*)khn
+    /// \brief Helper function to convert hexadecimal input to raw data
     ///
-    static const byte* hexToByte(const std::string& hex);
+    static std::string hexToString(const std::string& hex);
 
+    ///
+    /// \brief Converts vector of byte to raw string
+    ///
     static std::string vecToString(const std::vector<byte>& iv) noexcept;
 
     ///

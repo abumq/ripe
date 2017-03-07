@@ -36,6 +36,7 @@ Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-c
 | `--iv`      | Initializaion vector for decription       |
 | `--rsa`      | Use RSA encryption/decryption      |
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
+| `--hex`   | Tells ripe the data is hex string |
 | `--clean`   | (Only applicable when `--base64` data provided) Tells ripe to clean the data before processing |
 | `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
@@ -88,6 +89,17 @@ If the default path (`/usr/local`) is not where you want things installed, then 
 
 ```
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
+```
+
+### Static Linking
+
+By default ripe builds as shared library, you can pass `build_static_lib` option in cmake to build static library.
+
+For example
+
+```
+cmake -Dbuild_static_lib=ON ..
+make
 ```
 
 ### Windows
@@ -235,6 +247,22 @@ In order to decode you may use `-d` option instead
 
 ```
 echo 'cGxhaW4gdGV4dAo=' | ripe -d --base64
+```
+
+### Hex Encoding
+
+You can use following to encode data to hex encoded string
+
+```
+echo 'plain text' | ripe -e --hex
+```
+
+### Hex Decoding
+
+Decoding hex can be done using `-d` option
+
+```
+echo 706c61696e2074657874 | ripe -d --hex
 ```
  
 ## Licence

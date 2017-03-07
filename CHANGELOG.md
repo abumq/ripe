@@ -3,9 +3,19 @@
 ## [Unreleased]
 ### Removed
 - Removed `base64Encode(const byte*, std::size_t)`
+
 ### Fixed
 - Unused warnings for some variables
 - Removed unnecessary constructor for `generateRSAKeyPairBase64`
+
+### Changes
+- Renamed `normalizeIV` to `normalizeHex`
+- Renamed `hexToByte` to `hexToString`
+- Improved `FindRipe.cmake` cmake module to search for static and dynamic based on flag `Ripe_USE_STATIC_LIBS`
+
+### Added
+- `--hex` option in tool to encode / decode hex strings
+- Ability to build ripe as static library
 
 ## [2.0.2] - 04-03-2017
 ### Fixed
@@ -23,6 +33,7 @@
 - tool; Replaced `--length-included` to `--clean`
 - tool; Added `--secret` option
 - tool; Added AES key generation using `--aes`
+
 ### Added
 - api; `Ripe::expectedAESCipherLength`
 - api; `Ripe::expectedDataSize`
