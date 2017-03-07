@@ -28,7 +28,7 @@ if (Ripe_USE_STATIC_LIBS)
     )
 else()
     message ("-- Ripe: Dynamic linking is preferred")
-    find_library(RIPE_LIBS
+    find_library(RIPE_LIBRARY
         NAMES libripe.dylib libripe libripe.a
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
