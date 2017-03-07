@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+
+## [2.1.0] - 07-03-2017
 ### Removed
 - Removed `base64Encode(const byte*, std::size_t)`
 
