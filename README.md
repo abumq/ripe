@@ -108,7 +108,7 @@ You can do `cmake -Ddll_export=ON ...` to export symbols and `cmake -Ddll=ON ...
 
 ### If build fails...
 
-Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ [v5.6.5] (with Pem Pack) using following commands
+Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ v5.6.5 (with Pem Pack) using following commands
 
 ```
 wget -O cryptocpp.tar.gz https://github.com/weidai11/cryptopp/archive/CRYPTOPP_5_6_5.tar.gz
@@ -118,8 +118,22 @@ wget -O pem_pack.zip https://raw.githubusercontent.com/muflihun/muflihun.github.
 unzip pem_pack.zip
 cmake .
 make
-sudo make install
+make install
 ```
+
+and Easylogging++ using
+
+```
+wget -O easylogging++.zip https://github.com/muflihun/easyloggingpp/archive/master.zip
+unzip easylogging++.zip
+cd easyloggingpp-master/
+cmake -Dtest=ON .
+make
+./easyloggingpp-unit-tests
+make install
+```
+
+If `make install` fails because of permission try to run it as super-user `sudo make install`
 
 ## Examples
 
