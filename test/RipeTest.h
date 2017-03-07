@@ -1,54 +1,55 @@
 #ifndef RIPE_TEST_H
 #define RIPE_TEST_H
 
-#include <cmath>
-#include <cstring>
-#include <tuple>
-#include <easylogging++.h>
 #include "include/Ripe.h"
 #include "test.h"
 
-static const TestData Base64TestData = {
-    {"cGxhaW4gdGV4dA==", "plain text"},
-    {"cXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nIFFVSUNLIEJST1dOIEZPWCBKVU1QUyBPVkVSIFRIRSBMQVpZIERPRw==", "quick brown fox jumps over the lazy dog QUICK BROWN FOX JUMPS OVER THE LAZY DOG"}
+static TestData<std::string, std::string> Base64TestData = {
+    TestCase("cGxhaW4gdGV4dA==", "plain text"),
+    TestCase("cXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nIFFVSUNLIEJST1dOIEZPWCBKVU1QUyBPVkVSIFRIRSBMQVpZIERPRw==", "quick brown fox jumps over the lazy dog QUICK BROWN FOX JUMPS OVER THE LAZY DOG"),
 };
 
-static const std::vector<std::tuple<std::size_t, std::size_t, std::size_t>> DataSizeTestData = {
-    std::make_tuple(4, 16, 77),
-    std::make_tuple(4, 0, 60),
-    std::make_tuple(55, 0, 125),
-    std::make_tuple(55, 16, 142),
+static TestData<std::string, std::string> HexTestData = {
+    TestCase("61626364", "abcd"),
+    TestCase("717569636B2062726F776E20666F78206A756D7073206F76657220746865206C617A7920646F6720515549434B2042524F574E20464F58204A554D5053204F56455220544845204C415A5920444F47", "quick brown fox jumps over the lazy dog QUICK BROWN FOX JUMPS OVER THE LAZY DOG"),
 };
 
-static const std::vector<std::tuple<std::size_t, std::string>> AESTestData = {
-    //std::make_tuple(16, "plain text"),
-    std::make_tuple(24, "plain text"),
-    std::make_tuple(32, "plain text"),
-    std::make_tuple(16, "Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(24, "Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(32, "Quick Brown Fox Jumps Over The Lazy Dog"),
+static TestData<std::size_t, std::size_t, std::size_t> DataSizeTestData = {
+    TestCase(4, 16, 77),
+    TestCase(4, 0, 60),
+    TestCase(55, 0, 125),
+    TestCase(55, 16, 142),
 };
 
-static const std::vector<std::tuple<std::string, std::string, std::string, std::string>> AESDecryptionData = {
-    std::make_tuple("hkz20HKQA491wZqbEctxCA==", "plain text", "B1C8BFB9DA2D4FB054FE73047AE700BC", "88505d29e8f56bbd7c9e1408f4f42240"),
+static TestData<std::size_t, std::string> AESTestData = {
+    //TestCase(16, "plain text"),
+    TestCase(24, "plain text"),
+    TestCase(32, "plain text"),
+    TestCase(16, "Quick Brown Fox Jumps Over The Lazy Dog"),
+    TestCase(24, "Quick Brown Fox Jumps Over The Lazy Dog"),
+    TestCase(32, "Quick Brown Fox Jumps Over The Lazy Dog"),
 };
 
-static const std::vector<std::tuple<int, std::string>> RSATestData = {
-    std::make_tuple(1024, "plain text"),
-    std::make_tuple(1024, "Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(1024, "{plain text}"),
-    std::make_tuple(1024, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(1024, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
-    std::make_tuple(2048, "plain text"),
-    std::make_tuple(2048, "Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(2048, "{plain text}"),
-    std::make_tuple(2048, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(2048, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
-    std::make_tuple(4096, "plain text"),
-    std::make_tuple(4096, "Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(4096, "{plain text}"),
-    std::make_tuple(4096, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
-    std::make_tuple(4096, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
+static TestData<std::string, std::string, std::string, std::string> AESDecryptionData = {
+    TestCase("hkz20HKQA491wZqbEctxCA==", "plain text", "B1C8BFB9DA2D4FB054FE73047AE700BC", "88505d29e8f56bbd7c9e1408f4f42240"),
+};
+
+static TestData<int, std::string> RSATestData = {
+    TestCase(1024, "plain text"),
+    TestCase(1024, "Quick Brown Fox Jumps Over The Lazy Dog"),
+    TestCase(1024, "{plain text}"),
+    TestCase(1024, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
+    TestCase(1024, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
+    TestCase(2048, "plain text"),
+    TestCase(2048, "Quick Brown Fox Jumps Over The Lazy Dog"),
+    TestCase(2048, "{plain text}"),
+    TestCase(2048, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
+    TestCase(2048, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
+    TestCase(4096, "plain text"),
+    TestCase(4096, "Quick Brown Fox Jumps Over The Lazy Dog"),
+    TestCase(4096, "{plain text}"),
+    TestCase(4096, "Quick Brown Fox Jumps Over The Lazy Dog Quick Brown Fox Jumps Over The Lazy Dog"),
+    TestCase(4096, "{\n\"client_id\":\"biltskmftmolwhlf\",\n\"key\":\"biltSKMfTMOlWHlF\",\n\"status\":200\n}"),
 };
 
 class RipeTest : public ::testing::Test
@@ -66,33 +67,49 @@ const std::string RipeTest::encryptedDataFile = "/tmp/ripe-unit-test-rsa-encrypt
 TEST(RipeTest, Base64Encode)
 {
     for (const auto& item : Base64TestData) {
-        std::string encoded = Ripe::base64Encode(item.second);
-        ASSERT_EQ(item.first, encoded);
+        std::string encoded = Ripe::base64Encode(PARAM(1));
+        ASSERT_EQ(PARAM(0), encoded);
     }
 }
 
 TEST(RipeTest, Base64Decode)
 {
     for (const auto& item : Base64TestData) {
-        std::size_t s = Ripe::expectedBase64Length(item.second.size());
-        ASSERT_EQ(item.first.size(), s);
+        std::string decoded = Ripe::base64Decode(PARAM(0));
+        ASSERT_EQ(PARAM(1), decoded);
     }
 }
 
 TEST(RipeTest, ExpectedB64Size)
 {
     for (const auto& item : Base64TestData) {
-        std::string decoded = Ripe::base64Decode(item.first);
-        ASSERT_EQ(item.second, decoded);
+        std::size_t s = Ripe::expectedBase64Length(PARAM(1).size());
+        ASSERT_EQ(PARAM(0).size(), s);
+    }
+}
+
+TEST(RipeTest, HexEncode)
+{
+    for (const auto& item : HexTestData) {
+        std::string encoded = Ripe::stringToHex(PARAM(1));
+        ASSERT_EQ(PARAM(0), encoded);
+    }
+}
+
+TEST(RipeTest, HexDecode)
+{
+    for (const auto& item : HexTestData) {
+        std::string decoded = Ripe::hexToString(PARAM(0));
+        ASSERT_EQ(PARAM(1), decoded);
     }
 }
 
 TEST(RipeTest, ExpectedDataSize)
 {
     for (const auto& item : DataSizeTestData) {
-        std::size_t plainSize = std::get<0>(item);
-        std::size_t clientIdSize = std::get<1>(item);
-        std::size_t expected = std::get<2>(item);
+        std::size_t plainSize = PARAM(0);
+        std::size_t clientIdSize = PARAM(1);
+        std::size_t expected = PARAM(2);
         ASSERT_EQ(expected, Ripe::expectedDataSize(plainSize, clientIdSize));
     }
 }
@@ -101,8 +118,8 @@ TEST(RipeTest, AESEncryption)
 {
     for (const auto& item : AESTestData) {
         std::cout << "\n*****[ BEGIN ]*****\n\n";
-        const std::size_t testKeySize = std::get<0>(item);
-        const std::string testData = std::get<1>(item);
+        const std::size_t testKeySize = PARAM(0);
+        const std::string testData = PARAM(1);
         const std::string testKey = Ripe::generateNewKey(testKeySize);//"6BC027B45BE1B5A912EEE837B723A5DEEE397181439986AD9B1AB307780ECC8A";
 
         LOG(INFO) << "Test: " <<  (testKeySize * Ripe::BITS_PER_BYTE) << "-bit key: " << testData;
@@ -134,10 +151,10 @@ TEST(RipeTest, AESEncryption)
 TEST(RipeTest, AESDecryption)
 {
     for (const auto& item : AESDecryptionData) {
-        const std::string data = std::get<0>(item);
-        const std::string expected = std::get<1>(item);
-        const std::string key = std::get<2>(item);
-        std::string ivec = std::get<3>(item);
+        const std::string data = PARAM(0);
+        const std::string expected = PARAM(1);
+        const std::string key = PARAM(2);
+        std::string ivec = PARAM(3);
         std::string encrypted = Ripe::base64Decode(data);
 
         std::string decrypted = Ripe::decryptAES(encrypted, key, ivec);
@@ -148,7 +165,7 @@ TEST(RipeTest, AESDecryption)
 TEST(RipeTest, RSAKeyGeneration)
 {
     for (const auto& item : RSATestData) {
-        const int length = std::get<0>(item);
+        const int length = PARAM(0);
         const int lengthInBits = length / Ripe::BITS_PER_BYTE;
         std::stringstream ss;
         ss << lengthInBits << " bit keypair";
@@ -173,14 +190,14 @@ TEST(RipeTest, RSAOperations)
 {
     for (const auto& item : RSATestData) {
 
-        const int length = std::get<0>(item);
+        const int length = PARAM(0);
         const int lengthInBits = length / Ripe::BITS_PER_BYTE;
         std::stringstream ss;
         ss << "With " << lengthInBits << " bit keypair";
         TIMED_BLOCK(o, ss.str()) {
             auto& timer = o.timer;
             int expectedBase64Length = Ripe::expectedBase64Length(lengthInBits);
-            const std::string data = std::get<1>(item);
+            const std::string data = PARAM(1);
             PERFORMANCE_CHECKPOINT_WITH_ID(timer, "generate keypair");
             Ripe::KeyPair pair = Ripe::generateRSAKeyPair(length);
             std::string privateKey = pair.privateKey;

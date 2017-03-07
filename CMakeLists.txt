@@ -4,9 +4,12 @@ project(Ripe)
 
 option(test "Build all tests" OFF)
 option(travis "Build all tests for travis" OFF)
+option(dll "DLL imports (Use on windows only)" OFF)
+option(dll_export "DLL exports (Use on windows only)" OFF)
+option(build_static_lib "Build ripe as a static library (as opposed to default, i.e, shared)" OFF)
 
-set (RIPE_VERSION "2.0.2")
-set (RIPE_SOVERSION "2.0.2")
+set (RIPE_VERSION "2.1.0")
+set (RIPE_SOVERSION "2.1.0")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
@@ -16,26 +19,27 @@ set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 include_directories (${CMAKE_BINARY_DIR})
 include_directories (${CMAKE_SOURCE_DIR})
 
-option (BUILD_SHARED_LIBS "build shared libraries" OFF)
 include(FindPackageHandleStandardArgs)
 
 # We need C++11
-if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
-        # CMake 3.1 has built-in CXX standard checks.
-        message("-- Setting C++11")
-        set(CMAKE_CXX_STANDARD 11)
-        set(CMAKE_CXX_STANDARD_REQUIRED on)
-else()
-        if (CMAKE_CXX_COMPILER_ID MATCHES "GCC")
-            message ("-- GNU CXX (-std=c++11)")
-            list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
-        elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-            message ("-- CLang CXX (-std=c++11)")
-            list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+macro(require_cpp11)
+        if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
+                # CMake 3.1 has built-in CXX standard checks.
+                message("-- Setting C++11")
+                set(CMAKE_CXX_STANDARD 11)
+                set(CMAKE_CXX_STANDARD_REQUIRED on)
         else()
-            message ("-- Ripe requires C++11. Your compiler does not support it.")
+                if (CMAKE_CXX_COMPILER_ID MATCHES "GCC")
+                    message ("-- GNU CXX (-std=c++11)")
+                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+                elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+                    message ("-- CLang CXX (-std=c++11)")
+                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+                else()
+                    message ("-- Requires C++11. Your compiler does not support it.")
+                endif()
         endif()
-endif()
+endmacro()
 
 # http://www.cmake.org/Wiki/CMake_RPATH_handling#Mac_OS_X_and_the_RPATH
 if (APPLE)
@@ -50,13 +54,24 @@ if (APPLE)
     endif()
 endif()
 
-if (travis)
-else()
+if (!travis)
     list(APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
 endif()
 
-# Check for cryptopp
+if (dll)
+    add_definitions (-DRIPE_DLL)
+endif()
+
+if (dll_export)
+    add_definitions (-DRIPE_EXPORTS)
+endif()
+
+require_cpp11()
+
+# Check for cryptopp (static)
+set(CryptoPP_USE_STATIC_LIBS OFF)
 find_package(CryptoPP REQUIRED)
+message ("-- Crypto++ binary: " ${CRYPTOPP_LIBRARY})
 include_directories (${CRYPTOPP_INCLUDE_DIRS})
 
 # Check for Easylogging++
@@ -87,11 +102,17 @@ set(LIB_RIPE_SOURCE_FILES
     ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
 
-add_library(ripe SHARED ${LIB_RIPE_SOURCE_FILES})
+if (build_static_lib)
+    add_library(ripe STATIC ${LIB_RIPE_SOURCE_FILES})
+else()
+    add_library(ripe SHARED ${LIB_RIPE_SOURCE_FILES})
+endif()
+
 set_target_properties(ripe PROPERTIES
     VERSION ${RIPE_VERSION}
     SOVERSION ${RIPE_SOVERSION}
 )
+
 target_link_libraries(ripe
     ${CRYPTOPP_LIBRARIES}
 )

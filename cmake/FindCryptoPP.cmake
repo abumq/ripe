@@ -59,11 +59,21 @@ FIND_LIBRARY (CRYPTOPP_LIBRARY_DEBUG
   PATH_SUFFIXES lib
   DOC "CryptoPP debug library")
 
-FIND_LIBRARY (CRYPTOPP_LIBRARY_RELEASE
-  NAMES cryptlib cryptopp
-  HINTS ${CRYPTOPP_ROOT_DIR}
-  PATH_SUFFIXES lib
-  DOC "CryptoPP release library")
+if (CryptoPP_USE_STATIC_LIBS)
+    message ("==> Static linking to Crypto++")
+    FIND_LIBRARY (CRYPTOPP_LIBRARY_RELEASE
+      NAMES libcryptopp.a cryptlib-static cryptopp-static
+      HINTS ${CRYPTOPP_ROOT_DIR}
+      PATH_SUFFIXES lib
+      DOC "CryptoPP release library")
+else()
+    message ("==> Dynamic linking to Crypto++")
+    FIND_LIBRARY (CRYPTOPP_LIBRARY_RELEASE
+      NAMES libcryptopp.dylib cryptlib cryptopp
+      HINTS ${CRYPTOPP_ROOT_DIR}
+      PATH_SUFFIXES lib
+      DOC "CryptoPP release library")
+endif()
 
 IF (CRYPTOPP_LIBRARY_DEBUG AND CRYPTOPP_LIBRARY_RELEASE)
   SET (CRYPTOPP_LIBRARY
