@@ -35,6 +35,7 @@ Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-c
 | `--in-key`     | Symmetric key for encryption / decryption file path |
 | `--iv`      | Initializaion vector for decription       |
 | `--rsa`      | Use RSA encryption/decryption      |
+| `--raw`      | Raw output for rsa encrypted data      |
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
 | `--hex`   | Tells ripe the data is hex string |
 | `--clean`   | (Only applicable when `--base64` data provided) Tells ripe to clean the data before processing |
@@ -46,8 +47,7 @@ Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-c
 ## Getting Started
 
 ### Minimum Requirements
-
-These are the requirements to build Ripe binaries. When you use it in your C++ application, you can do so without following dependencies, including older version of C++.
+These are the requirements to build Ripe binaries. When you use it in your C++ application, you can do so without following dependencies, including older version of C++ as long as you the machine has dynamic library for `libstdc++`.
 
   * C++11
   * [Easylogging++ v9.94.1](https://github.com/muflihun/easyloggingpp)
@@ -92,7 +92,6 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 ```
 
 ### Static Linking
-
 By default ripe builds as shared library, you can pass `build_static_lib` option in cmake to build static library.
 
 For example
@@ -103,11 +102,9 @@ make
 ```
 
 ### Windows
-
 You can do `cmake -Ddll_export=ON ...` to export symbols and `cmake -Ddll=ON ...` to import if needed
 
 ### If build fails...
-
 Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ v5.6.5 (with Pem Pack) using following commands
 
 ```
@@ -138,7 +135,6 @@ If `make install` fails because of permission try to run it as super-user `sudo 
 ## Examples
 
 ### Encryption (AES)
-
 Following command will encrypt `sample.json` file to be ready to send to the server.
 
 `echo "plain text" | ripe -e --key B1C8BFB9DA2D4FB054FE73047AE700BC`
@@ -152,7 +148,6 @@ Above command will provide you with IV that you can use to decrypt
 Please note: If you do not provide `--out`, the output will base64 and it will have four parts. `{LENGTH}:{IV}:{Client_ID}:{Base64_Encoded_Encrypted_Data}`.
 
 ### Decryption (AES)
-
 Following command will decrypt `hkz20HKQA491wZqbEctxCA==` (`plain text`) that was supposedly encrypted using same key and init vector.
 
 `echo "hkz20HKQA491wZqbEctxCA==" | ripe -d --key B1C8BFB9DA2D4FB054FE73047AE700BC --iv 88505d29e8f56bbd7c9e1408f4f42240 --base64`
@@ -180,7 +175,6 @@ ripe -g --aes --length 256
 Valid keys sizes: `128-bit`, `192-bit`, `256-bit`
 
 ### Generate RSA Key
-
 Following command will produce random RSA key pair
 
 ```
@@ -196,17 +190,17 @@ ripe -g --rsa
 This will give you two base64 strings with `:` as separator. First encoded text is base64 of newly generated private key and second being newly generated corresponding public key.
 
 ### Encryption (RSA)
-
 You can encrypt the data using public key and decrypt with a private key
 
 ```
 echo 'plain text' | ripe -e --rsa --in-key public.pem
 ```
 
-(You can also use `--out /tmp/output.enc` to save it to `/tmp/output.enc` file
+You can also use `--out /tmp/output.enc` to save it to `/tmp/output.enc` file
+
+You can also add `--raw` option to output raw data instead of base64 encoded
 
 ### Decryption (RSA)
-
 ```
 ripe -d --rsa --in-key private.pem --in /tmp/output.enc --base64
 ```

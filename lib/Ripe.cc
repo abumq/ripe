@@ -70,23 +70,21 @@ std::string Ripe::encryptRSA(const std::string& data, const std::string& publicK
     return result;
 }
 
-std::string Ripe::encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, int length)
+std::string Ripe::encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, bool isRaw)
 {
-    std::stringstream ss;
-    std::string encryptedData;
-
     try {
-        encryptedData = Ripe::encryptRSA(data, key);
-        std::string encrypted = Ripe::base64Encode(encryptedData);
+        std::string encryptedData = Ripe::encryptRSA(data, key);
+        if (!isRaw) {
+            encryptedData = Ripe::base64Encode(encryptedData);
+        }
         if (!outputFile.empty()) {
             std::ofstream out(outputFile);
-            out << encrypted;
-            out.close();
+            out.write(encryptedData.c_str(), encryptedData.size());
             out.flush();
-        } else {
-            ss << encrypted;
+            out.close();
+            return "";
         }
-        return ss.str();
+        return encryptedData;
     } catch (const std::exception& e) {
         throw e;
     }
@@ -113,12 +111,15 @@ std::string Ripe::decryptRSA(const std::string& data, const std::string& private
     return result;
 }
 
-std::string Ripe::decryptRSA(std::string& data, const std::string& key, bool isBase64, int length, const std::string& secret)
+std::string Ripe::decryptRSA(std::string& data, const std::string& key, bool isBase64, bool isHex, const std::string& secret)
 {
     if (isBase64) {
         data = Ripe::base64Decode(data);
     }
 
+    if (isHex) {
+        data = Ripe::hexToString(data);
+    }
     return Ripe::decryptRSA(data, key, secret);
 }
 

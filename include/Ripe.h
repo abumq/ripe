@@ -209,16 +209,16 @@ public:
     ///
     /// \brief encryptRSA Encrypts using RSA key
     /// \param outputFile Optional, if provided instead of printing it to console data is saved to file
-    /// \param length Size of encryption (RSA key size)
+    /// \param isRaw Outputs raw data
     ///
-    static std::string encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, int length = DEFAULT_RSA_LENGTH);
+    static std::string encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, bool isRaw = false);
 
     ///
     /// \brief decryptRSA Decrypts using RSA key
+    /// \param isHex If true, hex string is decoded. If base64 is true, base64 decoding is done before hex decoding
     /// \param isBase64 If true, first base64 decoding is done on data and then decryption is processed
-    /// \param length Size of encryption (RSA key size)
     ///
-    static std::string decryptRSA(std::string& data, const std::string& key, bool isBase64, int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
+    static std::string decryptRSA(std::string& data, const std::string& key, bool isBase64, bool isHex = false, const std::string& secret = "");
 
     ///
     /// \brief writeRSAKeyPair Writes RSA key pair to public and private file paths.

@@ -4,22 +4,55 @@
 //  Copyright © 2017 Muflihun.com. All rights reserved.
 //
 
+#include <iomanip>
 #include <cstring>
 #include <sstream>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include "include/Ripe.h"
 
 void displayUsage()
 {
+    // we want to keep the order so can't use std::map or std::unordered_map
+    std::vector<std::pair<std::string, std::string>> options = {
+        {"--version", "Display version information"},
+        {"-g", "Generate key"},
+        {"-e", "Encrypt the data"},
+        {"-d", "Decrypt the data"},
+        {"--aes", "Generate AES key (requires -g)"},
+        {"--key", "Symmetric key for encryption / decryption"},
+        {"--in-key", "Symmetric key for encryption / decryption file path"},
+        {"--iv", "Initializaion vector for decription"},
+        {"--rsa", "Use RSA encryption/decryption"},
+        {"--raw", "Raw output for rsa encrypted data"},
+        {"--base64", "Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64)"},
+        {"--hex", "Tells ripe the data is hex string"},
+        {"--clean", "(Only applicable when --base64 data provided) Tells ripe to clean the data before processing"},
+        {"--in", "Input file. You can also pipe in the data. In that case you do not have to provide this parameter"},
+        {"--out", "Tells ripe to store encrypted data in specified file. (Outputs IV in console)"},
+        {"--length", "Specify key length"},
+        {"--secret", "Secret key for encrypted private key (RSA only)"},
+    };
+
     std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex]" << std::endl;
+    std::cout << std::endl;
+    const std::size_t LONGEST = 20;
+    for (auto& option : options) {
+        std::cout << "     " << option.first;
+        for (std::size_t i = 0; i < LONGEST - option.first.length(); ++i) {
+            std::cout << " ";
+        }
+        std::cout << option.second << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void displayVersion()
 {
-    std::cout << "Ripe - 256-bit security tool" << std::endl << "Version: " << RIPE_VERSION << std::endl << "http://muflihun.com" << std::endl;
+    std::cout << "Ripe - 256-bit security tool" << std::endl << "Version: " << RIPE_VERSION << std::endl << "https://muflihun.com" << std::endl;
 }
 
 #define TRY try {
@@ -78,17 +111,17 @@ void decodeHex(std::string& data)
     CATCH
 }
 
-void encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, std::size_t length)
+void encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, bool isRaw)
 {
     TRY
-        std::cout << Ripe::encryptRSA(data, key, outputFile, length);
+        std::cout << Ripe::encryptRSA(data, key, outputFile, isRaw);
     CATCH
 }
 
-void decryptRSA(std::string& data, const std::string& key, bool isBase64, std::size_t length, const std::string& secret)
+void decryptRSA(std::string& data, const std::string& key, bool isBase64, bool isHex, const std::string& secret)
 {
     TRY
-        std::cout << Ripe::decryptRSA(data, key, isBase64, length, secret);
+        std::cout << Ripe::decryptRSA(data, key, isBase64, isHex, secret);
     CATCH
 }
 
@@ -134,6 +167,7 @@ int main(int argc, char* argv[])
     bool isHex = false;
     bool clean = false;
     bool isRSA = false;
+    bool isRaw = false;
     std::string outputFile;
     bool fileArgSpecified = false;
 
@@ -152,6 +186,8 @@ int main(int argc, char* argv[])
             isHex = true;
         } else if (arg == "--rsa") {
             isRSA = true;
+        } else if (arg == "--raw") {
+            isRaw = true;
         } else if (arg == "--key" && hasNext) {
             key = argv[++i];
         } else if (arg == "--aes") {
@@ -220,7 +256,7 @@ int main(int argc, char* argv[])
             decodeHex(data);
         } else if (isRSA) {
             // RSA decrypt (base64-flexiable)
-            decryptRSA(data, key, isBase64, keyLength, secret);
+            decryptRSA(data, key, isBase64, isHex, secret);
         } else {
             // AES decrypt (base64-flexible)
             decryptAES(data, key, iv, isBase64, isHex);
@@ -231,7 +267,7 @@ int main(int argc, char* argv[])
         } else if (isHex && key.empty() && iv.empty()) {
             encodeHex(data);
         } else if (isRSA) {
-            encryptRSA(data, key, outputFile, keyLength);
+            encryptRSA(data, key, outputFile, isRaw);
         } else {
             encryptAES(data, key, clientId, outputFile);
         }
