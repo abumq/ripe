@@ -37,3 +37,11 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Base64 Decoding"
 echo
 echo 'cGxhaW4gdGV4dAo=' | valgrind ./ripe -d --base64
 echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Hex Encoding"
+echo
+echo 'plain text' | valgrind ./ripe -e --hex
+echo
+echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Hex Decoding"
+echo
+echo '706C61696E2074657874' | valgrind ./ripe -d --hex
+echo

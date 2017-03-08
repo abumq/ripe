@@ -1,5 +1,7 @@
 # Change Log
 
+## [Unreleased]
+
 ## [2.2.0] - 08-03-2017
 ### Changes
 - Updated help output to include option table
