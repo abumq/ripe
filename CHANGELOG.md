@@ -1,6 +1,13 @@
 # Change Log
 
-## [Unreleased]
+## [2.2.0] - 08-03-2017
+### Changes
+- Updated help output to include option table
+- Changed signature for `encryptRSA` and `decryptRSA` to remove length
+- Changed `decryptRSA` signature to include `isHex`
+
+### Added
+- Added `--raw` option for RSA output
 
 ## [2.1.0] - 07-03-2017
 ### Removed
