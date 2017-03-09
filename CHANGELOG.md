@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+### Changes
+- Removed length as header and added `\r\n\r\n` delimiter
 
 ## [2.2.0] - 08-03-2017
 ### Changes

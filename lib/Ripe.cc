@@ -338,8 +338,7 @@ std::string Ripe::prepareData(const char* data, const std::string& hexKey, const
     }
     ss << base64Encoded;
     std::stringstream fss;
-    std::string ssstr(ss.str());
-    fss << ssstr.size() << Ripe::DATA_DELIMITER << ssstr;
+    fss << ss.str() << "\r\n\r\n";
     return fss.str();
 }
 
@@ -416,7 +415,7 @@ std::size_t Ripe::expectedDataSize(std::size_t plainDataSize, std::size_t client
         n /= 10;
         ++digits;
     };
-    return digits + DATA_DELIMITER_LENGTH + dataSize;
+    return /*digits + DATA_DELIMITER_LENGTH + */dataSize + 4 /* \r\n\r\n */;
 }
 
 std::string Ripe::version() noexcept
