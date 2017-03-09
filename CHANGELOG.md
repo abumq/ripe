@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Changes
 - Removed length as header and added `\r\n\r\n` delimiter
+- Added `PACKET_DELIMITER` and `PACKET_DELIMITER_SIZE`
 
 ## [2.2.0] - 08-03-2017
 ### Changes

@@ -15,10 +15,10 @@ static TestData<std::string, std::string> HexTestData = {
 };
 
 static TestData<std::size_t, std::size_t, std::size_t> DataSizeTestData = {
-    TestCase(4, 16, 77),
-    TestCase(4, 0, 60),
-    TestCase(55, 0, 125),
-    TestCase(55, 16, 142),
+    TestCase(4, 0, 57 + Ripe::PACKET_DELIMITER_SIZE),
+    TestCase(4, 16, 74 + Ripe::PACKET_DELIMITER_SIZE),
+    TestCase(55, 0, 121 + Ripe::PACKET_DELIMITER_SIZE),
+    TestCase(55, 16, 138 + Ripe::PACKET_DELIMITER_SIZE),
 };
 
 static TestData<std::size_t, std::string> AESTestData = {

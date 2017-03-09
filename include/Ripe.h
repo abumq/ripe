@@ -34,6 +34,17 @@ RIPE_API class Ripe {
 public:
 
     ///
+    /// \brief Constant for end of data delimiter
+    ///
+    static const std::string PACKET_DELIMITER;
+
+    ///
+    /// \brief Size of PACKET_DELIMITER
+    /// \see PACKET_DELIMITER
+    ///
+    static const std::size_t PACKET_DELIMITER_SIZE;
+
+    ///
     /// \brief Data delimiter for prepared data
     /// \see prepareData(const char*, const std::string&, const char*)
     ///
