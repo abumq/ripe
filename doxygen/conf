@@ -3,5 +3,4 @@ PROJECT_BRIEF="256-bit security tool"
 OUTPUT_DIRECTORY=build/doc
 INPUT=README.md include/Ripe.h include/RipeHelpers.h
 USE_MDFILE_AS_MAINPAGE=README.md
-HTML_EXTRA_STYLESHEET=doxygen/customdoxygen.css
 LAYOUT_FILE=doxygen/DoxygenLayout.xml
