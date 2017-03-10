@@ -245,7 +245,10 @@ int main(int argc, char* argv[])
     }
 
     if ((isBase64 || isHex) && clean) {
-        data.erase(0, data.find_first_of(':') + 1);
+        // Right trim
+        data.erase(std::find_if(data.rbegin(), data.rend(), [](char c) {
+          return !std::isspace(c);
+        }).base(), data.end());
     }
     if (type == 1) { // Decrypt / Decode
         if (isBase64 && key.empty() && iv.empty()) {

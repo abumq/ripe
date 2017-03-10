@@ -1,6 +1,13 @@
 # Change Log
 
-## [Unreleased]
+## [2.3.0] - 11-03-2017
+### Changes
+- Removed length as header and added `\r\n\r\n` delimiter
+- Added `PACKET_DELIMITER` and `PACKET_DELIMITER_SIZE`
+- `--clean` now right-trims the input data instead of removing `0-<first delimiter>`
+
+### Added
+- Added helper `isBase64`
 
 ## [2.2.0] - 08-03-2017
 ### Changes

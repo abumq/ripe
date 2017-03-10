@@ -26,10 +26,13 @@ INITIALIZE_EASYLOGGINGPP
 
 using namespace CryptoPP;
 
+const std::string Ripe::PACKET_DELIMITER = "\r\n\r\n";
+const std::size_t Ripe::PACKET_DELIMITER_SIZE = Ripe::PACKET_DELIMITER.size();
 const char Ripe::DATA_DELIMITER = ':';
 const int Ripe::BITS_PER_BYTE = 8;
 const int Ripe::DEFAULT_RSA_LENGTH = 2048;
 const int Ripe::AES_BSIZE = AES::BLOCKSIZE;
+const std::string Ripe::BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 bool loadPrivateKey(const std::string& key, RSA::PrivateKey& keyOut, const std::string& secret)
 {
@@ -338,8 +341,7 @@ std::string Ripe::prepareData(const char* data, const std::string& hexKey, const
     }
     ss << base64Encoded;
     std::stringstream fss;
-    std::string ssstr(ss.str());
-    fss << ssstr.size() << Ripe::DATA_DELIMITER << ssstr;
+    fss << ss.str() << PACKET_DELIMITER;
     return fss.str();
 }
 
@@ -404,19 +406,11 @@ std::string Ripe::stringToHex(const std::string& raw) noexcept
 
 std::size_t Ripe::expectedDataSize(std::size_t plainDataSize, std::size_t clientIdSize) noexcept
 {
-    static const int DATA_DELIMITER_LENGTH = sizeof(DATA_DELIMITER);
-
     std::size_t dataSize = 32 /* IV */
-            + DATA_DELIMITER_LENGTH
-            + (clientIdSize > 0 ? clientIdSize + DATA_DELIMITER_LENGTH : 0)
+            + sizeof(DATA_DELIMITER) /* : */
+            + (clientIdSize > 0 ? clientIdSize + sizeof(DATA_DELIMITER) : 0)
             + expectedBase64Length(expectedAESCipherLength(plainDataSize));
-    unsigned int digits = 0;
-    unsigned int n = static_cast<unsigned int>(dataSize);
-    while (n) {
-        n /= 10;
-        ++digits;
-    };
-    return digits + DATA_DELIMITER_LENGTH + dataSize;
+    return dataSize + PACKET_DELIMITER_SIZE;
 }
 
 std::string Ripe::version() noexcept
