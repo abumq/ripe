@@ -6,6 +6,9 @@
 - Added `PACKET_DELIMITER` and `PACKET_DELIMITER_SIZE`
 - `--clean` now right-trims the input data instead of removing `0-<first delimiter>`
 
+### Added
+- Added helper `isBase64`
+
 ## [2.2.0] - 08-03-2017
 ### Changes
 - Updated help output to include option table

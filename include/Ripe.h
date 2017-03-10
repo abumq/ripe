@@ -65,6 +65,8 @@ public:
     ///
     static const int AES_BSIZE;
 
+    static const std::string BASE64_CHARS;
+
     ///
     /// \brief RSA Key pair
     ///
@@ -131,7 +133,7 @@ public:
     /// \brief Helper function that takes hex key
     /// \see encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile)
     ///
-    static inline std::string encryptAES(const std::string& buffer, const std::string& hexKey, std::vector<byte>& iv)
+    inline static std::string encryptAES(const std::string& buffer, const std::string& hexKey, std::vector<byte>& iv)
     {
         return encryptAES(buffer.c_str(), reinterpret_cast<const byte*>(hexToString(hexKey).c_str()), hexKey.size() / 2, iv);
     }
@@ -147,7 +149,7 @@ public:
     ///
     /// \brief Exceptect size of AES cipher when plainDataSize size data is encrypted
     ///
-    static inline std::size_t expectedAESCipherLength(std::size_t plainDataSize) noexcept
+    inline static std::size_t expectedAESCipherLength(std::size_t plainDataSize) noexcept
     {
         return (plainDataSize / AES_BSIZE + 1) * AES_BSIZE;
     }
@@ -212,7 +214,7 @@ public:
     /// \brief maxRSABlockSize Maximum size of RSA block with specified key size
     ///
     ///
-    static inline unsigned int maxRSABlockSize(std::size_t keySize)
+    inline static unsigned int maxRSABlockSize(std::size_t keySize)
     {
         return ((keySize - 384) / 8) + 7;
     }
@@ -271,11 +273,20 @@ public:
     /// \brief expectedBase64Length Returns expected base64 length
     /// \param n Length of input (plain data)
     ///
-    static inline std::size_t expectedBase64Length(std::size_t n) noexcept
+    inline static std::size_t expectedBase64Length(std::size_t n) noexcept
     {
         return ((4 * n / 3) + 3) & ~0x03;
     }
 
+    ///
+    /// \brief Finds whether data is base64 encoded. This is done
+    /// by finding non-base64 character. So it is not necessary
+    /// a valid base64 encoding.
+    ///
+    inline static bool isBase64(const std::string& data) noexcept
+    {
+        return data.find_first_not_of(BASE64_CHARS) == std::string::npos;
+    }
 
 
     /*****************************************************************************************************/

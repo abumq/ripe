@@ -32,6 +32,7 @@ const char Ripe::DATA_DELIMITER = ':';
 const int Ripe::BITS_PER_BYTE = 8;
 const int Ripe::DEFAULT_RSA_LENGTH = 2048;
 const int Ripe::AES_BSIZE = AES::BLOCKSIZE;
+const std::string Ripe::BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 bool loadPrivateKey(const std::string& key, RSA::PrivateKey& keyOut, const std::string& secret)
 {

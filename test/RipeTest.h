@@ -9,6 +9,13 @@ static TestData<std::string, std::string> Base64TestData = {
     TestCase("cXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nIFFVSUNLIEJST1dOIEZPWCBKVU1QUyBPVkVSIFRIRSBMQVpZIERPRw==", "quick brown fox jumps over the lazy dog QUICK BROWN FOX JUMPS OVER THE LAZY DOG"),
 };
 
+static TestData<std::string, bool> IsBase64Data = {
+    TestCase("da024686f7f2da49da6c98253b42fe1c:erezutlgudgbtwza:i3eclcagfnUbK1B==", false),
+    TestCase("da024686f7f2da49da6c98253b42fe1c:i3eclcagfnUbK1B==", false),
+    TestCase("erezutlgudgbtwza:i3eclcagfnUbK1B==", false),
+    TestCase("i3eclcagfnUbK1B==", true),
+};
+
 static TestData<std::string, std::string> HexTestData = {
     TestCase("61626364", "abcd"),
     TestCase("717569636B2062726F776E20666F78206A756D7073206F76657220746865206C617A7920646F6720515549434B2042524F574E20464F58204A554D5053204F56455220544845204C415A5920444F47", "quick brown fox jumps over the lazy dog QUICK BROWN FOX JUMPS OVER THE LAZY DOG"),
@@ -85,6 +92,15 @@ TEST(RipeTest, ExpectedB64Size)
     for (const auto& item : Base64TestData) {
         std::size_t s = Ripe::expectedBase64Length(PARAM(1).size());
         ASSERT_EQ(PARAM(0).size(), s);
+    }
+}
+
+TEST(UtilsTest, IsBase64)
+{
+    for (const auto& item : IsBase64Data) {
+        auto first = PARAM(0);
+        auto second = PARAM(1);
+        ASSERT_EQ(Ripe::isBase64(first), second);
     }
 }
 
