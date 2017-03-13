@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Added
+- Added `minRSAKeySize` helper to calculate minimum RSA key size for specified data size
+
 ## [2.3.0] - 11-03-2017
 ### Changes
 - Removed length as header and added `\r\n\r\n` delimiter

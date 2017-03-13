@@ -212,12 +212,20 @@ public:
                 \*******************************************************************/
 
     ///
-    /// \brief maxRSABlockSize Maximum size of RSA block with specified key size
+    /// \brief Maximum size of RSA block with specified key size
     ///
     ///
     inline static unsigned int maxRSABlockSize(std::size_t keySize)
     {
         return ((keySize - 384) / 8) + 7;
+    }
+
+    ///
+    /// \brief Minimum size of RSA key to encrypt data of dataSize size
+    ///
+    inline static unsigned int minRSAKeySize(std::size_t dataSize)
+    {
+        return ((dataSize - 7) * 8) + 384;
     }
 
     ///
