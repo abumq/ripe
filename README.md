@@ -35,6 +35,7 @@ Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-c
 | `--in-key`     | Symmetric key for encryption / decryption file path |
 | `--iv`      | Initializaion vector for decription       |
 | `--rsa`      | Use RSA encryption/decryption      |
+| `--zlib`      | ZLib compression/decompression      |
 | `--raw`      | Raw output for rsa encrypted data      |
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
 | `--hex`   | Tells ripe the data is hex string |
@@ -271,6 +272,28 @@ Decoding hex can be done using `-d` option
 
 ```
 echo 706c61696e2074657874 | ripe -d --hex
+```
+
+### ZLib Compression
+Compression using zlib can be done using `-e` option
+
+```
+echo abcd | ripe -e --zlib
+```
+
+You can provide `--base64` to see base64 output e.g, 
+
+```
+echo abcd | ripe -e --zlib --base64
+```
+
+Same with `--hex` (or both `--base64` and `--hex` - in this case you will get base64 encoding of hex output)
+
+### ZLib Decompression
+Decompression using zlib can be done using `-d` option
+
+```
+echo eNpLTEpOAQAD2AGL | ripe -d --zlib --base64
 ```
  
 ## Licence
