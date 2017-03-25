@@ -8,8 +8,8 @@ option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
 option(build_static_lib "Build ripe as a static library (as opposed to default, i.e, shared)" OFF)
 
-set (RIPE_VERSION "2.3.0")
-set (RIPE_SOVERSION "2.3.0")
+set (RIPE_VERSION "2.4.0")
+set (RIPE_SOVERSION "2.4.0")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
@@ -78,6 +78,11 @@ include_directories (${CRYPTOPP_INCLUDE_DIRS})
 find_package(EASYLOGGINGPP REQUIRED)
 include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
+find_package(ZLIB REQUIRED)
+if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+endif(ZLIB_FOUND)
+
 # Check for include files and stdlib properties.
 include (CheckIncludeFileCXX)
 check_include_file_cxx (attr/xattr.h HAVE_ATTR_XATTR_H)
@@ -115,6 +120,7 @@ set_target_properties(ripe PROPERTIES
 
 target_link_libraries(ripe
     ${CRYPTOPP_LIBRARIES}
+    ${ZLIB_LIBRARIES}
 )
 
 target_compile_definitions(ripe PRIVATE

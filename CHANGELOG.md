@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - Added `minRSAKeySize` helper to calculate minimum RSA key size for specified data size
+- Added zlib compression and decompression functions
 
 ## [2.3.0] - 11-03-2017
 ### Changes

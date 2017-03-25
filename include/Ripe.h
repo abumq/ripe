@@ -66,7 +66,15 @@ public:
     ///
     static const int AES_BSIZE;
 
+    ///
+    /// \brief Possible base64 characters
+    ///
     static const std::string BASE64_CHARS;
+
+    ///
+    /// \brief Buffer size for zlib
+    ///
+    static const int ZLIB_BUFFER_SIZE;
 
     ///
     /// \brief RSA Key pair
@@ -296,6 +304,42 @@ public:
     {
         return data.find_first_not_of(BASE64_CHARS) == std::string::npos;
     }
+
+
+    /*****************************************************************************************************/
+
+                /*******************************************************************\
+                 *                            MISC                                 *
+                 *******************************************************************
+                 *******************************************************************
+                 *                                                                 *
+                 *                            ZLib                                 *
+                 *                                                                 *
+                 *******************************************************************
+                 *******************************************************************
+                \*******************************************************************/
+
+    /**
+     * @brief Compress input file (path) and create new file
+     * @param gzFilename Output file path
+     * @param inputFile Input file path
+     * @return True if successful, otherwise false
+     */
+    static bool compressFile(const std::string& gzFilename, const std::string& inputFile) noexcept;
+
+    /**
+     * @brief Compresses string using zlib (inflate)
+     * @param str Input plain text
+     * @return Raw output (binary)
+     */
+    static std::string compressString(const std::string& str);
+
+    /**
+     * @brief Decompresses string using zlib (deflate)
+     * @param str Raw input
+     * @return Plain output
+     */
+    static std::string decompressString(const std::string& str);
 
 
     /*****************************************************************************************************/

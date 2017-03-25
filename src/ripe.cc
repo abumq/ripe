@@ -20,13 +20,14 @@ void displayUsage()
     std::vector<std::pair<std::string, std::string>> options = {
         {"--version", "Display version information"},
         {"-g", "Generate key"},
-        {"-e", "Encrypt the data"},
-        {"-d", "Decrypt the data"},
+        {"-e", "Encrypt / encode / inflate the data"},
+        {"-d", "Decrypt / decrypt / deflate the data"},
         {"--aes", "Generate AES key (requires -g)"},
         {"--key", "Symmetric key for encryption / decryption"},
         {"--in-key", "Symmetric key for encryption / decryption file path"},
         {"--iv", "Initializaion vector for decription"},
         {"--rsa", "Use RSA encryption/decryption"},
+        {"--zlib", "ZLib compression"},
         {"--raw", "Raw output for rsa encrypted data"},
         {"--base64", "Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64)"},
         {"--hex", "Tells ripe the data is hex string"},
@@ -111,6 +112,34 @@ void decodeHex(std::string& data)
     CATCH
 }
 
+void compress(std::string& data, bool isBase64, bool isHex)
+{
+    TRY
+        std::string o = Ripe::compressString(data);
+
+        if (isHex) {
+            o = Ripe::stringToHex(o);
+        }
+        if (isBase64) {
+            o = Ripe::base64Encode(o);
+        }
+        std::cout << o;
+    CATCH
+}
+
+void decompress(std::string& data, bool isBase64, bool isHex)
+{
+    TRY
+        if (isBase64) {
+            data = Ripe::base64Decode(data);
+        }
+        if (isHex) {
+            data = Ripe::hexToString(data);
+        }
+        std::cout << Ripe::decompressString(data);
+    CATCH
+}
+
 void encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, bool isRaw)
 {
     TRY
@@ -163,6 +192,7 @@ int main(int argc, char* argv[])
     std::string clientId;
     std::string secret;
     bool isAES = false;
+    bool isZlib = false;
     bool isBase64 = false;
     bool isHex = false;
     bool clean = false;
@@ -186,6 +216,8 @@ int main(int argc, char* argv[])
             isHex = true;
         } else if (arg == "--rsa") {
             isRSA = true;
+        } else if (arg == "--zlib") {
+            isZlib = true;
         } else if (arg == "--raw") {
             isRaw = true;
         } else if (arg == "--key" && hasNext) {
@@ -251,24 +283,28 @@ int main(int argc, char* argv[])
         }).base(), data.end());
     }
     if (type == 1) { // Decrypt / Decode
-        if (isBase64 && key.empty() && iv.empty()) {
+        if (isBase64 && key.empty() && iv.empty() && !isZlib) {
             // base64 decode
             decodeBase64(data);
-        } else if (isHex && key.empty() && iv.empty()) {
+        } else if (isHex && key.empty() && iv.empty() && !isZlib) {
             // hex to ascii
             decodeHex(data);
+        } else if (isZlib) {
+            decompress(data, isBase64, isHex);
         } else if (isRSA) {
-            // RSA decrypt (base64-flexiable)
+            // RSA decrypt (base64-flexible)
             decryptRSA(data, key, isBase64, isHex, secret);
         } else {
             // AES decrypt (base64-flexible)
             decryptAES(data, key, iv, isBase64, isHex);
         }
     } else if (type == 2) { // Encrypt / Encode
-        if (isBase64 && key.empty() && iv.empty()) {
+        if (isBase64 && key.empty() && iv.empty() && !isZlib) {
             encodeBase64(data);
-        } else if (isHex && key.empty() && iv.empty()) {
+        } else if (isHex && key.empty() && iv.empty() && !isZlib) {
             encodeHex(data);
+        } else if (isZlib) {
+            compress(data, isBase64, isHex);
         } else if (isRSA) {
             encryptRSA(data, key, outputFile, isRaw);
         } else {
