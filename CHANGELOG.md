@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.4.0] - 25-03-2017
+### Added
+- Added `minRSAKeySize` helper to calculate minimum RSA key size for specified data size
+- Added zlib compression and decompression functions
+
 ## [2.3.0] - 11-03-2017
 ### Changes
 - Removed length as header and added `\r\n\r\n` delimiter

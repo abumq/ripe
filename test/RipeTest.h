@@ -21,6 +21,10 @@ static TestData<std::string, std::string> HexTestData = {
     TestCase("717569636B2062726F776E20666F78206A756D7073206F76657220746865206C617A7920646F6720515549434B2042524F574E20464F58204A554D5053204F56455220544845204C415A5920444F47", "quick brown fox jumps over the lazy dog QUICK BROWN FOX JUMPS OVER THE LAZY DOG"),
 };
 
+static TestData<std::string, std::string> ZLibData = {
+    TestCase("abcd", "eNpLTEpOAQAD2AGL"),
+};
+
 static TestData<std::size_t, std::size_t, std::size_t> DataSizeTestData = {
     TestCase(4, 0, 57 + Ripe::PACKET_DELIMITER_SIZE),
     TestCase(4, 16, 74 + Ripe::PACKET_DELIMITER_SIZE),
@@ -117,6 +121,22 @@ TEST(RipeTest, HexDecode)
     for (const auto& item : HexTestData) {
         std::string decoded = Ripe::hexToString(PARAM(0));
         ASSERT_EQ(PARAM(1), decoded);
+    }
+}
+
+TEST(RipeTest, ZLibInflate)
+{
+    for (const auto& item : ZLibData) {
+        std::string encoded = Ripe::compressString(PARAM(0));
+        ASSERT_EQ(PARAM(1), Ripe::base64Encode(encoded));
+    }
+}
+
+TEST(RipeTest, ZLibDeflate)
+{
+    for (const auto& item : ZLibData) {
+        std::string decoded = Ripe::decompressString(Ripe::base64Decode(PARAM(1)));
+        ASSERT_EQ(PARAM(0), decoded);
     }
 }
 

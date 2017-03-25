@@ -66,7 +66,15 @@ public:
     ///
     static const int AES_BSIZE;
 
+    ///
+    /// \brief Possible base64 characters
+    ///
     static const std::string BASE64_CHARS;
+
+    ///
+    /// \brief Buffer size for zlib
+    ///
+    static const int ZLIB_BUFFER_SIZE;
 
     ///
     /// \brief RSA Key pair
@@ -212,12 +220,20 @@ public:
                 \*******************************************************************/
 
     ///
-    /// \brief maxRSABlockSize Maximum size of RSA block with specified key size
+    /// \brief Maximum size of RSA block with specified key size
     ///
     ///
     inline static unsigned int maxRSABlockSize(std::size_t keySize)
     {
         return ((keySize - 384) / 8) + 7;
+    }
+
+    ///
+    /// \brief Minimum size of RSA key to encrypt data of dataSize size
+    ///
+    inline static unsigned int minRSAKeySize(std::size_t dataSize)
+    {
+        return ((dataSize - 7) * 8) + 384;
     }
 
     ///
@@ -288,6 +304,42 @@ public:
     {
         return data.find_first_not_of(BASE64_CHARS) == std::string::npos;
     }
+
+
+    /*****************************************************************************************************/
+
+                /*******************************************************************\
+                 *                            MISC                                 *
+                 *******************************************************************
+                 *******************************************************************
+                 *                                                                 *
+                 *                            ZLib                                 *
+                 *                                                                 *
+                 *******************************************************************
+                 *******************************************************************
+                \*******************************************************************/
+
+    /**
+     * @brief Compress input file (path) and create new file
+     * @param gzFilename Output file path
+     * @param inputFile Input file path
+     * @return True if successful, otherwise false
+     */
+    static bool compressFile(const std::string& gzFilename, const std::string& inputFile) noexcept;
+
+    /**
+     * @brief Compresses string using zlib (inflate)
+     * @param str Input plain text
+     * @return Raw output (binary)
+     */
+    static std::string compressString(const std::string& str);
+
+    /**
+     * @brief Decompresses string using zlib (deflate)
+     * @param str Raw input
+     * @return Plain output
+     */
+    static std::string decompressString(const std::string& str);
 
 
     /*****************************************************************************************************/
