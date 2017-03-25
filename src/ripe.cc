@@ -27,7 +27,7 @@ void displayUsage()
         {"--in-key", "Symmetric key for encryption / decryption file path"},
         {"--iv", "Initializaion vector for decription"},
         {"--rsa", "Use RSA encryption/decryption"},
-        {"--zlib", "ZLib compression"},
+        {"--zlib", "ZLib compression/decompression"},
         {"--raw", "Raw output for rsa encrypted data"},
         {"--base64", "Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64)"},
         {"--hex", "Tells ripe the data is hex string"},
