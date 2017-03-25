@@ -1,5 +1,7 @@
 # Change Log
 
+## [Unreleased]
+
 ## [2.4.0] - 25-03-2017
 ### Added
 - Added `minRSAKeySize` helper to calculate minimum RSA key size for specified data size
