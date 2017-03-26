@@ -112,7 +112,7 @@ void decodeHex(std::string& data)
     CATCH
 }
 
-void compress(std::string& data, bool isBase64, bool isHex)
+void compress(std::string& data, bool isBase64, bool isHex, const std::string& outputFile)
 {
     TRY
         std::string o = Ripe::compressString(data);
@@ -123,11 +123,17 @@ void compress(std::string& data, bool isBase64, bool isHex)
         if (isBase64) {
             o = Ripe::base64Encode(o);
         }
-        std::cout << o;
+        if (outputFile.empty()) {
+            std::cout << o;
+        } else {
+            std::ofstream out(outputFile);
+            out << o;
+            out.close();
+        }
     CATCH
 }
 
-void decompress(std::string& data, bool isBase64, bool isHex)
+void decompress(std::string& data, bool isBase64, bool isHex, const std::string& outputFile)
 {
     TRY
         if (isBase64) {
@@ -136,7 +142,14 @@ void decompress(std::string& data, bool isBase64, bool isHex)
         if (isHex) {
             data = Ripe::hexToString(data);
         }
-        std::cout << Ripe::decompressString(data);
+        std::string o = Ripe::decompressString(data);
+        if (outputFile.empty()) {
+            std::cout << o;
+        } else {
+            std::ofstream out(outputFile);
+            out << o;
+            out.close();
+        }
     CATCH
 }
 
@@ -290,7 +303,7 @@ int main(int argc, char* argv[])
             // hex to ascii
             decodeHex(data);
         } else if (isZlib) {
-            decompress(data, isBase64, isHex);
+            decompress(data, isBase64, isHex, outputFile);
         } else if (isRSA) {
             // RSA decrypt (base64-flexible)
             decryptRSA(data, key, isBase64, isHex, secret);
@@ -304,7 +317,7 @@ int main(int argc, char* argv[])
         } else if (isHex && key.empty() && iv.empty() && !isZlib) {
             encodeHex(data);
         } else if (isZlib) {
-            compress(data, isBase64, isHex);
+            compress(data, isBase64, isHex, outputFile);
         } else if (isRSA) {
             encryptRSA(data, key, outputFile, isRaw);
         } else {

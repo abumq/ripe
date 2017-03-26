@@ -1,6 +1,8 @@
 # Change Log
 
 ## [Unreleased]
+### Added
+- Support `--out` in zlib for writing to the file (CLI Tool).
 
 ## [2.4.0] - 25-03-2017
 ### Added
