@@ -45,3 +45,9 @@ echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Hex Decoding"
 echo
 echo '706C61696E2074657874' | valgrind ./ripe -d --hex
 echo
+echo 'abcd' | valgrind ./ripe -e --zlib
+echo
+echo 'eNpLTEpOAQAD2AGL' | valgrind ./ripe -d --zlib --base64
+echo
+echo 'abcd' | valgrind ./ripe -e --zlib --base64
+echo
