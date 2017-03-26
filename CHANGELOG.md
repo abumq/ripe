@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.4.1] - 26-03-2017
+### Added
+- Support `--out` in zlib for writing to the file (CLI Tool).
+
 ## [2.4.0] - 25-03-2017
 ### Added
 - Added `minRSAKeySize` helper to calculate minimum RSA key size for specified data size
