@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.0] - 15-05-2017
+### Changes
+- Changed `prepareData` to accept `string` instead
+
 ## [2.4.1] - 26-03-2017
 ### Added
 - Support `--out` in zlib for writing to the file (CLI Tool).
