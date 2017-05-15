@@ -101,7 +101,7 @@ public:
     ///
     /// \brief Encrypts data of length with symmetric key of size = keySize with specified initialization vector
     ///
-    static std::string encryptAES(const char* data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
+    static std::string encryptAES(const std::string& data, const byte* key, std::size_t keySize, std::vector<byte>& iv);
 
     ///
     /// \brief Decrypts data of specified length with specified key and initialization vector
@@ -144,7 +144,7 @@ public:
     ///
     inline static std::string encryptAES(const std::string& buffer, const std::string& hexKey, std::vector<byte>& iv)
     {
-        return encryptAES(buffer.c_str(), reinterpret_cast<const byte*>(hexToString(hexKey).c_str()), hexKey.size() / 2, iv);
+        return encryptAES(buffer, reinterpret_cast<const byte*>(hexToString(hexKey).c_str()), hexKey.size() / 2, iv);
     }
 
     ///
@@ -360,7 +360,7 @@ public:
     /// \param clientId Extra text in between representing client ID (leave empty if you don't need it)
     /// \return Base64 format of encrypted data with format: <pre>[LENGTH]:[IV]:[<Client_ID>:]:[Base64 Data]</pre>
     ///
-    static std::string prepareData(const char* data, const std::string& hexKey, const char* clientId = "");
+    static std::string prepareData(const std::string& data, const std::string& hexKey, const char* clientId = "");
 
     ///
     /// \brief Calculates expected data size. Assumed IV size = 32

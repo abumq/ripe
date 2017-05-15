@@ -228,7 +228,7 @@ std::string Ripe::generateNewKey(int length)
     return s;
 }
 
-std::string Ripe::encryptAES(const char* buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv)
+std::string Ripe::encryptAES(const std::string& buffer, const byte* key, std::size_t keySize, std::vector<byte>& iv)
 {
     SecByteBlock keyBlock(key, keySize);
 
@@ -259,7 +259,8 @@ std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const
     std::stringstream ss;
     if (!outputFile.empty()) {
         std::vector<byte> iv;
-        std::string encrypted = Ripe::encryptAES(data.data(), hexKey, iv);
+        std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
+
         std::ofstream out(outputFile);
         out << encrypted.data();
         out.close();
@@ -269,7 +270,7 @@ std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const
         }
         ss << std::endl;
     } else {
-        ss << Ripe::prepareData(data.data(), hexKey, clientId.c_str());
+        ss << Ripe::prepareData(data, hexKey, clientId.c_str());
     }
     return ss.str();
 }
@@ -428,7 +429,7 @@ std::string Ripe::decompressString(const std::string& str)
     return outstring;
 }
 
-std::string Ripe::prepareData(const char* data, const std::string& hexKey, const char* clientId)
+std::string Ripe::prepareData(const std::string& data, const std::string& hexKey, const char* clientId)
 {
     std::vector<byte> iv;
     std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
