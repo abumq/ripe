@@ -8,8 +8,8 @@ option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
 option(build_static_lib "Build ripe as a static library (as opposed to default, i.e, shared)" OFF)
 
-set (RIPE_VERSION "3.0.0")
-set (RIPE_SOVERSION "3.0.0")
+set (RIPE_VERSION "3.1.0")
+set (RIPE_SOVERSION "3.1.0")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
