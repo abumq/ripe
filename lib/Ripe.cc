@@ -129,6 +129,42 @@ std::string Ripe::decryptRSA(std::string& data, const std::string& key, bool isB
     return Ripe::decryptRSA(data, key, secret);
 }
 
+bool Ripe::verifyRSA(const std::string& data, const std::string& signatureHex, const std::string& publicKeyPEM)
+{
+    RSA::PublicKey publicKey;
+    bool rsaKeyValid = loadPublicKey(publicKeyPEM, publicKey);
+    if (!rsaKeyValid) {
+        throw std::invalid_argument("Could not load public key");
+    }
+    std::string decodedSignature = Ripe::hexToString(signatureHex);
+    bool result = false;
+    RSASSA_PKCS1v15_SHA_Verifier verifier(publicKey);
+    StringSource ss2(decodedSignature + data, true,
+                     new SignatureVerificationFilter(verifier,
+                                                     new ArraySink((byte*)&result, sizeof(result))));
+    return result;
+}
+
+std::string Ripe::signRSA(const std::string& data, const std::string& privateKeyPEM, const std::string& privateKeySecret)
+{
+    RSA::PrivateKey privateKey;
+    bool rsaKeyValid = loadPrivateKey(privateKeyPEM, privateKey, privateKeySecret);
+    if (!rsaKeyValid) {
+        throw std::invalid_argument("Could not load private key");
+    }
+
+    // sign message
+    std::string signature;
+    RSASSA_PKCS1v15_SHA_Signer signer(privateKey);
+    AutoSeededRandomPool rng;
+
+    StringSource ss(data, true,
+                    new SignerFilter(rng, signer,
+                                     new HexEncoder(
+                                         new StringSink(signature))));
+    return signature;
+}
+
 bool Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length)
 {
     RLOG(INFO) << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes";
