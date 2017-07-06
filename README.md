@@ -30,6 +30,8 @@ Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-c
 | `-g`        | Generate key |
 | `-e`        | Encrypt the data |
 | `-d`        | Decrypt the data |
+| `-s`        | Sign the data |
+| `-v`        | Verify the data |
 | `--aes` | Generate AES key (requires `-g`) |
 | `--key`     | Symmetric key for encryption / decryption |
 | `--in-key`     | Symmetric key for encryption / decryption file path |
@@ -40,6 +42,7 @@ Ripe is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-c
 | `--base64`   | Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64) |
 | `--hex`   | Tells ripe the data is hex string |
 | `--clean`   | (Only applicable when `--base64` data provided) Tells ripe to clean the data before processing |
+| `--signature`    | Signature for verifying the data |
 | `--in`    | Input file. You can also pipe in the data. In that case you do not have to provide this parameter |
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
 | `--length`   | Specify key length |
@@ -202,6 +205,7 @@ You can also use `--out /tmp/output.enc` to save it to `/tmp/output.enc` file
 You can also add `--raw` option to output raw data instead of base64 encoded
 
 ### Decryption (RSA)
+
 ```
 ripe -d --rsa --in-key private.pem --in /tmp/output.enc --base64
 ```
@@ -213,11 +217,13 @@ cat /tmp/output.enc | openssl rsautl -decrypt -inkey private.pem --base64
 ```
 
 ### Signing
+
 ```
 echo "my signed data" | ripe -s --rsa --in-key private.pem
 ```
 
 ### Verify
+
 ```
 echo "my signed data" | ripe -v --rsa --in-key public.pem --signature 6ECA87008F6EB756552AA5EA772943D5CD1074ADB281BCA48E93E337D1C5AE39126B88594866DE4A6F17A0B4B08E98A115AB8ADCD2E477A2CAD88B6F8C6BF5AF7F03C5CBDE54E3802FDF3E83A14762AF7A70F0488E618E1504501398458A6D6D008E1391A48ED61C96D9808AB52F1329E78022DCC7D16706DAD3FDCE55A2D82C2F2D1A5FC6E9568680766687B786A0E90A748B36561BB11668CDCE5C786ECEB87F5447DAF10C35310B23BD68E897A74D5B9967110F5D77B1C68A2A1BE1ACBB4CF615E707F94DA1251D512B005BEA2C9829D707DC004AACA6BDD6B081E308CA423053B234D76E691E371FF03CB8F2758E71DCDB27A3B2B7D70E660AE66CDCA5
 ```
