@@ -22,6 +22,8 @@ void displayUsage()
         {"-g", "Generate key"},
         {"-e", "Encrypt / encode / inflate the data"},
         {"-d", "Decrypt / decrypt / deflate the data"},
+        {"-s", "Decrypt / decrypt / deflate the data"},
+        {"-v", "Decrypt / decrypt / deflate the data"},
         {"--aes", "Generate AES key (requires -g)"},
         {"--key", "Symmetric key for encryption / decryption"},
         {"--in-key", "Symmetric key for encryption / decryption file path"},
@@ -38,7 +40,7 @@ void displayUsage()
         {"--secret", "Secret key for encrypted private key (RSA only)"},
     };
 
-    std::cout << "ripe [-d | -e | -g] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex]" << std::endl;
+    std::cout << "ripe [-d | -e | -g | -s | -v] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex]" << std::endl;
     std::cout << std::endl;
     const std::size_t LONGEST = 20;
     for (auto& option : options) {
@@ -167,6 +169,20 @@ void decryptRSA(std::string& data, const std::string& key, bool isBase64, bool i
     CATCH
 }
 
+void signRSA(std::string& data, const std::string& key, const std::string& keySecret)
+{
+    TRY
+        std::cout << Ripe::signRSA(data, key, keySecret);
+    CATCH
+}
+
+void verifyRSA(std::string& data, const std::string& signature, const std::string& key)
+{
+    TRY
+        std::cout << (Ripe::verifyRSA(data, signature, key) ? "OK" : "FAIL");
+    CATCH
+}
+
 void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, std::size_t length)
 {
     TRY
@@ -194,7 +210,7 @@ int main(int argc, char* argv[])
     }
 
     // This is quick check for args, use getopt in future
-    int type = -1; // Decryption or encryption
+    int type = -1; // Decryption encryption, generate, verify or sign
 
     std::string key;
     std::string publicKeyFile;
@@ -204,6 +220,7 @@ int main(int argc, char* argv[])
     std::string data;
     std::string clientId;
     std::string secret;
+    std::string signatureHex;
     bool isAES = false;
     bool isZlib = false;
     bool isBase64 = false;
@@ -223,6 +240,10 @@ int main(int argc, char* argv[])
             type = 2;
         } else if (arg == "-g" && type == -1) {
             type = 3;
+        } else if (arg == "-s" && type == -1) {
+            type = 4;
+        } else if (arg == "-v" && type == -1) {
+            type = 5;
         } else if (arg == "--base64") {
             isBase64 = true;
         } else if (arg == "--hex") {
@@ -231,6 +252,8 @@ int main(int argc, char* argv[])
             isRSA = true;
         } else if (arg == "--zlib") {
             isZlib = true;
+        } else if (arg == "--signature" && hasNext) {
+            signatureHex = argv[++i];
         } else if (arg == "--raw") {
             isRaw = true;
         } else if (arg == "--key" && hasNext) {
@@ -279,7 +302,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    if ((type == 1 || type == 2) && !fileArgSpecified) {
+    if ((type == 1 || type == 2 || type == 4 || type == 5) && !fileArgSpecified) {
         std::stringstream ss;
         for (std::string line; std::getline(std::cin, line);) {
             ss << line << std::endl;
@@ -336,6 +359,20 @@ int main(int argc, char* argv[])
             generateAESKey(keyLength);
         } else {
             std::cout << "ERROR: Please provide method (you probably forgot '--rsa' or '--aes')" << std::endl;
+        }
+    } else if (type == 4) { // Sign RSA
+        if (key.empty()) {
+            std::cout << "ERROR: Please provide private key to sign the data with" << std::endl;
+        } else {
+            signRSA(data, key, secret);
+        }
+    } else if (type == 5) { // Verify RSA
+        if (key.empty()) {
+            std::cout << "ERROR: Please provide public key to verify the data with" << std::endl;
+        } if (signatureHex.empty()) {
+            std::cout << "ERROR: Please provide signature (in hex format)" << std::endl;
+        } else {
+            verifyRSA(data, signatureHex, key);
         }
     } else {
         displayUsage();

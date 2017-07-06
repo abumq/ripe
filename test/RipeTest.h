@@ -222,6 +222,21 @@ TEST(RipeTest, RSAKeyGeneration)
     }
 }
 
+TEST(RipeTest, RSASignVerify)
+{
+    for (const auto& item : RSATestData) {
+        const int length = PARAM(0);
+        const std::string data = PARAM(1);
+        Ripe::KeyPair pair = Ripe::generateRSAKeyPair(length);
+
+        std::string privateKey = pair.privateKey;
+        std::string publicKey = pair.publicKey;
+
+        std::string signature = Ripe::signRSA(data, privateKey);
+        ASSERT_TRUE(Ripe::verifyRSA(data, signature, publicKey));
+    }
+}
+
 TEST(RipeTest, RSAOperations)
 {
     for (const auto& item : RSATestData) {

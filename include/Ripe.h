@@ -198,6 +198,23 @@ public:
     static std::string decryptRSA(const std::string& data, const std::string& privateKeyPEM, const std::string& secret = "");
 
     ///
+    /// \brief Verifies the data is signed by associated private key
+    /// \param data The data to verify
+    /// \param signatureHex Signature in hex format
+    /// \param publicKeyPEM Public key to verify the data from
+    ///
+    static bool verifyRSA(const std::string& data, const std::string& signatureHex, const std::string& publicKeyPEM);
+
+    ///
+    /// \brief Signs the data with private key
+    /// \param data The data to sign
+    /// \param privateKeyPEM private key to sign the data with
+    /// \param secret Private key secret
+    /// \return Hex format signature
+    ///
+    static std::string signRSA(const std::string& data, const std::string& privateKeyPEM, const std::string& secret = "");
+
+    ///
     /// \brief Generate key pair and returns KeyPair
     /// \see KeyPair
     ///

@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.1.0] - 06-07-2017
+### Added
+- Added support to sign and verify using RSA keypair
+
 ## [3.0.0] - 15-05-2017
 ### Changes
 - Changed `prepareData` to accept `string` instead
