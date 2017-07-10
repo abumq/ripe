@@ -1,6 +1,9 @@
 # Change Log
 
-## [3.1.1] - 10-07-2017
+## [3.2.0] - 10-07-2017
+### Added
+- Ability to generate private RSA keys using `--secret` param
+
 ### Fixed
 - Fixed `maxRSABlockSize` and `minRSAKeySize` calculations
 

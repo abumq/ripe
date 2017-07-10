@@ -72,6 +72,11 @@ public:
     static const std::string BASE64_CHARS;
 
     ///
+    /// \brief Algorithm for private rsa key
+    ///
+    static const std::string PRIVATE_RSA_ALGORITHM;
+
+    ///
     /// \brief Buffer size for zlib
     ///
     static const int ZLIB_BUFFER_SIZE;
@@ -218,7 +223,7 @@ public:
     /// \brief Generate key pair and returns KeyPair
     /// \see KeyPair
     ///
-    static KeyPair generateRSAKeyPair(unsigned int length = DEFAULT_RSA_LENGTH);
+    static KeyPair generateRSAKeyPair(unsigned int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
 
 
 
@@ -271,12 +276,12 @@ public:
     /// \brief writeRSAKeyPair Writes RSA key pair to public and private file paths.
     /// \param length RSA key size
     ///
-    static bool writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length = DEFAULT_RSA_LENGTH);
+    static bool writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
 
     ///
     /// \brief generateRSAKeyPair Generates RSA key pair and returns colon seperated base64 where first part is private key and second part is public key.
     ///
-    static std::string generateRSAKeyPairBase64(int length = DEFAULT_RSA_LENGTH);
+    static std::string generateRSAKeyPairBase64(int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
 
 
 

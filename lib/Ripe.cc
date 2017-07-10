@@ -36,6 +36,7 @@ const int Ripe::DEFAULT_RSA_LENGTH = 2048;
 const int Ripe::ZLIB_BUFFER_SIZE = 32768;
 const int Ripe::AES_BSIZE = AES::BLOCKSIZE;
 const std::string Ripe::BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+const std::string Ripe::PRIVATE_RSA_ALGORITHM = "AES-256-CBC";
 
 bool loadPrivateKey(const std::string& key, RSA::PrivateKey& keyOut, const std::string& secret)
 {
@@ -165,11 +166,11 @@ std::string Ripe::signRSA(const std::string& data, const std::string& privateKey
     return signature;
 }
 
-bool Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length)
+bool Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length, const std::string& secret)
 {
     RLOG(INFO) << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes";
     bool result = true;
-    KeyPair keypair = Ripe::generateRSAKeyPair(length);
+    KeyPair keypair = Ripe::generateRSAKeyPair(length, secret);
     if (keypair.privateKey.size() > 0 && keypair.publicKey.size() > 0) {
         std::ofstream fs(privateFile.c_str(), std::ios::out);
         if (fs.is_open()) {
@@ -197,9 +198,9 @@ bool Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& pri
     return result;
 }
 
-std::string Ripe::generateRSAKeyPairBase64(int length)
+std::string Ripe::generateRSAKeyPairBase64(int length, const std::string& secret)
 {
-    Ripe::KeyPair pair = Ripe::generateRSAKeyPair(length);
+    Ripe::KeyPair pair = Ripe::generateRSAKeyPair(length, secret);
     if (pair.privateKey.empty() || pair.publicKey.empty()) {
         RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
         throw std::logic_error("Failed to generate key pair!");
@@ -207,7 +208,7 @@ std::string Ripe::generateRSAKeyPairBase64(int length)
     return Ripe::base64Encode(pair.privateKey) + ":" + Ripe::base64Encode(pair.publicKey);
 }
 
-Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length)
+Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length, const std::string& secret)
 {
     AutoSeededRandomPool rng;
     InvertibleRSAFunction params;
@@ -218,7 +219,11 @@ Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length)
     Ripe::KeyPair pair;
     {
         StringSink snk(pair.privateKey);
-        PEM_Save(snk, privateKey);
+        if (secret.empty()) {
+            PEM_Save(snk, privateKey);
+        } else {
+            PEM_Save(snk, rng, privateKey, PRIVATE_RSA_ALGORITHM, secret.data(), secret.size());
+        }
         snk.MessageEnd();
     }
     {
