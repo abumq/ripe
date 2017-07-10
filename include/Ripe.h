@@ -242,7 +242,7 @@ public:
     ///
     inline static unsigned int maxRSABlockSize(std::size_t keySize)
     {
-        return ((keySize - 384) / 8) + 7;
+        return (keySize / 8) - 11;
     }
 
     ///
@@ -250,7 +250,7 @@ public:
     ///
     inline static unsigned int minRSAKeySize(std::size_t dataSize)
     {
-        return ((dataSize - 7) * 8) + 384;
+        return (dataSize + 11) * 8;
     }
 
     ///

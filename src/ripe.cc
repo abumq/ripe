@@ -22,8 +22,8 @@ void displayUsage()
         {"-g", "Generate key"},
         {"-e", "Encrypt / encode / inflate the data"},
         {"-d", "Decrypt / decrypt / deflate the data"},
-        {"-s", "Decrypt / decrypt / deflate the data"},
-        {"-v", "Decrypt / decrypt / deflate the data"},
+        {"-s", "Sign the data"},
+        {"-v", "Verify the signed data"},
         {"--aes", "Generate AES key (requires -g)"},
         {"--key", "Symmetric key for encryption / decryption"},
         {"--in-key", "Symmetric key for encryption / decryption file path"},
@@ -40,7 +40,7 @@ void displayUsage()
         {"--secret", "Secret key for encrypted private key (RSA only)"},
     };
 
-    std::cout << "ripe [-d | -e | -g | -s | -v] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex]" << std::endl;
+    std::cout << "ripe [-d | -e | -g | -s | -v] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex] [--signature]" << std::endl;
     std::cout << std::endl;
     const std::size_t LONGEST = 20;
     for (auto& option : options) {

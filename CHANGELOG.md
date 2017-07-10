@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.1.1] - 10-07-2017
+### Fixed
+- Fixed `maxRSABlockSize` and `minRSAKeySize` calculations
+
 ## [3.1.0] - 06-07-2017
 ### Added
 - Added support to sign and verify using RSA keypair
