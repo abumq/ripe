@@ -72,6 +72,11 @@ public:
     static const std::string BASE64_CHARS;
 
     ///
+    /// \brief Algorithm for private rsa key
+    ///
+    static const std::string PRIVATE_RSA_ALGORITHM;
+
+    ///
     /// \brief Buffer size for zlib
     ///
     static const int ZLIB_BUFFER_SIZE;
@@ -80,7 +85,14 @@ public:
     /// \brief RSA Key pair
     ///
     struct KeyPair {
+        ///
+        /// \brief Private key of this pair
+        ///
         std::string privateKey;
+
+        ///
+        /// \brief Public key of this pair
+        ///
         std::string publicKey;
     };
 
@@ -216,9 +228,11 @@ public:
 
     ///
     /// \brief Generate key pair and returns KeyPair
+    /// \param length Length of the key (2048 for 256-bit key, ...)
+    /// \param secret Password for private RSA key (if any)
     /// \see KeyPair
     ///
-    static KeyPair generateRSAKeyPair(unsigned int length = DEFAULT_RSA_LENGTH);
+    static KeyPair generateRSAKeyPair(unsigned int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
 
 
 
@@ -238,11 +252,11 @@ public:
 
     ///
     /// \brief Maximum size of RSA block with specified key size
-    ///
+    /// \param keySize 2048 for 256-bit key, ...
     ///
     inline static unsigned int maxRSABlockSize(std::size_t keySize)
     {
-        return ((keySize - 384) / 8) + 7;
+        return (keySize / 8) - 11;
     }
 
     ///
@@ -250,7 +264,7 @@ public:
     ///
     inline static unsigned int minRSAKeySize(std::size_t dataSize)
     {
-        return ((dataSize - 7) * 8) + 384;
+        return (dataSize + 11) * 8;
     }
 
     ///
@@ -269,14 +283,17 @@ public:
 
     ///
     /// \brief writeRSAKeyPair Writes RSA key pair to public and private file paths.
-    /// \param length RSA key size
+    /// \param publicFile Output path for public file. It must be wriable.
+    /// \param privateFile Output path for private file. It must be writable.
+    /// \param length Length of the key (2048 for 256-bit key, ...)
+    /// \param secret Password for private RSA key (if any)
     ///
-    static bool writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length = DEFAULT_RSA_LENGTH);
+    static bool writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
 
     ///
     /// \brief generateRSAKeyPair Generates RSA key pair and returns colon seperated base64 where first part is private key and second part is public key.
     ///
-    static std::string generateRSAKeyPairBase64(int length = DEFAULT_RSA_LENGTH);
+    static std::string generateRSAKeyPairBase64(int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
 
 
 
@@ -375,7 +392,7 @@ public:
     ///
     /// \brief prepareData Helper method to encrypt data with symmetric key and convert it in to tranferable data.
     /// \param clientId Extra text in between representing client ID (leave empty if you don't need it)
-    /// \return Base64 format of encrypted data with format: <pre>[LENGTH]:[IV]:[<Client_ID>:]:[Base64 Data]</pre>
+    /// \return Base64 format of encrypted data with format: <pre>[LENGTH]:[IV]:[[Client_ID]:]:[Base64 Data]</pre>
     ///
     static std::string prepareData(const std::string& data, const std::string& hexKey, const char* clientId = "");
 

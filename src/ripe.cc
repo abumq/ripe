@@ -22,8 +22,8 @@ void displayUsage()
         {"-g", "Generate key"},
         {"-e", "Encrypt / encode / inflate the data"},
         {"-d", "Decrypt / decrypt / deflate the data"},
-        {"-s", "Decrypt / decrypt / deflate the data"},
-        {"-v", "Decrypt / decrypt / deflate the data"},
+        {"-s", "Sign the data"},
+        {"-v", "Verify the signed data"},
         {"--aes", "Generate AES key (requires -g)"},
         {"--key", "Symmetric key for encryption / decryption"},
         {"--in-key", "Symmetric key for encryption / decryption file path"},
@@ -40,7 +40,7 @@ void displayUsage()
         {"--secret", "Secret key for encrypted private key (RSA only)"},
     };
 
-    std::cout << "ripe [-d | -e | -g | -s | -v] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex]" << std::endl;
+    std::cout << "ripe [-d | -e | -g | -s | -v] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex] [--signature]" << std::endl;
     std::cout << std::endl;
     const std::size_t LONGEST = 20;
     for (auto& option : options) {
@@ -183,17 +183,17 @@ void verifyRSA(std::string& data, const std::string& signature, const std::strin
     CATCH
 }
 
-void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, std::size_t length)
+void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, std::size_t length, const std::string& secret)
 {
     TRY
-        Ripe::writeRSAKeyPair(publicFile, privateFile, length);
+        Ripe::writeRSAKeyPair(publicFile, privateFile, length, secret);
     CATCH
 }
 
-void generateRSAKeyPair(std::size_t length)
+void generateRSAKeyPair(std::size_t length, const std::string& secret)
 {
     TRY
-        std::cout << Ripe::generateRSAKeyPairBase64(length);
+        std::cout << Ripe::generateRSAKeyPairBase64(length, secret);
     CATCH
 }
 
@@ -349,11 +349,19 @@ int main(int argc, char* argv[])
     } else if (type == 3) { // Generate
         if (isRSA) {
             if (publicKeyFile.empty() && privateKeyFile.empty()) {
-                generateRSAKeyPair(keyLength);
+                if (!secret.empty() && secret.size() < 4) {
+                    std::cout << "ERROR: Please choose secret of at least 4 characters for it to be compatible with other decryption tools" << std::endl;
+                } else {
+                    generateRSAKeyPair(keyLength, secret);
+                }
             } else if (publicKeyFile.empty() || privateKeyFile.empty()) {
                 std::cout << "ERROR: Please provide both private and public key files [out-public] and [out-private]" << std::endl;
             } else {
-                writeRSAKeyPair(publicKeyFile, privateKeyFile, keyLength);
+                if (!secret.empty() && secret.size() < 4) {
+                    std::cout << "ERROR: Please choose secret of at least 4 characters for it to be compatible with other decryption tools" << std::endl;
+                } else {
+                    writeRSAKeyPair(publicKeyFile, privateKeyFile, keyLength, secret);
+                }
             }
         } else if (isAES) {
             generateAESKey(keyLength);
