@@ -85,7 +85,14 @@ public:
     /// \brief RSA Key pair
     ///
     struct KeyPair {
+        ///
+        /// \brief Private key of this pair
+        ///
         std::string privateKey;
+
+        ///
+        /// \brief Public key of this pair
+        ///
         std::string publicKey;
     };
 
@@ -221,6 +228,8 @@ public:
 
     ///
     /// \brief Generate key pair and returns KeyPair
+    /// \param length Length of the key (2048 for 256-bit key, ...)
+    /// \param secret Password for private RSA key (if any)
     /// \see KeyPair
     ///
     static KeyPair generateRSAKeyPair(unsigned int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
@@ -243,7 +252,7 @@ public:
 
     ///
     /// \brief Maximum size of RSA block with specified key size
-    ///
+    /// \param keySize 2048 for 256-bit key, ...
     ///
     inline static unsigned int maxRSABlockSize(std::size_t keySize)
     {
@@ -274,7 +283,10 @@ public:
 
     ///
     /// \brief writeRSAKeyPair Writes RSA key pair to public and private file paths.
-    /// \param length RSA key size
+    /// \param publicFile Output path for public file. It must be wriable.
+    /// \param privateFile Output path for private file. It must be writable.
+    /// \param length Length of the key (2048 for 256-bit key, ...)
+    /// \param secret Password for private RSA key (if any)
     ///
     static bool writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length = DEFAULT_RSA_LENGTH, const std::string& secret = "");
 
@@ -380,7 +392,7 @@ public:
     ///
     /// \brief prepareData Helper method to encrypt data with symmetric key and convert it in to tranferable data.
     /// \param clientId Extra text in between representing client ID (leave empty if you don't need it)
-    /// \return Base64 format of encrypted data with format: <pre>[LENGTH]:[IV]:[<Client_ID>:]:[Base64 Data]</pre>
+    /// \return Base64 format of encrypted data with format: <pre>[LENGTH]:[IV]:[[Client_ID]:]:[Base64 Data]</pre>
     ///
     static std::string prepareData(const std::string& data, const std::string& hexKey, const char* clientId = "");
 
