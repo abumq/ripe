@@ -8,9 +8,10 @@ Ripe is a 256-bit security tool. It consists of command-line tool and C++ API fo
 Ripe contains encryption API for two major cryptography methods, RSA and AES (Rijndael). Also contains Base64 encoding/decoding API and some helper functions to make data transferable (called prepareData). Binaries do not depend on third-party tools or libraries but development will require cryptography libraries installed in system in order to compile.
 
 # Help
-For full help and examples please visit [official repo](https://github.com/muflihun/ripe/blob/master/README.md)
+For full help and examples please visit official repo github (muflihun/ripe).
 
 # Licence
+
 ```
 MIT License
 
@@ -38,4 +39,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-  [banner]: https://raw.githubusercontent.com/muflihun/residue/master/docs/Residue.png
+  [banner]: https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png?
