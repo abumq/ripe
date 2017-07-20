@@ -1,5 +1,10 @@
 # Change Log
 
+## [3.2.1] - 20-07-2017
+### Updates
+- Updated documentation
+- Changed licence from MIT to Apache-2.0
+
 ## [3.2.0] - 10-07-2017
 ### Added
 - Ability to generate private RSA keys using `--secret` param
