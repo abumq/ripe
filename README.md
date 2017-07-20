@@ -18,7 +18,7 @@ It is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-com
 
 [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/ripe)
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/muflihun/ripe/blob/master/LICENCE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/muflihun/ripe/blob/master/LICENCE)
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
@@ -50,13 +50,15 @@ It is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-com
 
 ## Getting Started
 
-### Minimum Requirements
-These are the requirements to build Ripe binaries. When you use it in your C++ application, you can do so without following dependencies, including older version of C++ as long as you the machine has dynamic library for `libstdc++`.
+### Dependencies
+These are the requirements to build Ripe binaries.
 
-  * C++11
-  * [Easylogging++ v9.94.1](https://github.com/muflihun/easyloggingpp)
-  * [Crypto++ v5.6.5](https://www.cryptopp.com/) (with Pem Pack)
-  * [CMake Toolchains](https://cmake.org/) 2.8.12
+  * gcc
+  * gcc-c++
+  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.94.1+
+  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/Pem-pack.zip)
+  * [cmake](https://cmake.org/) v2.8.12+
+  * [zlib-devel](https://zlib.net/)
 
 ### Get Code
 You can either [download code from master branch](https://github.com/muflihun/ripe/archive/master.zip) or clone it using `git`:
@@ -112,10 +114,10 @@ You can do `cmake -Ddll_export=ON ...` to export symbols and `cmake -Ddll=ON ...
 Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ v5.6.5 (with Pem Pack) using following commands
 
 ```
-wget -O cryptocpp.tar.gz https://github.com/weidai11/cryptopp/archive/CRYPTOPP_5_6_5.tar.gz
+wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
 tar xf cryptocpp.tar.gz
 cd cryptopp-CRYPTOPP_5_6_5
-wget -O pem_pack.zip https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/Pem-pack.zip
+wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
 unzip pem_pack.zip
 cmake .
 make
@@ -316,31 +318,4 @@ Decompression using zlib can be done using `-d` option
 
 ```
 echo eNpLTEpOAQAD2AGL | ripe -d --zlib --base64
-```
- 
-## Licence
-```
-The MIT License (MIT)
-
-Copyright (c) 2017 Muflihun Labs
-
-http://github.com/muflihun/
-http://muflihun.com
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
