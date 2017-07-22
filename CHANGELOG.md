@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.2.2] - 22-07-2017
+### Changes
+- Minor refactor and documentation update
+
 ## [3.2.1] - 20-07-2017
 ### Updates
 - Updated documentation

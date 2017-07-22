@@ -55,7 +55,7 @@ void displayUsage()
 
 void displayVersion()
 {
-    std::cout << "Ripe - 256-bit security tool" << std::endl << "Version: " << RIPE_VERSION << std::endl << "https://muflihun.com" << std::endl;
+    std::cout << "Ripe - Minimal cryptography library" << std::endl << "Version: " << RIPE_VERSION << std::endl << "https://muflihun.com" << std::endl;
 }
 
 #define TRY try {
