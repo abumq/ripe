@@ -65,7 +65,9 @@ std::string Ripe::encryptRSA(const std::string& data, const std::string& publicK
     if (!rsaKeyValid) {
         throw std::invalid_argument("Could not load public key");
     }
-    RSAES_PKCS1v15_Encryptor e(publicKey);
+
+    RSAES<PKCS1v15>::Encryptor e(publicKey);
+
     std::string result;
     AutoSeededRandomPool rng;
     StringSource ss(data, true,
@@ -107,7 +109,7 @@ std::string Ripe::decryptRSA(const std::string& data, const std::string& private
 
     std::string result;
     AutoSeededRandomPool rng;
-    RSAES_PKCS1v15_Decryptor d(privateKey);
+    RSAES<PKCS1v15>::Decryptor d(privateKey);
 
     StringSource ss(data, true,
         new PK_DecryptorFilter(rng, d,
@@ -139,7 +141,7 @@ bool Ripe::verifyRSA(const std::string& data, const std::string& signatureHex, c
     }
     std::string decodedSignature = Ripe::hexToString(signatureHex);
     bool result = false;
-    RSASSA_PKCS1v15_SHA_Verifier verifier(publicKey);
+    RSASS<PKCS1v15,SHA>::Verifier verifier(publicKey);
     StringSource ss2(decodedSignature + data, true,
                      new SignatureVerificationFilter(verifier,
                                                      new ArraySink((byte*)&result, sizeof(result))));
@@ -156,7 +158,7 @@ std::string Ripe::signRSA(const std::string& data, const std::string& privateKey
 
     // sign message
     std::string signature;
-    RSASSA_PKCS1v15_SHA_Signer signer(privateKey);
+    RSASS<PKCS1v15,SHA>::Signer signer(privateKey);
     AutoSeededRandomPool rng;
 
     StringSource ss(data, true,

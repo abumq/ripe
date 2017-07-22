@@ -199,12 +199,18 @@ public:
 
     ///
     /// \brief Encrypts data of length = dataLength using RSA key and puts it in destination
+    ///
+    /// Ripe uses PKCS #1 v1.5 padding scheme
+    ///
     /// \return The size of the encrypted data. On error -1 is returned. use printLastError(const char*) to see the error details
     ///
     static std::string encryptRSA(const std::string& data, const std::string& publicKeyPEM);
 
     ///
     /// \brief Decrypts encryptedData of length dataLength with RSA key and puts result in destination
+    ///
+    /// Ripe uses PKCS #1 v1.5 padding scheme
+    ///
     /// \return The size of the recovered plaintext. On error -1 is returned. use printLastError(const char* name) to see the error details
     ///
     static std::string decryptRSA(const std::string& data, const std::string& privateKeyPEM, const std::string& secret = "");

@@ -1,5 +1,9 @@
 # Change Log
 
+## [Unreleased]
+### Changes
+- Minor refactor
+
 ## [3.2.1] - 20-07-2017
 ### Updates
 - Updated documentation

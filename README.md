@@ -212,6 +212,8 @@ You can also use `--out /tmp/output.enc` to save it to `/tmp/output.enc` file
 
 You can also add `--raw` option to output raw data instead of base64 encoded
 
+Ripe uses PKCS #1 v1.5 padding scheme
+
 ### Decryption (RSA)
 
 ```
@@ -223,6 +225,8 @@ Please note, decryption (RSA) is unstable at the moment, you may use following a
 ```
 cat /tmp/output.enc | openssl rsautl -decrypt -inkey private.pem --base64
 ```
+
+Ripe uses PKCS #1 v1.5 padding scheme
 
 #### Encrypted Keys
 If you have an RSA key that is encrypted with pass phrase, let's say
