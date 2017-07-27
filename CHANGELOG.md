@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.3.0] - 27-07-2017
+### Added
+- Ability to encrypt using specified IV
+
 ## [3.2.2] - 22-07-2017
 ### Changes
 - Minor refactor and documentation update
