@@ -35,7 +35,7 @@ It is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-com
 | `--aes` | Generate AES key (requires `-g`) |
 | `--key`     | Symmetric key for encryption / decryption |
 | `--in-key`     | Symmetric key for encryption / decryption file path |
-| `--iv`      | Initializaion vector for decription       |
+| `--iv`      | Initializaion vector for decryption       |
 | `--rsa`      | Use RSA encryption/decryption      |
 | `--zlib`      | ZLib compression/decompression      |
 | `--raw`      | Raw output for rsa encrypted data      |
