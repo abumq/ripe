@@ -148,7 +148,7 @@ public:
     /// \brief encryptAES Encrypts data with provided symmetric key
     /// \param outputFile Optional, if provided instead of printing it to console data is saved to file and IV is printed on console
     ///
-    static std::string encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile);
+    static std::string encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile, const std::string& iv = "");
 
     ///
     /// \brief Helper function that takes hex key
@@ -398,9 +398,10 @@ public:
     ///
     /// \brief prepareData Helper method to encrypt data with symmetric key and convert it in to tranferable data.
     /// \param clientId Extra text in between representing client ID (leave empty if you don't need it)
+    /// \param ivec Init vector, if empty, random is generated
     /// \return Base64 format of encrypted data with format: <pre>[LENGTH]:[IV]:[[Client_ID]:]:[Base64 Data]</pre>
     ///
-    static std::string prepareData(const std::string& data, const std::string& hexKey, const char* clientId = "");
+    static std::string prepareData(const std::string& data, const std::string& hexKey, const char* clientId = "", const std::string& ivec = "");
 
     ///
     /// \brief Calculates expected data size. Assumed IV size = 32

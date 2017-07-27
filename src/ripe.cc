@@ -61,10 +61,10 @@ void displayVersion()
 #define TRY try {
 #define CATCH }  catch (const std::exception& e) { std::cout << "ERROR: " << e.what() << std::endl; }
 
-void encryptAES(std::string& data, const std::string& key, const std::string& clientId, const std::string& outputFile)
+void encryptAES(std::string& data, const std::string& key, const std::string& iv, const std::string& clientId, const std::string& outputFile)
 {
     TRY
-        std::cout << Ripe::encryptAES(data, key, clientId, outputFile);
+        std::cout << Ripe::encryptAES(data, key, clientId, outputFile, iv);
     CATCH
 }
 
@@ -344,7 +344,7 @@ int main(int argc, char* argv[])
         } else if (isRSA) {
             encryptRSA(data, key, outputFile, isRaw);
         } else {
-            encryptAES(data, key, clientId, outputFile);
+            encryptAES(data, key, iv, clientId, outputFile);
         }
     } else if (type == 3) { // Generate
         if (isRSA) {

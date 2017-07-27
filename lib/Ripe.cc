@@ -277,17 +277,26 @@ std::string Ripe::encryptAES(const std::string& buffer, const byte* key, std::si
 
     byte ivArr[Ripe::AES_BSIZE] = {0};
 
-    AutoSeededRandomPool rnd;
-    rnd.GenerateBlock(ivArr, sizeof ivArr);
+    if (iv.empty()) {
+        AutoSeededRandomPool rnd;
+        rnd.GenerateBlock(ivArr, sizeof ivArr);
+    } else {
+        for (std::size_t i = 0; i < iv.size(); ++i) {
+            ivArr[i] = iv.at(i);
+        }
+    }
+
 
     std::string cipher;
 
     CBC_Mode<AES>::Encryption e;
     e.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
 
-    // store for user
-    iv.resize(sizeof ivArr);
-    std::copy(std::begin(ivArr), std::end(ivArr), iv.begin());
+    if (iv.empty()) {
+        // store for user
+        iv.resize(sizeof ivArr);
+        std::copy(std::begin(ivArr), std::end(ivArr), iv.begin());
+    }
 
     // The StreamTransformationFilter adds padding as required.
     StringSource ss(buffer, true,
@@ -297,11 +306,15 @@ std::string Ripe::encryptAES(const std::string& buffer, const byte* key, std::si
     return cipher;
 }
 
-std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile)
+std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const std::string& clientId, const std::string& outputFile, const std::string& ivec)
 {
     std::stringstream ss;
     if (!outputFile.empty()) {
         std::vector<byte> iv;
+        if (!ivec.empty()) {
+            byte* ivBytes = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
+            iv = std::move(Ripe::byteToVec(ivBytes));
+        }
         std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
 
         std::ofstream out(outputFile);
@@ -313,7 +326,7 @@ std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const
         }
         ss << std::endl;
     } else {
-        ss << Ripe::prepareData(data, hexKey, clientId.c_str());
+        ss << Ripe::prepareData(data, hexKey, clientId.c_str(), ivec);
     }
     return ss.str();
 }
@@ -472,9 +485,17 @@ std::string Ripe::decompressString(const std::string& str)
     return outstring;
 }
 
-std::string Ripe::prepareData(const std::string& data, const std::string& hexKey, const char* clientId)
+std::string Ripe::prepareData(const std::string& data, const std::string& hexKey, const char* clientId, const std::string& ivec)
 {
     std::vector<byte> iv;
+    if (!ivec.empty()) {
+        std::string ivector(ivec);
+        if (ivector.size() == 32) {
+            Ripe::normalizeHex(ivector);
+        }
+        byte* ivBytes = reinterpret_cast<byte*>(const_cast<char*>(ivector.data()));
+        iv = Ripe::byteToVec(ivBytes);
+    }
     std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
     // Encryption Base64 encoding
     std::string base64Encoded = Ripe::base64Encode(encrypted);
