@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [3.3.0] - 27-07-2017
 ### Added
 - Ability to encrypt using specified IV
 
