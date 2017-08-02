@@ -36,11 +36,14 @@ if [ -f "libripe.$VERSION.dylib" ];then
 	ln -s libripe.$VERSION.dylib libripe.dylib
 elif [ -f "libripe.so.$VERSION" ];then
 	cp libripe.so.$VERSION $PACK/
+	cp /usr/lib64/libstdc++.so.6.0.22 $PACK/
 	cd $PACK
 	ln -s libripe.so.$VERSION libripe.so
-	cp /usr/lib64/libstdc++.so.6.0.22 $PACK/
 	ln -s libstdc++.so.6.0.22 libstdc++.so.6
 fi
 cd ..
 
-
+tar zcf $PACK.tar.gz $PACK
+rm -rf $PACK
+shasum $PACK.tar.gz
+pwd
