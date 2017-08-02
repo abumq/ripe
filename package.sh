@@ -46,4 +46,4 @@ cd ..
 tar zcf $PACK.tar.gz $PACK
 rm -rf $PACK
 shasum $PACK.tar.gz
-pwd
+echo `pwd`/$PACK.tar.gz
