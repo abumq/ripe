@@ -2,6 +2,57 @@ language: cpp
 compiler:
   - clang
 dist: trusty
+matrix:
+  include:
+  - os: linux
+    compiler: clang
+    before_install:
+    - g++ -v
+    
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-4.9
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-4.9, valgrind]
+    before_install:
+    - CXX=$COMPILER
+
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-5
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-5, valgrind]
+    before_install:
+    - CXX=$COMPILER
+    
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-6
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-6, valgrind]
+    before_install:
+    - CXX=$COMPILER
+    
+  - os: linux
+    compiler: gcc
+    env:
+      - COMPILER=g++-7
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: [g++-7, valgrind]
+    before_install:
+    - CXX=$COMPILER
+
 before_install:
  - sudo add-apt-repository ppa:kubuntu-ppa/backports -y
  - sudo apt-get -qq update
