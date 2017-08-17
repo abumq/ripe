@@ -57,10 +57,10 @@ if (APPLE)
     endif()
 endif()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -g -O3 ")
+list (APPEND CMAKE_CXX_FLAGS " -Wall -g -O3 ")
 
 if (!travis)
-   # list(APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
+
 endif()
 
 if (dll)
