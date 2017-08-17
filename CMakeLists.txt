@@ -57,11 +57,7 @@ if (APPLE)
     endif()
 endif()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -g -O3 ")
-
-if (!travis)
-
-endif()
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -g -O3 ")
 
 if (dll)
     add_definitions (-DRIPE_DLL)
