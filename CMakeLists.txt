@@ -6,7 +6,7 @@ option(test "Build all tests" OFF)
 option(travis "Build all tests for travis" OFF)
 option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
-option(build_static_lib "Build ripe as a static library (as opposed to default, i.e, shared)" OFF)
+option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
 set (RIPE_VERSION "3.3.0")
 set (RIPE_SOVERSION "3.3.0")
@@ -103,10 +103,10 @@ set(LIB_RIPE_SOURCE_FILES
     lib/Ripe.cc
 )
 
-if (build_static_lib)
-    add_library(ripe STATIC ${LIB_RIPE_SOURCE_FILES})
-else()
+if (BUILD_SHARED_LIBS)
     add_library(ripe SHARED ${LIB_RIPE_SOURCE_FILES})
+else()
+    add_library(ripe STATIC ${LIB_RIPE_SOURCE_FILES})
 endif()
 
 set_target_properties(ripe PROPERTIES
