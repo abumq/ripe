@@ -2,7 +2,6 @@
 
 ## [Unreleased]
 ### Updated
-- Enable optimization level 3
 - All the compiler warnings are report as error
 
 ## [3.3.0] - 27-07-2017
