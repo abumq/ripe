@@ -9,6 +9,7 @@
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <iostream>
 
 #include <cryptopp/osrng.h>
 #include <cryptopp/base64.h>
@@ -20,11 +21,8 @@
 #include <zlib.h>
 
 #include "include/Ripe.h"
-#include "include/log.h"
 
 #define RIPE_UNUSED(x) (void)x
-
-INITIALIZE_EASYLOGGINGPP
 
 using namespace CryptoPP;
 
@@ -170,7 +168,6 @@ std::string Ripe::signRSA(const std::string& data, const std::string& privateKey
 
 bool Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, int length, const std::string& secret)
 {
-    RLOG(INFO) << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes";
     bool result = true;
     KeyPair keypair = Ripe::generateRSAKeyPair(length, secret);
     if (keypair.privateKey.size() > 0 && keypair.publicKey.size() > 0) {
@@ -179,7 +176,9 @@ bool Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& pri
             fs.write(keypair.privateKey.c_str(), keypair.privateKey.size());
             fs.close();
         } else {
-            RLOG(ERROR) << "Unable to open [" << privateFile << "]";
+            throw std::runtime_error(
+                        std::string("Unable to open private file for writing [" + privateFile + "] " + std::strerror(errno)).data()
+                        );
             result = false;
         }
         fs.open(publicFile.c_str(), std::ios::out);
@@ -188,15 +187,15 @@ bool Ripe::writeRSAKeyPair(const std::string& publicFile, const std::string& pri
             fs.close();
             result = result && true;
         } else {
-            RLOG(ERROR) << "Unable to open [" << publicFile << "]";
+            throw std::runtime_error(
+                        std::string("Unable to open public file for writing [" + publicFile + "] " + std::strerror(errno)).data()
+                        );
             result = false;
         }
     }
     if (!result) {
-        RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
-        throw std::logic_error("Failed to generate key pair!");
+        throw std::runtime_error("Failed to generate key pair.");
     }
-    RLOG(INFO) << "Successfully saved!";
     return result;
 }
 
@@ -204,8 +203,7 @@ std::string Ripe::generateRSAKeyPairBase64(int length, const std::string& secret
 {
     Ripe::KeyPair pair = Ripe::generateRSAKeyPair(length, secret);
     if (pair.privateKey.empty() || pair.publicKey.empty()) {
-        RLOG(ERROR) << "Failed to generate key pair! Please check logs for details" << std::endl;
-        throw std::logic_error("Failed to generate key pair!");
+        throw std::runtime_error("Failed to generate key pair.");
     }
     return Ripe::base64Encode(pair.privateKey) + ":" + Ripe::base64Encode(pair.publicKey);
 }
@@ -382,11 +380,13 @@ std::string Ripe::decryptAES(std::string& data, const std::string& hexKey, std::
     return Ripe::decryptAES(data, reinterpret_cast<const byte*>(Ripe::hexToString(hexKey).c_str()), hexKey.size() / 2, ivHex);
 }
 
-bool Ripe::compressFile(const std::string& gzFilename, const std::string& inputFile) noexcept
+bool Ripe::compressFile(const std::string& gzFilename, const std::string& inputFile)
 {
     gzFile out = gzopen(gzFilename.c_str(), "wb");
     if (!out) {
-        RLOG(ERROR) << "Unable to open file [" << gzFilename << "] for writing." << std::strerror(errno);
+        throw std::runtime_error(
+                    std::string("Unable to open file for writing [" + gzFilename + "] " + std::strerror(errno)).data()
+                    );
         return false;
      }
     char buff[BUFSIZ];
@@ -396,7 +396,9 @@ bool Ripe::compressFile(const std::string& gzFilename, const std::string& inputF
         int bytes_written = gzwrite(out, buff, nRead);
         if (bytes_written == 0) {
            int err_no = 0;
-           RLOG(ERROR) << "Error during compression: " << gzerror(out, &err_no);
+           throw std::runtime_error(
+                       std::string("Error during compression " + std::string(gzerror(out, &err_no))).data()
+                       );
            gzclose(out);
            return false;
         }

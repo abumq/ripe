@@ -1,6 +1,9 @@
 # Change Log
 
 ## [Unreleased]
+### Changes
+- All errors are throwing runtime exceptions instead of logging
+
 ### Updated
 - All the compiler warnings are report as error
 

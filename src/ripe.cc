@@ -186,7 +186,10 @@ void verifyRSA(std::string& data, const std::string& signature, const std::strin
 void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, std::size_t length, const std::string& secret)
 {
     TRY
-        Ripe::writeRSAKeyPair(publicFile, privateFile, length, secret);
+       std::cout << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes" << std::endl;
+        if (Ripe::writeRSAKeyPair(publicFile, privateFile, length, secret)) {
+            std::cout << "Successfully saved!" << std::endl;
+        }
     CATCH
 }
 

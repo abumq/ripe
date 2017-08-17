@@ -75,10 +75,6 @@ find_package(CryptoPP REQUIRED)
 message ("-- Crypto++ binary: " ${CRYPTOPP_LIBRARY})
 include_directories (${CRYPTOPP_INCLUDE_DIRS})
 
-# Check for Easylogging++
-find_package(EASYLOGGINGPP REQUIRED)
-include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
-
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
@@ -105,7 +101,6 @@ set (CMAKE_REQUIRED_QUIET ${CMAKE_REQUIRED_QUIET_SAVE})
 # Ripe lib
 set(LIB_RIPE_SOURCE_FILES
     lib/Ripe.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
 
 if (build_static_lib)

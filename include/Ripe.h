@@ -365,7 +365,7 @@ public:
      * @param inputFile Input file path
      * @return True if successful, otherwise false
      */
-    static bool compressFile(const std::string& gzFilename, const std::string& inputFile) noexcept;
+    static bool compressFile(const std::string& gzFilename, const std::string& inputFile);
 
     /**
      * @brief Compresses string using zlib (inflate)
