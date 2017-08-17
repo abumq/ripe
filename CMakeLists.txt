@@ -6,10 +6,10 @@ option(test "Build all tests" OFF)
 option(travis "Build all tests for travis" OFF)
 option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
-option(build_static_lib "Build ripe as a static library (as opposed to default, i.e, shared)" OFF)
+option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
-set (RIPE_VERSION "3.3.0")
-set (RIPE_SOVERSION "3.3.0")
+set (RIPE_VERSION "4.0.0")
+set (RIPE_SOVERSION "4.0.0")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
@@ -57,9 +57,7 @@ if (APPLE)
     endif()
 endif()
 
-if (!travis)
-    list(APPEND CMAKE_CXX_FLAGS "-Wno-deprecated-declarations")
-endif()
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -fPIC -g2 -O2 ")
 
 if (dll)
     add_definitions (-DRIPE_DLL)
@@ -76,10 +74,6 @@ set(CryptoPP_USE_STATIC_LIBS ON)
 find_package(CryptoPP REQUIRED)
 message ("-- Crypto++ binary: " ${CRYPTOPP_LIBRARY})
 include_directories (${CRYPTOPP_INCLUDE_DIRS})
-
-# Check for Easylogging++
-find_package(EASYLOGGINGPP REQUIRED)
-include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
@@ -107,13 +101,12 @@ set (CMAKE_REQUIRED_QUIET ${CMAKE_REQUIRED_QUIET_SAVE})
 # Ripe lib
 set(LIB_RIPE_SOURCE_FILES
     lib/Ripe.cc
-    ${EASYLOGGINGPP_INCLUDE_DIR}/easylogging++.cc
 )
 
-if (build_static_lib)
-    add_library(ripe STATIC ${LIB_RIPE_SOURCE_FILES})
-else()
+if (BUILD_SHARED_LIBS)
     add_library(ripe SHARED ${LIB_RIPE_SOURCE_FILES})
+else()
+    add_library(ripe STATIC ${LIB_RIPE_SOURCE_FILES})
 endif()
 
 set_target_properties(ripe PROPERTIES
@@ -154,6 +147,10 @@ add_custom_target (all_placeholder SOURCES ${all_headers})
 
 ########################################## Unit Testing ###################################
 if (test)
+
+    # Check for Easylogging++
+    find_package(EASYLOGGINGPP REQUIRED)
+    include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
     find_package (gtest REQUIRED)
 

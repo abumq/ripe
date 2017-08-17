@@ -365,7 +365,7 @@ public:
      * @param inputFile Input file path
      * @return True if successful, otherwise false
      */
-    static bool compressFile(const std::string& gzFilename, const std::string& inputFile) noexcept;
+    static bool compressFile(const std::string& gzFilename, const std::string& inputFile);
 
     /**
      * @brief Compresses string using zlib (inflate)
@@ -433,5 +433,11 @@ public:
     /// \brief version Version of Ripe library
     ///
     static std::string version() noexcept;
+
+private:
+
+    Ripe() = delete;
+    Ripe(const Ripe&) = delete;
+    Ripe& operator=(const Ripe&) = delete;
 };
 #endif /* Ripe_h */

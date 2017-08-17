@@ -1,5 +1,12 @@
 # Change Log
 
+## [4.0.0] - 17-08-2017
+### Changes
+- All errors are throwing runtime exceptions instead of logging
+
+### Updated
+- All the compiler warnings are report as error
+
 ## [3.3.0] - 27-07-2017
 ### Added
 - Ability to encrypt using specified IV

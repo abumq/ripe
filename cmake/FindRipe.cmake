@@ -1,5 +1,5 @@
 #
-# CMake module for Ripe cryptography library
+# CMake module for Ripe cryptography wrapper
 #
 # Creates ${RIPE_INCLUDE_DIR} and ${RIPE_LIBRARY}
 #
@@ -21,15 +21,15 @@ find_path(RIPE_INCLUDE_DIR
 )
 
 if (Ripe_USE_STATIC_LIBS)
-    message ("-- Ripe: Static linking is preferred")
+    message ("-- Ripe: Static linking")
     find_library(RIPE_LIBRARY
-        NAMES libripe.a libripe.dylib libripe ripe
+        NAMES libripe.dylib libripe ripe
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
 else()
-    message ("-- Ripe: Dynamic linking is preferred")
+    message ("-- Ripe: Dynamic linking")
     find_library(RIPE_LIBRARY
-        NAMES ripe libripe libripe.dylib libripe.a
+        NAMES ripe libripe libripe.dylib
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
 endif()
