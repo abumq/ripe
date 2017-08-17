@@ -58,7 +58,7 @@ if (APPLE)
     endif()
 endif()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -fPIC -O2 ")
+list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -fPIC -g2 -O2 ")
 
 if (dll)
     add_definitions (-DRIPE_DLL)
