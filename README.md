@@ -56,7 +56,7 @@ These are the requirements to build Ripe binaries.
   * gcc
   * gcc-c++
   * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.94.1+
-  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/Pem-pack.zip)
+  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [cmake](https://cmake.org/) v2.8.12+
   * [zlib-devel](https://zlib.net/)
 
