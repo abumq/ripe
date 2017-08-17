@@ -20,7 +20,6 @@ include_directories (${CMAKE_BINARY_DIR})
 include_directories (${CMAKE_SOURCE_DIR})
 
 include(FindPackageHandleStandardArgs)
-include(FindZLIB)
 
 # We need C++11
 macro(require_cpp11)
@@ -117,7 +116,7 @@ set_target_properties(ripe PROPERTIES
 
 target_link_libraries(ripe
     ${CRYPTOPP_LIBRARIES}
-    ${ZLIB_STATIC_LIB}
+    ${ZLIB_LIBRARIES}
 )
 
 target_compile_definitions(ripe PRIVATE
