@@ -433,5 +433,11 @@ public:
     /// \brief version Version of Ripe library
     ///
     static std::string version() noexcept;
+
+private:
+
+    Ripe() = delete;
+    Ripe(const Ripe&) = delete;
+    Ripe& operator=(const Ripe&) = delete;
 };
 #endif /* Ripe_h */

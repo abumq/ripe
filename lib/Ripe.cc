@@ -313,7 +313,7 @@ std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const
         std::vector<byte> iv;
         if (!ivec.empty()) {
             byte* ivBytes = reinterpret_cast<byte*>(const_cast<char*>(ivec.data()));
-            iv = std::move(Ripe::byteToVec(ivBytes));
+            iv = Ripe::byteToVec(ivBytes);
         }
         std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
 
