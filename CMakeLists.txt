@@ -20,6 +20,7 @@ include_directories (${CMAKE_BINARY_DIR})
 include_directories (${CMAKE_SOURCE_DIR})
 
 include(FindPackageHandleStandardArgs)
+include(FindZLIB)
 
 # We need C++11
 macro(require_cpp11)
@@ -116,7 +117,7 @@ set_target_properties(ripe PROPERTIES
 
 target_link_libraries(ripe
     ${CRYPTOPP_LIBRARIES}
-    ${ZLIB_LIBRARIES}
+    ${ZLIB_STATIC_LIB}
 )
 
 target_compile_definitions(ripe PRIVATE
@@ -147,6 +148,10 @@ add_custom_target (all_placeholder SOURCES ${all_headers})
 
 ########################################## Unit Testing ###################################
 if (test)
+
+    # Check for Easylogging++
+    find_package(EASYLOGGINGPP REQUIRED)
+    include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
     find_package (gtest REQUIRED)
 

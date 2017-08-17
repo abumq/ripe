@@ -3,6 +3,7 @@
 ## [4.0.0] - 17-08-2017
 ### Changes
 - All errors are throwing runtime exceptions instead of logging
+- zlib linked statically
 
 ### Updated
 - All the compiler warnings are report as error
