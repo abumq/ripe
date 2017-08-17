@@ -61,14 +61,17 @@ void displayVersion()
 #define TRY try {
 #define CATCH }  catch (const std::exception& e) { std::cout << "ERROR: " << e.what() << std::endl; }
 
-void encryptAES(std::string& data, const std::string& key, const std::string& iv, const std::string& clientId, const std::string& outputFile)
+void encryptAES(std::string& data, const std::string& key,
+                const std::string& iv, const std::string& clientId,
+                const std::string& outputFile)
 {
     TRY
         std::cout << Ripe::encryptAES(data, key, clientId, outputFile, iv);
     CATCH
 }
 
-void decryptAES(std::string& data, const std::string& key, std::string& iv, bool isBase64, bool isHex)
+void decryptAES(std::string& data, const std::string& key,
+                std::string& iv, bool isBase64, bool isHex)
 {
     TRY
         std::cout << Ripe::decryptAES(data, key, iv, isBase64, isHex);
@@ -114,7 +117,8 @@ void decodeHex(std::string& data)
     CATCH
 }
 
-void compress(std::string& data, bool isBase64, bool isHex, const std::string& outputFile)
+void compress(std::string& data, bool isBase64, bool isHex,
+              const std::string& outputFile)
 {
     TRY
         std::string o = Ripe::compressString(data);
@@ -135,7 +139,8 @@ void compress(std::string& data, bool isBase64, bool isHex, const std::string& o
     CATCH
 }
 
-void decompress(std::string& data, bool isBase64, bool isHex, const std::string& outputFile)
+void decompress(std::string& data, bool isBase64, bool isHex,
+                const std::string& outputFile)
 {
     TRY
         if (isBase64) {
@@ -155,35 +160,41 @@ void decompress(std::string& data, bool isBase64, bool isHex, const std::string&
     CATCH
 }
 
-void encryptRSA(std::string& data, const std::string& key, const std::string& outputFile, bool isRaw)
+void encryptRSA(std::string& data, const std::string& key,
+                const std::string& outputFile, bool isRaw)
 {
     TRY
         std::cout << Ripe::encryptRSA(data, key, outputFile, isRaw);
     CATCH
 }
 
-void decryptRSA(std::string& data, const std::string& key, bool isBase64, bool isHex, const std::string& secret)
+void decryptRSA(std::string& data, const std::string& key,
+                bool isBase64, bool isHex, const std::string& secret)
 {
     TRY
         std::cout << Ripe::decryptRSA(data, key, isBase64, isHex, secret);
     CATCH
 }
 
-void signRSA(std::string& data, const std::string& key, const std::string& keySecret)
+void signRSA(std::string& data, const std::string& key,
+             const std::string& keySecret)
 {
     TRY
         std::cout << Ripe::signRSA(data, key, keySecret);
     CATCH
 }
 
-void verifyRSA(std::string& data, const std::string& signature, const std::string& key)
+void verifyRSA(std::string& data, const std::string& signature,
+               const std::string& key)
 {
     TRY
         std::cout << (Ripe::verifyRSA(data, signature, key) ? "OK" : "FAIL");
     CATCH
 }
 
-void writeRSAKeyPair(const std::string& publicFile, const std::string& privateFile, std::size_t length, const std::string& secret)
+void writeRSAKeyPair(const std::string& publicFile,
+                     const std::string& privateFile, std::size_t length,
+                     const std::string& secret)
 {
     TRY
        std::cout << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes" << std::endl;
@@ -353,15 +364,15 @@ int main(int argc, char* argv[])
         if (isRSA) {
             if (publicKeyFile.empty() && privateKeyFile.empty()) {
                 if (!secret.empty() && secret.size() < 4) {
-                    std::cout << "ERROR: Please choose secret of at least 4 characters for it to be compatible with other decryption tools" << std::endl;
+                    std::cerr << "ERROR: Please choose secret of at least 4 characters for it to be compatible with other decryption tools" << std::endl;
                 } else {
                     generateRSAKeyPair(keyLength, secret);
                 }
             } else if (publicKeyFile.empty() || privateKeyFile.empty()) {
-                std::cout << "ERROR: Please provide both private and public key files [out-public] and [out-private]" << std::endl;
+                std::cerr << "ERROR: Please provide both private and public key files [out-public] and [out-private]" << std::endl;
             } else {
                 if (!secret.empty() && secret.size() < 4) {
-                    std::cout << "ERROR: Please choose secret of at least 4 characters for it to be compatible with other decryption tools" << std::endl;
+                    std::cerr << "ERROR: Please choose secret of at least 4 characters for it to be compatible with other decryption tools" << std::endl;
                 } else {
                     writeRSAKeyPair(publicKeyFile, privateKeyFile, keyLength, secret);
                 }
@@ -369,19 +380,19 @@ int main(int argc, char* argv[])
         } else if (isAES) {
             generateAESKey(keyLength);
         } else {
-            std::cout << "ERROR: Please provide method (you probably forgot '--rsa' or '--aes')" << std::endl;
+            std::cerr << "ERROR: Please provide method (you probably forgot '--rsa' or '--aes')" << std::endl;
         }
     } else if (type == 4) { // Sign RSA
         if (key.empty()) {
-            std::cout << "ERROR: Please provide private key to sign the data with" << std::endl;
+            std::cerr << "ERROR: Please provide private key to sign the data with" << std::endl;
         } else {
             signRSA(data, key, secret);
         }
     } else if (type == 5) { // Verify RSA
         if (key.empty()) {
-            std::cout << "ERROR: Please provide public key to verify the data with" << std::endl;
+            std::cerr << "ERROR: Please provide public key to verify the data with" << std::endl;
         } if (signatureHex.empty()) {
-            std::cout << "ERROR: Please provide signature (in hex format)" << std::endl;
+            std::cerr << "ERROR: Please provide signature (in hex format)" << std::endl;
         } else {
             verifyRSA(data, signatureHex, key);
         }

@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [4.0.0] - 17-08-2017
 ### Changes
 - All errors are throwing runtime exceptions instead of logging
 
