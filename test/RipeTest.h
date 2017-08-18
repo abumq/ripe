@@ -41,8 +41,9 @@ static TestData<std::size_t, std::string> AESTestData = {
     TestCase(32, "Quick Brown Fox Jumps Over The Lazy Dog"),
 };
 
-static TestData<std::string, std::string, std::string, std::string> AESDecryptionData = {
-    TestCase("hkz20HKQA491wZqbEctxCA==", "plain text", "B1C8BFB9DA2D4FB054FE73047AE700BC", "88505d29e8f56bbd7c9e1408f4f42240"),
+static TestData<std::string, std::string, std::string, std::string, bool, bool> AESDecryptionData = {
+    TestCase("864CF6D07290038F75C19A9B11CB7108", "706C61696E2074657874", "B1C8BFB9DA2D4FB054FE73047AE700BC", "88505d29e8f56bbd7c9e1408f4f42240", false, true),
+    TestCase("hkz20HKQA491wZqbEctxCA==", "706C61696E2074657874", "B1C8BFB9DA2D4FB054FE73047AE700BC", "88505d29e8f56bbd7c9e1408f4f42240", true, false),
 };
 
 static TestData<int, std::string> RSATestData = {
@@ -186,14 +187,15 @@ TEST(RipeTest, AESEncryption)
 
 TEST(RipeTest, AESDecryption)
 {
-    for (const auto& item : AESDecryptionData) {
-        const std::string data = PARAM(0);
+    for (auto item : AESDecryptionData) {
+        std::string data = PARAM(0);
         const std::string expected = PARAM(1);
         const std::string key = PARAM(2);
         std::string ivec = PARAM(3);
-        std::string encrypted = Ripe::base64Decode(data);
+        bool isb64 = PARAM(4);
+        bool ishex = PARAM(5);
 
-        std::string decrypted = Ripe::decryptAES(encrypted, key, ivec);
+        std::string decrypted = Ripe::stringToHex(Ripe::decryptAES(data, key, ivec, isb64, ishex));
         EXPECT_STRCASEEQ(expected.c_str(), decrypted.c_str());
     }
 }
