@@ -60,9 +60,6 @@ std::string Ripe::encryptRSA(const std::string& data, const std::string& publicK
 {
     RSA::PublicKey publicKey;
     bool rsaKeyValid = loadPublicKey(publicKeyPEM, publicKey);
-    //std::cout << "----------------------------" << std::endl;
-    //std::cout << "e = " << publicKey.GetPublicExponent() << "\nn (p x q) = " << publicKey.GetModulus() << std::endl;
-    //std::cout << "----------------------------" << std::endl;
     if (!rsaKeyValid) {
         throw std::invalid_argument("Could not load public key");
     }
@@ -104,10 +101,6 @@ std::string Ripe::decryptRSA(const std::string& data, const std::string& private
 {
     RSA::PrivateKey privateKey;
     bool rsaKeyValid = loadPrivateKey(privateKeyPEM, privateKey, secret);
-    //std::cout << "----------------------------" << std::endl;
-    //std::cout << "p = " << privateKey.GetPrime1() << "\nq = " << privateKey.GetPrime2() << "\nd = " << privateKey.GetPrivateExponent() << std::endl;
-    //std::cout << "dp = " << privateKey.GetModPrime1PrivateExponent() << "\ndq = " << privateKey.GetModPrime2PrivateExponent() << "\nu = " << privateKey.GetMultiplicativeInverseOfPrime2ModPrime1() << std::endl;
-    std::cout << "----------------------------" << std::endl;
     if (!rsaKeyValid) {
         throw std::invalid_argument("Could not load private key");
     }
