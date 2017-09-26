@@ -1,5 +1,9 @@
 # Change Log
 
+## [4.0.1] - 26-09-2017
+### Updates
+- Updated headers
+
 ## [4.0.0] - 17-08-2017
 ### Changes
 - All errors are throwing runtime exceptions instead of logging

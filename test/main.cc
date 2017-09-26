@@ -1,9 +1,5 @@
 #include "test.h"
-#   ifndef DISABLE_CURR_RIPE_TEST
 #include "RipeTest.h"
-#else
-#   include "Ripe5Test.h"
-#endif
 
 INITIALIZE_EASYLOGGINGPP
 
