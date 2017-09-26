@@ -44,7 +44,7 @@ before_install:
  - make
  - sudo make install
 
-script: "./ripe-unit-tests && ../.travis-build.sh && ../openssl-compatibility.sh"
+script: "./ripe-unit-tests && ../.travis-build.sh && ../interoperability.sh"
 branches:
   only:
     - master
