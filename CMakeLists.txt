@@ -9,8 +9,8 @@ option(dll_export "DLL exports (Use on windows only)" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 option (test_ripe5 "Test upcoming ripe" OFF)
 
-set (RIPE_VERSION "4.0.0")
-set (RIPE_SOVERSION "4.0.0")
+set (RIPE_VERSION "4.0.1")
+set (RIPE_SOVERSION "4.0.1")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
