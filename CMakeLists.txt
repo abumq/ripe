@@ -7,6 +7,7 @@ option(travis "Build all tests for travis" OFF)
 option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
+option (test_ripe5 "Test upcoming ripe" OFF)
 
 set (RIPE_VERSION "4.0.0")
 set (RIPE_SOVERSION "4.0.0")
@@ -57,7 +58,7 @@ if (APPLE)
     endif()
 endif()
 
-list (APPEND CMAKE_CXX_FLAGS " -Wall -Werror -fPIC -g2 -O2 ")
+list (APPEND CMAKE_CXX_FLAGS "  ")
 
 if (dll)
     add_definitions (-DRIPE_DLL)
@@ -168,6 +169,12 @@ if (test)
         ELPP_DEFAULT_LOG_FILE="logs/ripe-unit-test.log"
         ELPP_DEFAULT_LOGGING_FLAGS=4096
     )
+
+if (test_ripe5)
+    target_compile_definitions(ripe-unit-tests PUBLIC
+        DISABLE_CURR_RIPE_TEST
+    )
+endif()
 
     # Standard linking to gtest stuff.
     target_link_libraries(ripe-unit-tests gtest gtest_main)

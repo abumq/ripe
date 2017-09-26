@@ -159,7 +159,7 @@ TEST(RipeTest, AESEncryption)
         const std::string testData = PARAM(1);
         const std::string testKey = Ripe::generateNewKey(testKeySize);//"6BC027B45BE1B5A912EEE837B723A5DEEE397181439986AD9B1AB307780ECC8A";
 
-        LOG(INFO) << "Test: " <<  (testKeySize * Ripe::BITS_PER_BYTE) << "-bit key: " << testData;
+        LOG(INFO) << "Test: " <<  (testKeySize * 8) << "-bit key: " << testData;
         LOG(INFO) << "Key: " << testKey;
         std::vector<byte> iv;
         TIMED_BLOCK(timer, "AES Encryption & Decryption") {
@@ -204,7 +204,7 @@ TEST(RipeTest, RSAKeyGeneration)
 {
     for (const auto& item : RSATestData) {
         const int length = PARAM(0);
-        const int lengthInBits = length / Ripe::BITS_PER_BYTE;
+        const int lengthInBits = length / 8;
         std::stringstream ss;
         ss << lengthInBits << " bit keypair";
         TIMED_BLOCK(timer, ss.str()) {
@@ -244,7 +244,7 @@ TEST(RipeTest, RSAOperations)
     for (const auto& item : RSATestData) {
 
         const int length = PARAM(0);
-        const int lengthInBits = length / Ripe::BITS_PER_BYTE;
+        const int lengthInBits = length / 8;
         std::stringstream ss;
         ss << "With " << lengthInBits << " bit keypair";
         TIMED_BLOCK(o, ss.str()) {
