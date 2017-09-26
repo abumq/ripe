@@ -1,5 +1,7 @@
 
-                                               ‫بسم الله الرَّحْمَنِ الرَّحِيمِ
+<p align="center">
+  ﷽
+</p>
 
 ![Ripe](https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png?)
 
@@ -7,20 +9,10 @@ Ripe is a minimal security tool. It consists of command-line tool and C++ API fo
 
 Ripe contains encryption API for two major cryptography methods, RSA and AES (Rijndael). Also contains Base64 encoding/decoding API and some helper functions to make data transferable (called `prepareData`). Binaries do not depend on third-party tools or libraries but development will require cryptography libraries installed in system in order to compile.
 
-It is fully compatible with OpenSSL. See [openssl-compatibility.sh](/openssl-compatibility.sh)
+It is fully compatible with OpenSSL. See [interoperability.sh](/interoperability.sh)
 
 
-[![Build Status (Develop)](https://img.shields.io/travis/muflihun/ripe/develop.svg)](https://travis-ci.org/muflihun/ripe) (`develop`)
-
-[![Build Status (Master)](https://img.shields.io/travis/muflihun/ripe/master.svg)](https://travis-ci.org/muflihun/ripe) (`master`)
-    
-[![Version](https://img.shields.io/github/release/muflihun/ripe.svg)](https://github.com/muflihun/ripe/releases/latest)
-
-[![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/ripe)
-
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/muflihun/ripe/blob/master/LICENCE)
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
+[![Build Status (Master)](https://img.shields.io/travis/muflihun/ripe/master.svg)](https://travis-ci.org/muflihun/ripe) [![Build Status (Develop)](https://img.shields.io/travis/muflihun/ripe/develop.svg)](https://travis-ci.org/muflihun/ripe) [![Version](https://img.shields.io/github/release/muflihun/ripe.svg)](https://github.com/muflihun/ripe/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/ripe) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/muflihun/ripe/blob/master/LICENCE) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
 
 ## Options
 
