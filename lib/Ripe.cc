@@ -91,7 +91,7 @@ std::string Ripe::encryptRSA(std::string& data, const std::string& key, const st
             encryptedData = Ripe::base64Encode(encryptedData);
         }
         if (!outputFile.empty()) {
-            std::ofstream out(outputFile);
+            std::ofstream out(outputFile.c_str());
             out.write(encryptedData.c_str(), encryptedData.size());
             out.flush();
             out.close();
@@ -299,7 +299,7 @@ std::string Ripe::encryptAES(const std::string& buffer, const RipeByte* key, std
     if (iv.empty()) {
         // store for user
         iv.resize(sizeof ivArr);
-        std::copy(std::begin(ivArr), std::end(ivArr), iv.begin());
+        std::copy(ivArr, ivArr + Ripe::AES_BLOCK_SIZE, iv.begin());
     }
 
     // The StreamTransformationFilter adds padding as required.
@@ -321,7 +321,7 @@ std::string Ripe::encryptAES(std::string& data, const std::string& hexKey, const
         }
         std::string encrypted = Ripe::encryptAES(data, hexKey, iv);
 
-        std::ofstream out(outputFile);
+        std::ofstream out(outputFile.c_str());
         out << encrypted.data();
         out.close();
         ss << "IV: " << std::hex << std::setfill('0');
@@ -341,7 +341,7 @@ std::string Ripe::decryptAES(const std::string& data, const RipeByte* key, std::
     SecByteBlock keyBlock(key, keySize);
 
     RipeByte ivArr[Ripe::AES_BLOCK_SIZE] = {0};
-    std::copy(iv.begin(), iv.end(), std::begin(ivArr));
+    std::copy(iv.begin(), iv.end(), ivArr);
 
     CBC_Mode<AES>::Decryption d;
     d.SetKeyWithIV(keyBlock, keyBlock.size(), ivArr);
