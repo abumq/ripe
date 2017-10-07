@@ -14,36 +14,44 @@
 #include <unordered_map>
 #include "include/Ripe.h"
 
+void displayVersion()
+{
+    std::cout << "Ripe - Lightweight cryptography library wrapper" << std::endl << "Version: " << RIPE_VERSION << std::endl << "https://muflihun.com" << std::endl;
+}
+
 void displayUsage()
 {
-    // we want to keep the order so can't use std::map or std::unordered_map
-    std::vector<std::pair<std::string, std::string>> options = {
-        {"--version", "Display version information"},
-        {"-g", "Generate key"},
-        {"-e", "Encrypt / encode / inflate the data"},
-        {"-d", "Decrypt / decrypt / deflate the data"},
-        {"-s", "Sign the data"},
-        {"-v", "Verify the signed data"},
-        {"--aes", "Generate AES key (requires -g)"},
-        {"--key", "Symmetric key for encryption / decryption"},
-        {"--in-key", "Symmetric key for encryption / decryption file path"},
-        {"--iv", "Initializaion vector for decription"},
-        {"--rsa", "Use RSA encryption/decryption"},
-        {"--zlib", "ZLib compression/decompression"},
-        {"--raw", "Raw output for rsa encrypted data"},
-        {"--base64", "Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64)"},
-        {"--hex", "Tells ripe the data is hex string"},
-        {"--clean", "(Only applicable when --base64 data provided) Tells ripe to clean the data before processing"},
-        {"--in", "Input file. You can also pipe in the data. In that case you do not have to provide this parameter"},
-        {"--out", "Tells ripe to store encrypted data in specified file. (Outputs IV in console)"},
-        {"--length", "Specify key length"},
-        {"--secret", "Secret key for encrypted private key (RSA only)"},
-    };
+    // we want to keep the order so don't use std::map or std::unordered_map
+    std::vector<std::pair<std::string, std::string> > options;
+    options.push_back(std::make_pair("--version", "Display version information"));
+    options.push_back(std::make_pair("-g", "Generate key"));
+    options.push_back(std::make_pair("-e", "Encrypt / encode / inflate the data"));
+    options.push_back(std::make_pair("-d", "Decrypt / decrypt / deflate the data"));
+    options.push_back(std::make_pair("-s", "Sign the data"));
+    options.push_back(std::make_pair("-v", "Verify the signed data"));
+    options.push_back(std::make_pair("--aes", "Generate AES key (requires -g)"));
+    options.push_back(std::make_pair("--key", "Symmetric key for encryption / decryption"));
+    options.push_back(std::make_pair("--in-key", "Symmetric key for encryption / decryption file path"));
+    options.push_back(std::make_pair("--iv", "Initializaion vector for decription"));
+    options.push_back(std::make_pair("--rsa", "Use RSA encryption/decryption"));
+    options.push_back(std::make_pair("--zlib", "ZLib compression/decompression"));
+    options.push_back(std::make_pair("--raw", "Raw output for rsa encrypted data"));
+    options.push_back(std::make_pair("--base64", "Tells ripe the data needs to be decoded before decryption (this can be used for decoding base64)"));
+    options.push_back(std::make_pair("--hex", "Tells ripe the data is hex string"));
+    options.push_back(std::make_pair("--clean", "(Only applicable when --base64 data provided) Tells ripe to clean the data before processing"));
+    options.push_back(std::make_pair("--in", "Input file. You can also pipe in the data. In that case you do not have to provide this parameter"));
+    options.push_back(std::make_pair("--out", "Tells ripe to store encrypted data in specified file. (Outputs IV in console)"));
+    options.push_back(std::make_pair("--length", "Specify key length"));
+    options.push_back(std::make_pair("--secret", "Secret key for encrypted private key (RSA only)"));
 
+    displayVersion();
+    std::cout << "Usage: " << std::endl;
     std::cout << "ripe [-d | -e | -g | -s | -v] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex] [--signature]" << std::endl;
     std::cout << std::endl;
     const std::size_t LONGEST = 20;
-    for (auto& option : options) {
+    for (std::vector<std::pair<std::string, std::string> >::iterator it = options.begin();
+         it < options.end(); ++it) {
+        std::pair<std::string, std::string> option = *it;
         std::cout << "     " << option.first;
         for (std::size_t i = 0; i < LONGEST - option.first.length(); ++i) {
             std::cout << " ";
@@ -51,11 +59,6 @@ void displayUsage()
         std::cout << option.second << std::endl;
     }
     std::cout << std::endl;
-}
-
-void displayVersion()
-{
-    std::cout << "Ripe - Minimal cryptography library" << std::endl << "Version: " << RIPE_VERSION << std::endl << "https://muflihun.com" << std::endl;
 }
 
 #define TRY try {
@@ -197,7 +200,7 @@ void writeRSAKeyPair(const std::string& publicFile,
                      const std::string& secret)
 {
     TRY
-       std::cout << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes" << std::endl;
+       std::cout << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " Ripebytes" << std::endl;
         if (Ripe::writeRSAKeyPair(publicFile, privateFile, length, secret)) {
             std::cout << "Successfully saved!" << std::endl;
         }
@@ -209,6 +212,10 @@ void generateRSAKeyPair(std::size_t length, const std::string& secret)
     TRY
         std::cout << Ripe::generateRSAKeyPairBase64(length, secret);
     CATCH
+}
+
+bool rtrimPred(char c) {
+    return !std::isspace(c);
 }
 
 int main(int argc, char* argv[])
@@ -328,9 +335,7 @@ int main(int argc, char* argv[])
 
     if ((isBase64 || isHex) && clean) {
         // Right trim
-        data.erase(std::find_if(data.rbegin(), data.rend(), [](char c) {
-          return !std::isspace(c);
-        }).base(), data.end());
+        data.erase(std::find_if(data.rbegin(), data.rend(), rtrimPred).base(), data.end());
     }
     if (type == 1) { // Decrypt / Decode
         if (isBase64 && key.empty() && iv.empty() && !isZlib) {

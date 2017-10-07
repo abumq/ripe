@@ -1,5 +1,9 @@
 # Change Log
 
+## [4.1.0] - 07-06-2017
+### Changes
+- Compatible with old compilers
+
 ## [4.0.1] - 26-09-2017
 ### Updates
 - Updated headers
