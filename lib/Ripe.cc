@@ -8,12 +8,15 @@
 //  https://github.com/muflihun
 //
 
+#include <cerrno>
 #include <iomanip>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <iterator>
 
 #include <cryptopp/osrng.h>
 #include <cryptopp/base64.h>
