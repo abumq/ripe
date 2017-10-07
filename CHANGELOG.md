@@ -3,6 +3,7 @@
 ## [4.1.0] - 07-06-2017
 ### Changes
 - Compatible with old compilers
+- Changed `byte` to `RipeByte` for compatibility with other typedef
 
 ## [4.0.1] - 26-09-2017
 ### Updates

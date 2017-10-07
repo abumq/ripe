@@ -11,7 +11,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <unordered_map>
 #include "include/Ripe.h"
 
 void displayVersion()
@@ -135,7 +134,7 @@ void compress(std::string& data, bool isBase64, bool isHex,
         if (outputFile.empty()) {
             std::cout << o;
         } else {
-            std::ofstream out(outputFile);
+            std::ofstream out(outputFile.c_str());
             out << o;
             out.close();
         }
@@ -156,7 +155,7 @@ void decompress(std::string& data, bool isBase64, bool isHex,
         if (outputFile.empty()) {
             std::cout << o;
         } else {
-            std::ofstream out(outputFile);
+            std::ofstream out(outputFile.c_str());
             out << o;
             out.close();
         }
