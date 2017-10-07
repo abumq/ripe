@@ -161,7 +161,7 @@ TEST(RipeTest, AESEncryption)
 
         LOG(INFO) << "Test: " <<  (testKeySize * 8) << "-bit key: " << testData;
         LOG(INFO) << "Key: " << testKey;
-        std::vector<byte> iv;
+        std::vector<RipeByte> iv;
         TIMED_BLOCK(timer, "AES Encryption & Decryption") {
 
             LOG(INFO) << "Encrypting...";

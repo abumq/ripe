@@ -45,9 +45,7 @@ It is fully compatible with OpenSSL. See [interoperability.sh](/interoperability
 ### Dependencies
 These are the requirements to build Ripe binaries.
 
-  * gcc
-  * gcc-c++
-  * [Easylogging++](https://github.com/muflihun/easyloggingpp) v9.94.1+
+  * C++98
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
   * [cmake](https://cmake.org/) v2.8.12+
   * [zlib-devel](https://zlib.net/)
@@ -67,6 +65,7 @@ Steps to build Ripe:
 mkdir build
 cd build
 cmake ..
+## Following line requires c++11 compiler and easylogging++
 cmake -Dtest=ON ..
 make
 ```

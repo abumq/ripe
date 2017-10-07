@@ -7,10 +7,9 @@ option(travis "Build all tests for travis" OFF)
 option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
-option (test_ripe5 "Test upcoming ripe" OFF)
 
-set (RIPE_VERSION "4.0.1")
-set (RIPE_SOVERSION "4.0.1")
+set (RIPE_VERSION "4.1.0")
+set (RIPE_SOVERSION "4.1.0")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
@@ -21,29 +20,6 @@ include_directories (${CMAKE_BINARY_DIR})
 include_directories (${CMAKE_SOURCE_DIR})
 
 include(FindPackageHandleStandardArgs)
-
-# We need C++11
-macro(require_cpp11)
-        if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
-                # CMake 3.1 has built-in CXX standard checks.
-                message("-- Setting C++11")
-                set(CMAKE_CXX_STANDARD 11)
-                set(CMAKE_CXX_STANDARD_REQUIRED on)
-        else()
-                if (CMAKE_CXX_COMPILER_ID MATCHES "GCC")
-                    message ("-- GNU CXX (-std=c++11)")
-                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
-                elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-                    message ("-- CLang CXX (-std=c++11)")
-                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
-                elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-                    message ("-- GNU CXX (-std=c++11)")
-                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
-                else()
-                    message ("-- Requires C++11. Your compiler does not support it.")
-                endif()
-        endif()
-endmacro()
 
 # http://www.cmake.org/Wiki/CMake_RPATH_handling#Mac_OS_X_and_the_RPATH
 if (APPLE)
@@ -67,8 +43,6 @@ endif()
 if (dll_export)
     add_definitions (-DRIPE_EXPORTS)
 endif()
-
-require_cpp11()
 
 # Check for cryptopp (static)
 set(CryptoPP_USE_STATIC_LIBS ON)
@@ -146,8 +120,33 @@ file (GLOB_RECURSE all_headers ${CMAKE_SOURCE_DIR}/*.h)
 add_custom_target (all_placeholder SOURCES ${all_headers})
 
 
+# We need C++11 (only for test)
+macro(require_cpp11)
+        if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
+                # CMake 3.1 has built-in CXX standard checks.
+                message("-- Setting C++11")
+                set(CMAKE_CXX_STANDARD 11)
+                set(CMAKE_CXX_STANDARD_REQUIRED on)
+        else()
+                if (CMAKE_CXX_COMPILER_ID MATCHES "GCC")
+                    message ("-- GNU CXX (-std=c++11)")
+                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+                elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+                    message ("-- CLang CXX (-std=c++11)")
+                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+                elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+                    message ("-- GNU CXX (-std=c++11)")
+                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+                else()
+                    message ("-- Requires C++11. Your compiler does not support it.")
+                endif()
+        endif()
+endmacro()
+
 ########################################## Unit Testing ###################################
 if (test)
+
+    require_cpp11()
 
     # Check for Easylogging++
     find_package(EASYLOGGINGPP REQUIRED)
@@ -169,12 +168,6 @@ if (test)
         ELPP_DEFAULT_LOG_FILE="logs/ripe-unit-test.log"
         ELPP_DEFAULT_LOGGING_FLAGS=4096
     )
-
-if (test_ripe5)
-    target_compile_definitions(ripe-unit-tests PUBLIC
-        DISABLE_CURR_RIPE_TEST
-    )
-endif()
 
     # Standard linking to gtest stuff.
     target_link_libraries(ripe-unit-tests gtest gtest_main)
