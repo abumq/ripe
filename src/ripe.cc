@@ -199,7 +199,7 @@ void writeRSAKeyPair(const std::string& publicFile,
                      const std::string& secret)
 {
     TRY
-       std::cout << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " Ripebytes" << std::endl;
+       std::cout << "Generating key pair that can encrypt " << Ripe::maxRSABlockSize(length) << " bytes" << std::endl;
         if (Ripe::writeRSAKeyPair(publicFile, privateFile, length, secret)) {
             std::cout << "Successfully saved!" << std::endl;
         }
