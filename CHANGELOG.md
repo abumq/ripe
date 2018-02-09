@@ -1,5 +1,12 @@
 # Change Log
 
+## [4.1.1] - 10-02-2018
+### Fixes
+- Fix crash with invalid msg from zlib
+
+### Updates
+- License information update
+
 ## [4.1.0] - 07-06-2017
 ### Changes
 - Compatible with old compilers
