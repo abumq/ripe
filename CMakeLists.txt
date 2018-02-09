@@ -103,8 +103,9 @@ install (FILES include/Ripe.h DESTINATION "include")
 
 ################################################ RIPE ##############################################
 
-add_executable (ripe-bin src/ripe.cc)
-target_link_libraries (ripe-bin ripe)
+add_executable (ripe-bin src/ripe.cc lib/Ripe.cc)
+#target_link_libraries (ripe-bin ripe)
+target_link_libraries (ripe-bin ${CRYPTOPP_LIBRARIES} ${ZLIB_LIBRARIES})
 
 set_target_properties (ripe-bin PROPERTIES
     OUTPUT_NAME "ripe"
