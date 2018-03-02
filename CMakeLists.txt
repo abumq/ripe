@@ -8,8 +8,8 @@ option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
-set (RIPE_VERSION "4.1.1")
-set (RIPE_SOVERSION "4.1.1")
+set (RIPE_VERSION "4.2.0")
+set (RIPE_SOVERSION "4.2.0")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)

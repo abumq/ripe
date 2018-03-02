@@ -38,10 +38,12 @@
 #include <cryptopp/hex.h>
 #include <cryptopp/pem.h>
 #include <cryptopp/rsa.h>
+#include <cryptopp/sha.h>
+#include <cryptopp/filters.h>
 
 #include <zlib.h>
 
-#include "include/Ripe.h"
+#include "../include/Ripe.h"
 
 #define RIPE_UNUSED(x) (void)x
 
@@ -505,6 +507,22 @@ std::string Ripe::decompressString(const std::string& str)
     }
 
     return outstring;
+}
+
+std::string Ripe::sha256Hash(const std::string& data)
+{
+    std::string digest;
+    SHA256 hasher;
+    StringSource ss(data, true, new HashFilter(hasher, new HexEncoder(new StringSink(digest))));
+    return digest;
+}
+
+std::string Ripe::sha512Hash(const std::string& data)
+{
+    std::string digest;
+    CryptoPP::SHA512 hasher;
+    StringSource ss(data, true, new HashFilter(hasher, new HexEncoder(new StringSink(digest))));
+    return digest;
 }
 
 std::string Ripe::prepareData(const std::string& data, const std::string& hexKey, const char* clientId, const std::string& ivec)

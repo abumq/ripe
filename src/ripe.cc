@@ -29,7 +29,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "include/Ripe.h"
+#include "../include/Ripe.h"
 
 void displayVersion()
 {
@@ -47,6 +47,9 @@ void displayUsage()
     options.push_back(std::make_pair("-s", "Sign the data"));
     options.push_back(std::make_pair("-v", "Verify the signed data"));
     options.push_back(std::make_pair("--aes", "Generate AES key (requires -g)"));
+    options.push_back(std::make_pair("--sha256", "Generate SHA-256 hash"));
+    options.push_back(std::make_pair("--sha512", "Generate SHA-512 hash"));
+    options.push_back(std::make_pair("--hash", "Similar to --sha256"));
     options.push_back(std::make_pair("--key", "Symmetric key for encryption / decryption"));
     options.push_back(std::make_pair("--in-key", "Symmetric key for encryption / decryption file path"));
     options.push_back(std::make_pair("--iv", "Initializaion vector for decription"));
@@ -60,10 +63,13 @@ void displayUsage()
     options.push_back(std::make_pair("--out", "Tells ripe to store encrypted data in specified file. (Outputs IV in console)"));
     options.push_back(std::make_pair("--length", "Specify key length"));
     options.push_back(std::make_pair("--secret", "Secret key for encrypted private key (RSA only)"));
+    options.push_back(std::make_pair("--sha256", "Generate SHA-256 hash"));
+    options.push_back(std::make_pair("--sha512", "Generate SHA-512 hash"));
+    options.push_back(std::make_pair("--hash", "Similar to --sha256"));
 
     displayVersion();
     std::cout << "Usage: " << std::endl;
-    std::cout << "ripe [-d | -e | -g | -s | -v] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--aes [<key_length>]] [--secret] [--hex] [--signature]" << std::endl;
+    std::cout << "ripe [-d | -e | -g | -s | -v] [--in <input_file_path>] [--key <key>] [--in-key <file_path>] [--out-public <output_file_path>] [--out-private <output_file_path>] [--iv <init vector>] [--base64] [--rsa] [--length <key_length>] [--out <output_file_path>] [--clean] [--sha256 | --hash] [--sha512] [--aes [<key_length>]] [--secret] [--hex] [--signature]" << std::endl;
     std::cout << std::endl;
     const std::size_t LONGEST = 20;
     for (std::vector<std::pair<std::string, std::string> >::iterator it = options.begin();
@@ -180,6 +186,20 @@ void decompress(std::string& data, bool isBase64, bool isHex,
     CATCH
 }
 
+void sha256(std::string& data)
+{
+    TRY
+    std::cout << Ripe::sha256Hash(data);
+    CATCH
+}
+
+void sha512(std::string& data)
+{
+    TRY
+    std::cout << Ripe::sha512Hash(data);
+    CATCH
+}
+
 void encryptRSA(std::string& data, const std::string& key,
                 const std::string& outputFile, bool isRaw)
 {
@@ -266,6 +286,8 @@ int main(int argc, char* argv[])
     bool clean = false;
     bool isRSA = false;
     bool isRaw = false;
+    bool isSha256 = false;
+    bool isSha512 = false;
     std::string outputFile;
     bool fileArgSpecified = false;
 
@@ -290,6 +312,10 @@ int main(int argc, char* argv[])
             isRSA = true;
         } else if (arg == "--zlib") {
             isZlib = true;
+        } else if (arg == "--sha256" || arg == "--hash") {
+            isSha256 = true;
+        } else if (arg == "--sha512") {
+            isSha512 = true;
         } else if (arg == "--signature" && hasNext) {
             signatureHex = argv[++i];
         } else if (arg == "--raw") {
@@ -377,6 +403,10 @@ int main(int argc, char* argv[])
             encodeHex(data);
         } else if (isZlib) {
             compress(data, isBase64, isHex, outputFile);
+        } else if (isSha256) {
+            sha256(data);
+        } else if (isSha512) {
+            sha512(data);
         } else if (isRSA) {
             encryptRSA(data, key, outputFile, isRaw);
         } else {

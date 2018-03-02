@@ -1,5 +1,8 @@
 # Change Log
 
+## [4.2.0] - 02-03-2018
+- Added SHA-256 and SHA-512 support
+
 ## [4.1.1] - 10-02-2018
 ### Fixes
 - Fix crash with invalid msg from zlib

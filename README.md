@@ -39,6 +39,9 @@ It is fully compatible with OpenSSL. See [interoperability.sh](/interoperability
 | `--out`   | Tells ripe to store encrypted data in specified file. (Outputs IV in console) |
 | `--length`   | Specify key length |
 | `--secret`   | Secret key for encrypted private key (RSA only) |
+| `--sha256` | Generate SHA-256 hash |
+| `--hash` | Generate SHA-256 hash |
+| `--sha512` | Generate SHA-512 hash |
 
 ## Getting Started
 
