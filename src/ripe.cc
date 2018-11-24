@@ -1,11 +1,11 @@
 //
 //  Ripe
 //
-//  Copyright 2017-present Muflihun Labs
+//  Copyright 2017-present Zuhd Web Services
 //
-//  https://muflihun.com/
-//  https://muflihun.github.io/ripe/
-//  https://github.com/muflihun/ripe
+//  https://muflihun.com
+//  https://zuhd.org
+//  https://github.com/zuhd-org/ripe
 //
 //  Author: @abumusamq
 //

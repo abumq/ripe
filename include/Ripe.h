@@ -1,11 +1,11 @@
 //
 //  Ripe
 //
-//  Copyright 2017-present Muflihun Labs
+//  Copyright 2017-present Zuhd Web Services
 //
-//  https://muflihun.com/
-//  https://muflihun.github.io/ripe/
-//  https://github.com/muflihun/ripe
+//  https://muflihun.com
+//  https://zuhd.org
+//  https://github.com/zuhd-org/ripe
 //
 //  Author: @abumusamq
 //
@@ -389,9 +389,9 @@ public:
      * @return Plain output
      */
     static std::string decompressString(const std::string& str);
-    
+
     /*****************************************************************************************************/
-    
+
                 /*******************************************************************\
                  *                            MISC                                 *
                  *******************************************************************
@@ -402,13 +402,13 @@ public:
                  *******************************************************************
                  *******************************************************************
                  \*******************************************************************/
-    
+
     /**
      * @brief Generate SHA-256 hash of given string
      */
     static std::string sha256Hash(const std::string&);
-    
-    
+
+
     /**
      * @brief Generate SHA-512 hash of given string
      */

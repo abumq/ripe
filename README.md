@@ -3,7 +3,7 @@
   ﷽
 </p>
 
-![Ripe](https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png?)
+![Ripe](https://raw.githubusercontent.com/zuhd-org/mine/master/ripe.png?)
 
 Ripe is a minimal security tool. It consists of command-line tool and C++ API for cryptography.
 
@@ -12,7 +12,9 @@ Ripe contains encryption API for two major cryptography methods, RSA and AES (Ri
 It is fully compatible with OpenSSL. See [interoperability.sh](/interoperability.sh)
 
 
-[![Build Status (Master)](https://img.shields.io/travis/muflihun/ripe/master.svg)](https://travis-ci.org/muflihun/ripe) [![Build Status (Develop)](https://img.shields.io/travis/muflihun/ripe/develop.svg)](https://travis-ci.org/muflihun/ripe) [![Version](https://img.shields.io/github/release/muflihun/ripe.svg)](https://github.com/muflihun/ripe/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/ripe) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/muflihun/ripe/blob/master/LICENCE) [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/MuflihunDotCom/25)
+[![Build Status (Master)](https://img.shields.io/travis/zuhd-org/mine/master.svg)](https://travis-ci.org/muflihun/ripe) [![Build Status (Develop)](https://img.shields.io/travis/zuhd-org/mine/develop.svg)](https://travis-ci.org/muflihun/ripe) [![Version](https://img.shields.io/github/release/muflihun/ripe.svg)](https://github.com/zuhd-org/mine/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/ripe) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/zuhd-org/mine/blob/master/LICENCE)
+
+[![Donate](https://muflihun.github.io/donate.png?v2)](https://www.paypal.me/zuhd/25)
 
 ## Options
 
@@ -54,7 +56,7 @@ These are the requirements to build Ripe binaries.
   * [zlib-devel](https://zlib.net/)
 
 ### Get Code
-You can either [download code from master branch](https://github.com/muflihun/ripe/archive/master.zip) or clone it using `git`:
+You can either [download code from master branch](https://github.com/zuhd-org/mine/archive/master.zip) or clone it using `git`:
 
 ```
 git clone git@github.com:muflihun/ripe.git
@@ -303,7 +305,7 @@ Compression using zlib can be done using `-e` option
 echo abcd | ripe -e --zlib
 ```
 
-You can provide `--base64` to see base64 output e.g, 
+You can provide `--base64` to see base64 output e.g,
 
 ```
 echo abcd | ripe -e --zlib --base64
