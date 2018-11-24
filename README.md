@@ -3,7 +3,7 @@
   ﷽
 </p>
 
-![Ripe](https://raw.githubusercontent.com/zuhd-org/mine/master/ripe.png?)
+![Ripe](https://github.com/zuhd-org/ripe/raw/master/ripe.png?)
 
 Ripe is a minimal security tool. It consists of command-line tool and C++ API for cryptography.
 
@@ -322,10 +322,11 @@ echo eNpLTEpOAQAD2AGL | ripe -d --zlib --base64
 
 ### License
 ```
-Copyright 2017-present Muflihun Labs
+Copyright 2017-present Zuhd Web Services
 
-https://github.com/muflihun/
+https://github.com/zuhd-org/
 https://muflihun.com
+https://zuhd.org
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
