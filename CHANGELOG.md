@@ -1,5 +1,8 @@
 # Change Log
 
+## [4.2.1] - 24-11-2018
+- License updated
+
 ## [4.2.0] - 02-03-2018
 - Added SHA-256 and SHA-512 support
 

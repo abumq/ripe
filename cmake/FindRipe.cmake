@@ -5,10 +5,11 @@
 #
 # If ${RIPE_USE_STATIC_LIBS} is ON then static libs are preferred over shared
 #
-# (c) 2017 Muflihun Labs
+# (c) 2017 Zuhd Web Services
 #
-# https://github.com/muflihun/ripe
+# https://github.com/zuhd-org/ripe
 # https://muflihun.com
+# https://zuhd.org
 #
 
 message ("-- Ripe: Searching...")
