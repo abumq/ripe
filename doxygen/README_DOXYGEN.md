@@ -13,9 +13,9 @@ For full help and examples please visit official repo github (muflihun/ripe).
 # Licence
 
 ```
-Copyright 2017 Muflihun Labs
+Copyright 2017 Amrayn Web Services
 
-https://github.com/muflihun/
+https://github.com/amrayn/
 https://muflihun.com
 
 Licensed under the Apache License, Version 2.0 (the "License");

@@ -3,7 +3,7 @@
   ﷽
 </p>
 
-![Ripe](https://github.com/zuhd-org/ripe/raw/master/ripe.png?)
+![Ripe](https://github.com/amrayn/ripe/raw/master/ripe.png?)
 
 Ripe is a minimal security tool. It consists of command-line tool and C++ API for cryptography.
 
@@ -12,9 +12,9 @@ Ripe contains encryption API for two major cryptography methods, RSA and AES (Ri
 It is fully compatible with OpenSSL. See [interoperability.sh](/interoperability.sh)
 
 
-[![Build Status (Master)](https://img.shields.io/travis/zuhd-org/mine/master.svg)](https://travis-ci.org/muflihun/ripe) [![Build Status (Develop)](https://img.shields.io/travis/zuhd-org/mine/develop.svg)](https://travis-ci.org/muflihun/ripe) [![Version](https://img.shields.io/github/release/muflihun/ripe.svg)](https://github.com/zuhd-org/mine/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://muflihun.github.io/ripe) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/zuhd-org/mine/blob/master/LICENCE)
+[![Build Status (Master)](https://img.shields.io/travis/amrayn/mine/master.svg)](https://travis-ci.org/muflihun/ripe) [![Build Status (Develop)](https://img.shields.io/travis/amrayn/mine/develop.svg)](https://travis-ci.org/muflihun/ripe) [![Version](https://img.shields.io/github/release/muflihun/ripe.svg)](https://github.com/amrayn/mine/releases/latest) [![Documentation](https://img.shields.io/badge/docs-doxygen-blue.svg)](https://amrayn.github.io/ripe) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/amrayn/mine/blob/master/LICENCE)
 
-[![Donate](https://muflihun.github.io/donate.png?v2)](https://www.paypal.me/zuhd/25)
+[![Donate](https://amrayn.github.io/donate.png?v2)](https://amrayn.com/donate)
 
 ## Options
 
@@ -51,12 +51,12 @@ It is fully compatible with OpenSSL. See [interoperability.sh](/interoperability
 These are the requirements to build Ripe binaries.
 
   * C++98
-  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip)
+  * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/amrayn/amrayn.github.io/master/downloads/pem_pack.zip)
   * [cmake](https://cmake.org/) v2.8.12+
   * [zlib-devel](https://zlib.net/)
 
 ### Get Code
-You can either [download code from master branch](https://github.com/zuhd-org/mine/archive/master.zip) or clone it using `git`:
+You can either [download code from master branch](https://github.com/amrayn/mine/archive/master.zip) or clone it using `git`:
 
 ```
 git clone git@github.com:muflihun/ripe.git
@@ -110,10 +110,10 @@ You can do `cmake -Ddll_export=ON ...` to export symbols and `cmake -Ddll=ON ...
 Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ v5.6.5 (with Pem Pack) using following commands
 
 ```
-wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/cryptocpp.tar.gz
+wget https://raw.githubusercontent.com/amrayn/amrayn.github.io/master/downloads/cryptocpp.tar.gz
 tar xf cryptocpp.tar.gz
 cd cryptopp-CRYPTOPP_5_6_5
-wget https://raw.githubusercontent.com/muflihun/muflihun.github.io/master/downloads/pem_pack.zip
+wget https://raw.githubusercontent.com/amrayn/amrayn.github.io/master/downloads/pem_pack.zip
 unzip pem_pack.zip
 cmake .
 make
@@ -123,7 +123,7 @@ make install
 and Easylogging++ using
 
 ```
-wget -O easylogging++.zip https://github.com/muflihun/easyloggingpp/archive/master.zip
+wget -O easylogging++.zip https://github.com/amrayn/easyloggingpp/archive/master.zip
 unzip easylogging++.zip
 cd easyloggingpp-master/
 cmake -Dtest=ON .
@@ -322,11 +322,11 @@ echo eNpLTEpOAQAD2AGL | ripe -d --zlib --base64
 
 ### License
 ```
-Copyright 2017-present Zuhd Web Services
+Copyright 2017-present Amrayn Web Services
 
-https://github.com/zuhd-org/
+https://github.com/amrayn/
 https://muflihun.com
-https://zuhd.org
+https://amrayn.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

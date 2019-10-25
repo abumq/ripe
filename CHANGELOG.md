@@ -133,7 +133,7 @@
 - Fixed versioning
 
 ### Added
-- Documentation and website (https://muflihun.github.io/ripe)
+- Documentation and website (https://amrayn.github.io/ripe)
 
 ## [1.1.0] - 10-02-2017
 ### Changed
