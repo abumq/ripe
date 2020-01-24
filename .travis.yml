@@ -9,10 +9,12 @@ before_install:
  - sudo apt-get install --only-upgrade cmake
  - cmake --version
  # Crypto++ (We manually install it because we need Pem Pack as well)
- - git clone https://github.com/weidai11/cryptopp.git
- - git clone https://github.com/noloader/cryptopp-pem.git
- - cp cryptopp-pem/* cryptopp/
- - cd cryptopp
+ - wget https://amrayn.github.io/downloads/cryptocpp.tar.gz
+ - tar xf cryptocpp.tar.gz
+ - cd cryptopp-CRYPTOPP_5_6_5
+ - wget https://amrayn.github.io/downloads/pem_pack.zip
+ - unzip pem_pack.zip
+ - cmake .
  - make
  - sudo make install
  - cd ..
@@ -26,7 +28,7 @@ before_install:
  - sudo cp -a libgtest_main.so libgtest.so /usr/lib/
  - cd ..
  ## Easylogging++
- - wget https://github.com/zuhd-org/easyloggingpp/archive/develop.zip
+ - wget https://github.com/amrayn/easyloggingpp/archive/develop.zip
  - unzip develop.zip
  - cd easyloggingpp-develop
  - cmake .

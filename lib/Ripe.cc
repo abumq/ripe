@@ -1,11 +1,11 @@
 //
 //  Ripe
 //
-//  Copyright 2017-present Zuhd Web Services
+//  Copyright 2017-present Amrayn Web Services
 //
 //  https://muflihun.com
-//  https://zuhd.org
-//  https://github.com/zuhd-org/ripe
+//  https://amrayn.com
+//  https://github.com/amrayn/ripe
 //
 //  Author: @abumusamq
 //
