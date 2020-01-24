@@ -59,7 +59,7 @@ These are the requirements to build Ripe binaries.
 You can either [download code from master branch](https://github.com/amrayn/mine/archive/master.zip) or clone it using `git`:
 
 ```
-git clone git@github.com:muflihun/ripe.git
+git clone git@github.com:amrayn/ripe.git
 ```
 
 ### Build
@@ -324,8 +324,7 @@ echo eNpLTEpOAQAD2AGL | ripe -d --zlib --base64
 ```
 Copyright 2017-present Amrayn Web Services
 
-https://github.com/amrayn/
-https://muflihun.com
+https://github.com/amrayn
 https://amrayn.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
