@@ -9,14 +9,13 @@ before_install:
  - sudo apt-get install --only-upgrade cmake
  - cmake --version
  # Crypto++ (We manually install it because we need Pem Pack as well)
- - wget https://amrayn.github.io/downloads/cryptocpp.tar.gz
- - tar xf cryptocpp.tar.gz
- - cd cryptopp-CRYPTOPP_5_6_5
- - wget https://amrayn.github.io/downloads/pem_pack.zip
- - unzip pem_pack.zip
- - cmake .
+ - git clone https://github.com/weidai11/cryptopp.git
+ - git clone https://github.com/amraynweb/cryptopp-pem.git
+ - cp cryptopp-pem/* cryptopp/
+ - cd cryptopp
  - make
  - sudo make install
+ - cd ..
  # GTest
  - wget -O gtest.tar.gz https://github.com/google/googletest/archive/release-1.7.0.tar.gz
  - tar xf gtest.tar.gz
