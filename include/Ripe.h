@@ -1,13 +1,7 @@
 //
 //  Ripe
 //
-//  Copyright 2017-present Amrayn Web Services
-//
-//  https://muflihun.com
-//  https://amrayn.com
-//  https://github.com/amrayn/ripe
-//
-//  Author: @abumusamq
+//  Copyright 2017-present @abumq (Majid Q.)
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.

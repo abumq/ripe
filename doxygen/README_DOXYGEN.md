@@ -13,10 +13,7 @@ For full help and examples please visit official repo github (muflihun/ripe).
 # Licence
 
 ```
-Copyright 2017 Amrayn Web Services
-
-https://github.com/amrayn/
-https://muflihun.com
+Copyright 2017-present @abumq (Majid Q.)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,4 +28,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-  [banner]: https://raw.githubusercontent.com/muflihun/ripe/master/ripe.png?
+  [banner]: https://raw.githubusercontent.com/abumq/ripe/master/ripe.png?
