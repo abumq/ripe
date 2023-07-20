@@ -154,7 +154,7 @@ if (test)
     include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
     find_package (GTest REQUIRED)
-    include_directories (${GTEST_INCLUDE_DIRS}/gtest)
+    include_directories (${GTEST_INCLUDE_DIRS})
 
     enable_testing()
 
