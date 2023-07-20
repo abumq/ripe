@@ -10,7 +10,6 @@
 # https://github.com/abumq/ripe
 #
 
-message ("-- Ripe: Searching...")
 set(RIPE_PATHS ${RIPE_ROOT} $ENV{RIPE_ROOT})
 
 find_path(RIPE_INCLUDE_DIR
@@ -19,16 +18,16 @@ find_path(RIPE_INCLUDE_DIR
     PATHS ${RIPE_PATHS}
 )
 
-if (Ripe_USE_STATIC_LIBS)
+if (RIPE_USE_STATIC_LIBS)
     message ("-- Ripe: Static linking")
     find_library(RIPE_LIBRARY
-        NAMES libripe.dylib libripe ripe
+        NAMES libripe.a
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
 else()
     message ("-- Ripe: Dynamic linking")
     find_library(RIPE_LIBRARY
-        NAMES ripe libripe libripe.dylib
+        NAMES libripe.dylib
         HINTS "${CMAKE_PREFIX_PATH}/lib"
     )
 endif()
