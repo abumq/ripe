@@ -41,6 +41,10 @@
 
 #define RIPE_UNUSED(x) (void)x
 
+#ifndef RIPE_VERSION
+# define RIPE_VERSION ""
+#endif
+
 using namespace CryptoPP;
 
 const std::string Ripe::PACKET_DELIMITER      = "\r\n\r\n";
