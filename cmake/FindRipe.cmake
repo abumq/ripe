@@ -5,11 +5,9 @@
 #
 # If ${RIPE_USE_STATIC_LIBS} is ON then static libs are preferred over shared
 #
-# (c) 2017 Amrayn Web Services
+# Copyright 2017-present @abumq (Majid Q.)
 #
-# https://github.com/amrayn/ripe
-# https://muflihun.com
-# https://amrayn.com
+# https://github.com/abumq/ripe
 #
 
 message ("-- Ripe: Searching...")
