@@ -93,12 +93,12 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
 ```
 
 ### Static Linking
-By default ripe builds as shared library, you can pass `build_static_lib` option in cmake to build static library.
+By default ripe builds as shared library, you can pass `BUILD_SHARED_LIBS` option in cmake to build static library.
 
 For example
 
 ```
-cmake -Dbuild_static_lib=ON ..
+cmake -DBUILD_SHARED_LIBS=OFF ..
 make
 ```
 

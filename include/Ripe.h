@@ -35,6 +35,10 @@ typedef unsigned char RipeByte;
 #define RIPE_API
 #endif
 
+#ifndef RIPE_VERSION
+# define RIPE_VERSION ""
+#endif
+
 ///
 /// \brief The Ripe class is core of Ripe library and contains all
 /// the required cryptography API supported by Ripe

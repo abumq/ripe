@@ -52,6 +52,7 @@ find_package(CryptoPP REQUIRED)
 message ("-- Crypto++ binary: " ${CRYPTOPP_LIBRARY})
 include_directories (${CRYPTOPP_INCLUDE_DIRS})
 
+set(ZLIB_USE_STATIC_LIBS "ON")
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
