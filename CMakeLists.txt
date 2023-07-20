@@ -52,7 +52,7 @@ find_package(CryptoPP REQUIRED)
 message ("-- Crypto++ binary: " ${CRYPTOPP_LIBRARY})
 include_directories (${CRYPTOPP_INCLUDE_DIRS})
 
-set(ZLIB_USE_STATIC_LIBS "ON")
+set(ZLIB_USE_STATIC_LIBS ON)
 find_package(ZLIB REQUIRED)
 if (ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
@@ -107,8 +107,10 @@ install (FILES include/Ripe.h DESTINATION "include")
 ################################################ RIPE ##############################################
 
 add_executable (ripe-bin src/ripe.cc lib/Ripe.cc)
-#target_link_libraries (ripe-bin ripe)
-target_link_libraries (ripe-bin ${CRYPTOPP_LIBRARIES} ${ZLIB_LIBRARIES})
+target_link_libraries (ripe-bin
+    ${CRYPTOPP_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+)
 
 set_target_properties (ripe-bin PROPERTIES
     OUTPUT_NAME "ripe"
@@ -173,7 +175,7 @@ if (test)
     )
 
     # Standard linking to gtest stuff.
-    target_link_libraries(ripe-unit-tests ${GTEST_BOTH_LIBRARIES})
+    target_link_libraries(ripe-unit-tests ${GTEST_LIBRARIES})
 
     # Extra linking for the project.
     target_link_libraries(ripe-unit-tests ripe)
