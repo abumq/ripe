@@ -3,6 +3,7 @@
 ## [4.2.2] - 20-07-2023
 - Updated to remove unused intro
 - Updated google test that now requires C++14
+- Fix include path for Ripe.h
 
 ## [4.2.0] - 02-03-2018
 - Added SHA-256 and SHA-512 support

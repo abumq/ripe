@@ -23,7 +23,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "../include/Ripe.h"
+#include <Ripe.h>
 
 void displayVersion()
 {
