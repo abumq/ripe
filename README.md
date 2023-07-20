@@ -2,10 +2,21 @@
 <p align="center">
   ﷽
 </p>
+<p align="center">
+    <a href="https://github.com/abumq/ripe">
+      <img width="400px" src="https://github.com/abumq/ripe/raw/master/ripe.png?" />
+    </a>
+    <p align="center">Minimal security tool with CLI and and C++ API for cryptography.</p>
+</p>
 
-![Ripe](https://github.com/abumq/ripe/raw/master/ripe.png?)
-
-Ripe is a minimal security tool. It consists of command-line tool and C++ API for cryptography.
+<p align="center">
+  <a aria-label="Version" href="https://github.com/abumq/ripe/releases/latest">
+    <img alt="" src="https://img.shields.io/github/release/abumq/ripe.svg?style=for-the-badge&labelColor=000000">
+  </a>
+  <a aria-label="License" href="https://github.com/abumq/ripe/blob/master/LICENSE">
+    <img alt="Apache 2.0" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge&labelColor=220000">
+  </a>
+</p>
 
 Ripe contains encryption API for two major cryptography methods, RSA and AES (Rijndael). Also contains Base64 encoding/decoding API and some helper functions to make data transferable (called `prepareData`). Binaries do not depend on third-party tools or libraries but development will require cryptography libraries installed in system in order to compile.
 
