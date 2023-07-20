@@ -238,7 +238,7 @@ Ripe::KeyPair Ripe::generateRSAKeyPair(unsigned int length, const std::string& s
         if (secret.empty()) {
             PEM_Save(snk, privateKey);
         } else {
-            PEM_Save(snk, privateKey, rng, PRIVATE_RSA_ALGORITHM, secret.data(), secret.size());
+            PEM_Save(snk, rng, privateKey, PRIVATE_RSA_ALGORITHM, secret.data(), secret.size());
         }
         snk.MessageEnd();
     }

@@ -27,7 +27,7 @@
 
 void displayVersion()
 {
-    std::cout << "Ripe - Lightweight cryptography library wrapper" << std::endl << "Version: " << RIPE_VERSION << std::endl << "https://muflihun.com" << std::endl;
+    std::cout << "Ripe - Lightweight cryptography library wrapper" << std::endl << "Version: " << RIPE_VERSION << std::endl;
 }
 
 void displayUsage()

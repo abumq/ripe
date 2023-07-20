@@ -8,8 +8,8 @@ option(dll "DLL imports (Use on windows only)" OFF)
 option(dll_export "DLL exports (Use on windows only)" OFF)
 option (BUILD_SHARED_LIBS "build shared libraries" ON)
 
-set (RIPE_VERSION "4.2.1")
-set (RIPE_SOVERSION "4.2.1")
+set (RIPE_VERSION "4.2.2")
+set (RIPE_SOVERSION "4.2.2")
 
 add_definitions (-DRIPE_VERSION="${RIPE_VERSION}")
 add_definitions (-DELPP_NO_LOG_TO_FILE)
@@ -121,23 +121,23 @@ file (GLOB_RECURSE all_headers ${CMAKE_SOURCE_DIR}/*.h)
 add_custom_target (all_placeholder SOURCES ${all_headers})
 
 
-# We need C++11 (only for test)
-macro(require_cpp11)
+# We need C++14 (only for test)
+macro(require_cpp14)
         if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
                 # CMake 3.1 has built-in CXX standard checks.
-                message("-- Setting C++11")
-                set(CMAKE_CXX_STANDARD 11)
+                message("-- Setting C++14")
+                set(CMAKE_CXX_STANDARD 14)
                 set(CMAKE_CXX_STANDARD_REQUIRED on)
         else()
                 if (CMAKE_CXX_COMPILER_ID MATCHES "GCC")
                     message ("-- GNU CXX (-std=c++11)")
                     list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
                 elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-                    message ("-- CLang CXX (-std=c++11)")
-                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+                    message ("-- CLang CXX (-std=c++14)")
+                    list(APPEND CMAKE_CXX_FLAGS "-std=c++14")
                 elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
                     message ("-- GNU CXX (-std=c++11)")
-                    list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
+                    list(APPEND CMAKE_CXX_FLAGS "-std=c++14")
                 else()
                     message ("-- Requires C++11. Your compiler does not support it.")
                 endif()
@@ -147,15 +147,14 @@ endmacro()
 ########################################## Unit Testing ###################################
 if (test)
 
-    require_cpp11()
+    require_cpp14()
 
     # Check for Easylogging++
     find_package(EASYLOGGINGPP REQUIRED)
     include_directories (${EASYLOGGINGPP_INCLUDE_DIR})
 
-    find_package (gtest REQUIRED)
-
-    include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+    find_package (GTest REQUIRED)
+    include_directories (${GTEST_INCLUDE_DIRS}/gtest)
 
     enable_testing()
 
@@ -171,7 +170,7 @@ if (test)
     )
 
     # Standard linking to gtest stuff.
-    target_link_libraries(ripe-unit-tests gtest gtest_main)
+    target_link_libraries(ripe-unit-tests ${GTEST_BOTH_LIBRARIES})
 
     # Extra linking for the project.
     target_link_libraries(ripe-unit-tests ripe)

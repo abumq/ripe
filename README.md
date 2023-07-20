@@ -48,7 +48,8 @@ It is fully compatible with OpenSSL. See [interoperability.sh](/interoperability
 ### Dependencies
 These are the requirements to build Ripe binaries.
 
-  * C++98
+  * C++14 (with Google Test or C++98 without)
+  * [Easylogging++](https://github.com/abumq/easyloggingpp)
   * [Crypto++](https://www.cryptopp.com/) v5.6.5+ [with Pem Pack](https://raw.githubusercontent.com/abumq/abumq.github.io/master/downloads/pem_pack.zip)
   * [cmake](https://cmake.org/) v2.8.12+
   * [zlib-devel](https://zlib.net/)
@@ -116,6 +117,17 @@ unzip pem_pack.zip
 cmake .
 make
 make install
+```
+
+and Google Testing Library using
+
+```
+git clone https://github.com/google/googletest.git -b v1.13.0
+cd googletest
+mkdir build
+cd build
+cmake .. -DBUILD_GMOCK=OFF
+make
 ```
 
 and Easylogging++ using
