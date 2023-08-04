@@ -120,10 +120,10 @@ You can do `cmake -Ddll_export=ON ...` to export symbols and `cmake -Ddll=ON ...
 Make sure you have read [minimum requirements](#minimum-requirements). You can install required Crypto++ v5.6.5 (with Pem Pack) using following commands
 
 ```
-wget https://raw.githubusercontent.com/abumq/abumq.github.io/master/downloads/cryptocpp.tar.gz
+curl -O https://raw.githubusercontent.com/abumq/abumq.github.io/master/downloads/cryptocpp.tar.gz
 tar xf cryptocpp.tar.gz
 cd cryptopp-CRYPTOPP_5_6_5
-wget https://raw.githubusercontent.com/abumq/abumq.github.io/master/downloads/pem_pack.zip
+curl -O https://raw.githubusercontent.com/abumq/abumq.github.io/master/downloads/pem_pack.zip
 unzip pem_pack.zip
 cmake .
 make
@@ -144,7 +144,7 @@ make
 and Easylogging++ using
 
 ```
-wget -O easylogging++.zip https://github.com/abumq/easyloggingpp/archive/master.zip
+curl -o easylogging++.zip https://github.com/abumq/easyloggingpp/archive/master.zip
 unzip easylogging++.zip
 cd easyloggingpp-master/
 cmake -Dtest=ON .
